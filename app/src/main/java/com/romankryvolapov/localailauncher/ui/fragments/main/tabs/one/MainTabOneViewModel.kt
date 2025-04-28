@@ -10,11 +10,17 @@ import ai.mlc.mlcllm.OpenAIProtocol.StreamOptions
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.romankryvolapov.localailauncher.domain.models.base.onFailure
+import com.romankryvolapov.localailauncher.domain.models.base.onLoading
+import com.romankryvolapov.localailauncher.domain.models.base.onSuccess
+import com.romankryvolapov.localailauncher.domain.usecase.SendMessageUseCase
 import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logError
+import com.romankryvolapov.localailauncher.extensions.launchInScope
 import com.romankryvolapov.localailauncher.extensions.launchWithDispatcher
 import com.romankryvolapov.localailauncher.extensions.readOnly
 import com.romankryvolapov.localailauncher.extensions.setValueOnMainThread
+import com.romankryvolapov.localailauncher.mappers.ChatMessageModelUiMapper
 import com.romankryvolapov.localailauncher.models.chat.ChatMessageAdapterMarker
 import com.romankryvolapov.localailauncher.models.chat.ChatMessageErrorUi
 import com.romankryvolapov.localailauncher.models.chat.ChatMessageModelUi
@@ -22,6 +28,7 @@ import com.romankryvolapov.localailauncher.models.chat.ChatMessageUserUi
 import com.romankryvolapov.localailauncher.models.main.MainTabsEnum
 import com.romankryvolapov.localailauncher.ui.fragments.main.base.BaseMainTabViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.onEach
 import org.koin.core.component.inject
 import java.util.UUID
 
@@ -35,6 +42,10 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
     override var mainTabsEnum: MainTabsEnum? = MainTabsEnum.TAB_ONE
 
     private val engine: MLCEngine by inject()
+    private val sendMessageUseCase: SendMessageUseCase by inject()
+    private val chatMessageModelUiMapper: ChatMessageModelUiMapper by inject()
+
+    private val messagesMap = mutableMapOf<UUID, ChatMessageAdapterMarker>()
 
     private val _messagesLiveData = MutableLiveData<List<ChatMessageAdapterMarker>>()
     val messagesLiveData = _messagesLiveData.readOnly()
@@ -42,119 +53,44 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
     private val _isLoadingLiveData = MutableLiveData<Boolean>(false)
     val isLoadingLiveData = _isLoadingLiveData.readOnly()
 
-    private var generationJob: Job? = null
-
-    fun cancelGeneration() {
-        generationJob?.cancel()
-        generationJob = null
-    }
-
-    private val messagesMap = mutableMapOf<UUID, ChatMessageAdapterMarker>()
-
-    override fun onFirstAttach() {
-        logDebug("onFirstAttach", TAG)
-    }
-
-
     fun sendMessage(message: String) {
-
         logDebug("sendMessage message: $message", TAG)
-
-        generationJob?.cancel()
-        generationJob = viewModelScope.launchWithDispatcher {
-
-            _isLoadingLiveData.setValueOnMainThread(true)
-
-            messagesMap[UUID.randomUUID()] = ChatMessageUserUi(
-                id = UUID.randomUUID(),
-                timeStamp = System.currentTimeMillis(),
-                message = message,
-            )
-
-            _messagesLiveData.setValueOnMainThread(messagesMap.values.toList())
-
-            val modelMessageID = UUID.randomUUID()
-
-            messagesMap[modelMessageID] = ChatMessageModelUi(
-                id = modelMessageID,
-                timeStamp = System.currentTimeMillis(),
-                message = message,
-                messageData = ""
-            )
-
-            try {
-
-                val streamingResponse = StringBuilder()
-                var usageInfoText = StringBuilder()
-
-                val channel = engine.chat.completions.create(
-                    messages = listOf(
-                        ChatCompletionMessage(
-                            role = ChatCompletionRole.user,
-                            content = buildGemmaPrompt(message)
-                        )
-                    ),
-                    stream_options = StreamOptions(include_usage = true),
-                    stop = listOf("<end_of_turn>")
-                )
-
-                for (response in channel) {
-                    response.choices.firstOrNull()?.delta?.content?.asText()?.let { textChunk ->
-                        streamingResponse.append(textChunk)
-                    }
-                    response.usage?.let { usage ->
-                        if (usageInfoText.isEmpty()) {
-                            usageInfoText.append("prompt: ${usage.prompt_tokens} tok ")
-                            usageInfoText.append("completion: ${usage.completion_tokens} tok ")
-                            usageInfoText.append("total: ${usage.total_tokens} tok ")
-                            usageInfoText.append("\n")
-                            usageInfoText.append("prefill: ${String.format("%.1f", usage.extra?.prefill_tokens_per_s)} tok/s ")
-                            usageInfoText.append("decode: ${String.format("%.1f", usage.extra?.decode_tokens_per_s)} tok/s ")
-                        }
-                    }
-                    messagesMap[modelMessageID] = ChatMessageModelUi(
-                        id = modelMessageID,
-                        timeStamp = System.currentTimeMillis(),
-                        message = streamingResponse.toString(),
-                        messageData = usageInfoText.toString()
-                    )
+        _isLoadingLiveData.setValueOnMainThread(true)
+        messagesMap[UUID.randomUUID()] = ChatMessageUserUi(
+            id = UUID.randomUUID(),
+            timeStamp = System.currentTimeMillis(),
+            message = message,
+        )
+        _messagesLiveData.setValueOnMainThread(messagesMap.values.toList())
+        val modelMessageID = UUID.randomUUID()
+        sendMessageUseCase.invoke(
+            engine = engine,
+            message = message,
+            messageID = modelMessageID,
+        ).onEach { result ->
+            result.onLoading { model, _ ->
+                model?.let {
+                    messagesMap[modelMessageID] = chatMessageModelUiMapper.map(model)
                     _messagesLiveData.setValueOnMainThread(messagesMap.values.toList())
                 }
-
-                messagesMap[modelMessageID] = ChatMessageModelUi(
-                    id = modelMessageID,
-                    timeStamp = System.currentTimeMillis(),
-                    message = streamingResponse.toString(),
-                    messageData = usageInfoText.toString()
-                )
+            }.onSuccess { model, _, _ ->
+                messagesMap[modelMessageID] = chatMessageModelUiMapper.map(model)
                 _messagesLiveData.setValueOnMainThread(messagesMap.values.toList())
-
                 _isLoadingLiveData.setValueOnMainThread(false)
-
-            } catch (e: Exception) {
-                logError("Error", e, TAG)
-
-                _messagesLiveData.setValueOnMainThread(messagesMap.values.toList())
-
+            }.onFailure { error, title, message, responseCode, errorType ->
                 messagesMap[modelMessageID] = ChatMessageErrorUi(
                     id = modelMessageID,
+                    message = message ?: "Unknown error",
                     timeStamp = System.currentTimeMillis(),
-                    message = e.message.toString(),
                 )
-
                 _messagesLiveData.setValueOnMainThread(messagesMap.values.toList())
-
+                _isLoadingLiveData.setValueOnMainThread(false)
             }
-        }
+        }.launchInScope(viewModelScope)
     }
 
-    fun buildGemmaPrompt(userMessage: String): String {
-        return """
-        <bos><start_of_turn>user
-        $userMessage
-        <end_of_turn>
-        <start_of_turn>model
-    """.trimIndent()
+    fun cancelGeneration() {
+        sendMessageUseCase.cancel()
     }
 
 }

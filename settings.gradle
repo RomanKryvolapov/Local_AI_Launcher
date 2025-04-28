@@ -5,6 +5,5 @@
 rootProject.name = "Local AI Launcher"
 include ':app'
 include ':data'
-include ':mlc4j'
-project(':mlc4j').projectDir = file('dist/lib/mlc4j')
 include ':domain'
+include ':gemma-3-1b-qat'

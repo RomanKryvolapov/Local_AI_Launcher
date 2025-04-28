@@ -1,45 +1,31 @@
-/**
- * Created 2025 by Roman Kryvolapov
- */
 package com.romankryvolapov.localailauncher.domain.usecase
 
-import android.content.res.AssetManager
+import ai.mlc.mlcllm.MLCEngine
 import com.romankryvolapov.localailauncher.domain.models.base.ErrorType
 import com.romankryvolapov.localailauncher.domain.models.base.ResultEmittedData
 import com.romankryvolapov.localailauncher.domain.usecase.base.BaseUseCase
 import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logError
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import java.io.File
 
-class CopyAssetsToFileUseCase : BaseUseCase {
+class StartEngineUseCase : BaseUseCase {
 
     companion object {
-        private const val TAG = "CopyAssetsToFileUseCaseTag"
+        private const val TAG = "StartEngineUseCaseTag"
     }
 
     fun invoke(
         filesDir: File,
+        modelLib: String,
+        engine: MLCEngine,
         modelName: String,
-        assetManager: AssetManager,
     ): Flow<ResultEmittedData<Unit>> = flow {
-        logDebug("invoke", TAG)
+        logDebug("invoke modelName: $modelName modelLib: $modelLib", TAG)
         try {
-            clearFilesDir(filesDir)
             val modelDir = File(filesDir, modelName)
-            if (!modelDir.exists()) {
-                modelDir.mkdirs()
-            }
-            assetManager.list(modelName)?.forEach { filename ->
-                assetManager.open("$modelName/$filename").use { inStream ->
-                    File(modelDir, filename).outputStream().use { outStream ->
-                        inStream.copyTo(outStream)
-                    }
-                }
-            }
+            val modelPath = modelDir.absolutePath
+            engine.reload(modelPath, modelLib)
             emit(
                 ResultEmittedData.success(
                     model = Unit,
@@ -48,7 +34,6 @@ class CopyAssetsToFileUseCase : BaseUseCase {
                 )
             )
         } catch (e: Exception) {
-            logError("Error copying assets", e, TAG)
             emit(
                 ResultEmittedData.error(
                     model = null,
@@ -59,16 +44,6 @@ class CopyAssetsToFileUseCase : BaseUseCase {
                     errorType = ErrorType.SERVER_DATA_ERROR,
                 )
             )
-        }
-    }.flowOn(Dispatchers.IO)
-
-    private fun clearFilesDir(filesDir: File) {
-        filesDir.listFiles()?.forEach { file ->
-            if (file.isDirectory) {
-                file.deleteRecursively()
-            } else {
-                file.delete()
-            }
         }
     }
 

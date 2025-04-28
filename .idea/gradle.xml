@@ -12,8 +12,8 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/data" />
-            <option value="$PROJECT_DIR$/dist/lib/mlc4j" />
             <option value="$PROJECT_DIR$/domain" />
+            <option value="$PROJECT_DIR$/gemma-3-1b-qat" />
           </set>
         </option>
       </GradleProjectSettings>

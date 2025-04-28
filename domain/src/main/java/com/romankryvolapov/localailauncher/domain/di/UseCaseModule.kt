@@ -11,10 +11,24 @@
  */
 package com.romankryvolapov.localailauncher.domain.di
 
+import com.romankryvolapov.localailauncher.domain.usecase.CopyAssetsToFileUseCase
+import com.romankryvolapov.localailauncher.domain.usecase.SendMessageUseCase
+import com.romankryvolapov.localailauncher.domain.usecase.StartEngineUseCase
 import org.koin.dsl.module
 
 val useCaseModule = module {
 
+    factory<CopyAssetsToFileUseCase> {
+        CopyAssetsToFileUseCase()
+    }
 
+    factory<StartEngineUseCase> {
+        StartEngineUseCase()
+    }
+
+
+    factory<SendMessageUseCase> {
+        SendMessageUseCase()
+    }
 
 }

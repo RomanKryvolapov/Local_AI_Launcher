@@ -86,10 +86,12 @@ data class ResultEmittedData<out T>(
 
 inline fun <T : Any> ResultEmittedData<T>.onLoading(
     action: (
+        model: T?,
         message: String?,
     ) -> Unit
 ): ResultEmittedData<T> {
     if (status == ResultEmittedData.Status.LOADING) action(
+        model,
         message
     )
     return this
