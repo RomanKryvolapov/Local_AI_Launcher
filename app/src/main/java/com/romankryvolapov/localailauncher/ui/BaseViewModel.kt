@@ -575,9 +575,9 @@ abstract class BaseViewModel : ViewModel(), KoinComponent {
         logDebug("onActivityTimerExpired", TAG)
         preferences.logoutFromPreferences()
         hideFullscreenLoader()
-        navigateNewRootInActivity(
-            NavActivityDirections.toAuthFlowFragment()
-        )
+//        navigateNewRootInActivity(
+//            NavActivityDirections.toAuthFlowFragment()
+//        )
     }
 
 }

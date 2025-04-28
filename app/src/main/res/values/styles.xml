@@ -2,23 +2,22 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
-        <item name="android:statusBarColor">@color/color_295999</item>
+        <item name="android:statusBarColor">@color/color_black</item>
         <item name="android:navigationBarColor">@color/color_1C3050</item>
         <item name="android:windowLightStatusBar">true</item>
-        <item name="windowSplashScreenBackground">@color/color_white</item>
+        <item name="windowSplashScreenBackground">@color/color_black</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo</item>
         <item name="postSplashScreenTheme">@style/Theme.App</item>
         <item name="android:forceDarkAllowed" tools:targetApi="29">false</item>
-        <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
-    <style name="Theme.App" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <!--        <item name="android:background">@color/color_white</item>-->
-        <item name="android:statusBarColor">@color/color_295999</item>
+    <style name="Theme.App" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:background">@color/color_black</item>
+        <item name="android:statusBarColor">@color/color_black</item>
         <item name="android:navigationBarColor">@color/color_1C3050</item>
         <item name="colorPrimary">@color/color_295999</item>
         <item name="colorPrimaryVariant">@color/color_295999</item>
@@ -29,11 +28,11 @@
         <item name="colorOnSecondary">@color/color_295999</item>
         <item name="colorAccent">@color/color_295999</item>
         <item name="android:colorEdgeEffect">@color/color_295999</item>
-        <item name="android:windowBackground">@color/color_white</item>
+        <item name="android:windowBackground">@color/color_black</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
         <item name="windowActionModeOverlay">true</item>
-        <item name="android:forceDarkAllowed" tools:targetApi="29">false</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="29">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>

@@ -6,7 +6,7 @@
     android:background="@drawable/bg_ripple_default"
     android:paddingHorizontal="@dimen/margin_6">
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvTitle"
         style="@style/TextStyle.14sp.Regular.1C3050"
         android:layout_width="match_parent"

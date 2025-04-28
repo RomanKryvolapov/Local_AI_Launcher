@@ -3,39 +3,53 @@
  */
 package com.romankryvolapov.localailauncher.ui.fragments.main.tabs.one.list
 
-import com.hannesdorfmann.adapterdelegates4.paging.PagedListDelegationAdapter
-import com.romankryvolapov.localailauncher.models.chat.ChatMessageUi
+import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
+import com.romankryvolapov.localailauncher.models.chat.ChatMessageAdapterMarker
+import com.romankryvolapov.localailauncher.models.chat.ChatMessageErrorUi
+import com.romankryvolapov.localailauncher.models.chat.ChatMessageModelUi
+import com.romankryvolapov.localailauncher.models.chat.ChatMessageUserUi
 import com.romankryvolapov.localailauncher.utils.DefaultDiffUtilCallback
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import kotlin.getValue
 
 class ChatMessagesAdapter :
-    PagedListDelegationAdapter<ChatMessageUi>(DefaultDiffUtilCallback()),
+    AsyncListDifferDelegationAdapter<ChatMessageAdapterMarker>(DefaultDiffUtilCallback()),
     KoinComponent {
 
     companion object {
         private const val TAG = "ChatMessagesAdapterTag"
     }
 
-    private val applicationsDelegate: ChatMessagesDelegate by inject()
+    private val chatMessagesUserDelegate: ChatMessagesUserDelegate by inject()
+    private val chatMessagesModelDelegate: ChatMessagesModelDelegate by inject()
+    private val chatMessagesErrorDelegate: ChatMessagesErrorDelegate by inject()
 
     var clickListener: ClickListener? = null
         set(value) {
             field = value
-            applicationsDelegate.openClickListener = {
-                clickListener?.onOpenClicked(it)
+            chatMessagesUserDelegate.openClickListener = {
+                clickListener?.onUserMessageClicked(it)
+            }
+            chatMessagesModelDelegate.openClickListener = {
+                clickListener?.onModelMessageClicked(it)
+            }
+            chatMessagesErrorDelegate.openClickListener = {
+                clickListener?.onErrorMessageClicked(it)
             }
         }
 
     init {
         delegatesManager.apply {
-            addDelegate(applicationsDelegate)
+            addDelegate(chatMessagesUserDelegate)
+            addDelegate(chatMessagesModelDelegate)
+            addDelegate(chatMessagesErrorDelegate)
         }
     }
 
-    fun interface ClickListener {
-        fun onOpenClicked(model: ChatMessageUi)
+    interface ClickListener {
+        fun onUserMessageClicked(model: ChatMessageUserUi)
+        fun onModelMessageClicked(model: ChatMessageModelUi)
+        fun onErrorMessageClicked(model: ChatMessageErrorUi)
     }
 
 }

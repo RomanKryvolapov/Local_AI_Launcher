@@ -6,8 +6,8 @@ package com.romankryvolapov.localailauncher.domain.utils
 import android.annotation.SuppressLint
 import android.os.Environment
 import android.util.Log
+import com.romankryvolapov.localailauncher.domain.BuildConfig
 import com.romankryvolapov.localailauncher.domain.models.log.LogData
-import com.squareup.leakcanary.core.BuildConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

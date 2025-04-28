@@ -9,13 +9,23 @@
  */
 package com.romankryvolapov.localailauncher.di
 
-import com.romankryvolapov.localailauncher.ui.fragments.main.tabs.one.list.ChatMessagesDelegate
+import com.romankryvolapov.localailauncher.ui.fragments.main.tabs.one.list.ChatMessagesErrorDelegate
+import com.romankryvolapov.localailauncher.ui.fragments.main.tabs.one.list.ChatMessagesModelDelegate
+import com.romankryvolapov.localailauncher.ui.fragments.main.tabs.one.list.ChatMessagesUserDelegate
 import org.koin.dsl.module
 
 val delegatesModule = module {
 
-    single<ChatMessagesDelegate> {
-        ChatMessagesDelegate()
+    single<ChatMessagesUserDelegate> {
+        ChatMessagesUserDelegate()
+    }
+
+    single<ChatMessagesModelDelegate> {
+        ChatMessagesModelDelegate()
+    }
+
+    single<ChatMessagesErrorDelegate> {
+        ChatMessagesErrorDelegate()
     }
 
 }

@@ -25,30 +25,7 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnClearAll"
-                style="@style/ButtonStyle.background_color_BF1212_text_white"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_16"
-                android:layout_marginTop="@dimen/margin_32"
-                android:layout_marginEnd="@dimen/margin_32"
-                android:text="Clear all" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnChangePassword"
-                style="@style/ButtonStyle.background_295999_text_white"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_16"
-                android:layout_marginTop="@dimen/margin_32"
-                android:layout_marginEnd="@dimen/margin_32"
-                android:text="Change password" />
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
+            android:orientation="vertical"/>
 
     </androidx.core.widget.NestedScrollView>
 

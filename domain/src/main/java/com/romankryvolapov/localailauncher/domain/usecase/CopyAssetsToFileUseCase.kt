@@ -4,6 +4,7 @@
 package com.romankryvolapov.localailauncher.domain.usecase
 
 import android.content.res.AssetManager
+import android.util.Log
 import com.romankryvolapov.localailauncher.domain.usecase.base.BaseUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -14,7 +15,7 @@ import java.io.File
 class CopyAssetsToFileUseCase : BaseUseCase {
 
     companion object {
-        private const val TAG = "GetAdministratorsUseCaseTag"
+        private const val TAG = "CopyAssetsToFileUseCaseTag"
     }
 
     fun invoke(
@@ -23,22 +24,33 @@ class CopyAssetsToFileUseCase : BaseUseCase {
         filesDir: File
     ): Flow<Boolean> = flow {
         try {
-
-            val filesDir = File(filesDir, modelName)
-            if (!filesDir.exists()) {
-                filesDir.mkdirs()
+            clearFilesDir(filesDir)
+            val modelDir = File(filesDir, modelName)
+            if (!modelDir.exists()) {
+                modelDir.mkdirs()
             }
             assetManager.list(modelName)?.forEach { filename ->
-                val inStream = assetManager.open("$modelName/$filename")
-                val outFile = File(filesDir, filename)
-                val outStream = outFile.outputStream()
-                inStream.copyTo(outStream)
-                inStream.close()
-                outStream.close()
+                assetManager.open("$modelName/$filename").use { inStream ->
+                    File(modelDir, filename).outputStream().use { outStream ->
+                        inStream.copyTo(outStream)
+                    }
+                }
             }
             emit(true)
         } catch (e: Exception) {
+            Log.e(TAG, "Error copying assets", e)
             emit(false)
         }
     }.flowOn(Dispatchers.IO)
+
+    private fun clearFilesDir(filesDir: File) {
+        filesDir.listFiles()?.forEach { file ->
+            if (file.isDirectory) {
+                file.deleteRecursively()
+            } else {
+                file.delete()
+            }
+        }
+    }
+
 }

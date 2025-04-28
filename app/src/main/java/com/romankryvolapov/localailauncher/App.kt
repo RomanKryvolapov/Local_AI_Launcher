@@ -4,7 +4,9 @@
 package com.romankryvolapov.localailauncher
 
 import android.app.Application
-import com.romankryvolapov.localailauncher.BuildConfig
+import com.romankryvolapov.localailauncher.data.di.dataModules
+import com.romankryvolapov.localailauncher.di.appModules
+import com.romankryvolapov.localailauncher.domain.di.domainModules
 import leakcanary.LeakCanary
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -15,7 +17,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-//        setupKoin()
+        setupKoin()
     }
 
     private fun setupKoin() {
@@ -25,7 +27,7 @@ class App : Application() {
                 androidLogger(Level.ERROR)
             }
             allowOverride(override = true)
-//            modules(appModules, domainModules, dataModules)
+            modules(appModules, domainModules, dataModules)
         }
         configureLeakCanary()
     }

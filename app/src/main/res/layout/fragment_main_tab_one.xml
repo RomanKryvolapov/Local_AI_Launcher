@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootLayout"
@@ -11,53 +11,56 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/color_black"
         android:clipToPadding="false"
         android:scrollbars="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@+id/valueInputLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:itemCount="12"
+        tools:listitem="@layout/list_item_chat_message_model"
         tools:visibility="visible" />
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="match_parent"
+    <com.romankryvolapov.localailauncher.ui.view.CustomTextInputLayout
+        android:id="@+id/valueInputLayout"
+        style="@style/DefaultTextInputLayoutStyle"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_weight="1"
+        android:drawablePadding="@dimen/margin_8"
+        android:hint="@string/search"
+        app:endIconMode="clear_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnSend"
+        app:layout_constraintStart_toStartOf="parent">
 
-        <com.romankryvolapov.localailauncher.ui.view.CustomTextInputLayout
-            android:id="@+id/valueInputLayout"
-            style="@style/DefaultTextInputLayoutStyle"
-            android:layout_width="0dp"
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etSearch"
+            style="@style/DefaultEditTextStyle"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_16"
-            android:layout_marginEnd="@dimen/margin_16"
-            android:layout_marginBottom="@dimen/margin_16"
-            android:layout_weight="1"
-            android:drawablePadding="@dimen/margin_8"
-            android:hint="@string/search"
-            app:endIconMode="clear_text">
+            android:inputType="textEmailAddress"
+            android:maxLength="128"
+            tools:text="Test" />
 
-            <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/etSearch"
-                style="@style/DefaultEditTextStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:maxLength="128"
-                tools:text="Test" />
+    </com.romankryvolapov.localailauncher.ui.view.CustomTextInputLayout>
 
-        </com.romankryvolapov.localailauncher.ui.view.CustomTextInputLayout>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnSend"
+        style="@style/ButtonStyle.background_295999_text_white"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:text="Send"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/valueInputLayout" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnSend"
-            style="@style/ButtonStyle.background_295999_text_white"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Send"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
-</androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.constraintlayout.widget.ConstraintLayout>

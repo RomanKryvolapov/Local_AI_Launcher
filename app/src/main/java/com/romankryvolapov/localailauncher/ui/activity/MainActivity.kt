@@ -27,6 +27,7 @@ import com.romankryvolapov.localailauncher.databinding.ActivityMainBinding
 import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logError
 import com.romankryvolapov.localailauncher.extensions.hideKeyboard
+import com.romankryvolapov.localailauncher.extensions.makeStatusBarTransparent
 import com.romankryvolapov.localailauncher.models.common.AlertDialogResult
 import com.romankryvolapov.localailauncher.models.common.BannerMessage
 import com.romankryvolapov.localailauncher.models.common.CardScanBottomSheetContent
@@ -97,6 +98,8 @@ class MainActivity : AppCompatActivity(),
                 100
             )
         }
+
+
         // TODO uncomment for disable screenshots
         //        window.setFlags(
         //            WindowManager.LayoutParams.FLAG_SECURE,

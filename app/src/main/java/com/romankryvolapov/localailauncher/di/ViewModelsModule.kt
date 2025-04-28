@@ -11,41 +11,29 @@ import com.romankryvolapov.localailauncher.ui.fragments.main.tabs.two.MainTabTwo
 import com.romankryvolapov.localailauncher.ui.fragments.start.flow.StartFlowViewModel
 import com.romankryvolapov.localailauncher.ui.fragments.start.splash.SplashViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val viewModelsModule = module {
 
+    // activity
 
-    // Common
+    viewModelOf(::MainViewModel)
 
-    viewModel<StartFlowViewModel> {
-        StartFlowViewModel()
-    }
+    // start
 
-    viewModel<SplashViewModel> {
-        SplashViewModel()
-    }
+    viewModelOf(::StartFlowViewModel)
+
+    viewModelOf(::SplashViewModel)
 
     // Main
 
-    viewModel<MainViewModel> {
-        MainViewModel()
-    }
+    viewModelOf(::MainTabsFlowViewModel)
 
-    viewModel<MainTabsFlowViewModel> {
-        MainTabsFlowViewModel()
-    }
+    viewModelOf(::MainTabOneViewModel)
 
-    viewModel<MainTabOneViewModel> {
-        MainTabOneViewModel()
-    }
+    viewModelOf(::MainTabThreeViewModel)
 
-    viewModel<MainTabThreeViewModel> {
-        MainTabThreeViewModel()
-    }
-
-    viewModel<MainTabTwoViewModel> {
-        MainTabTwoViewModel()
-    }
+    viewModelOf(::MainTabTwoViewModel)
 
 }
