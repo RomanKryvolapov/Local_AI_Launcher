@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="CustomToolbar">
+        <attr name="toolbar_title" format="string" />
+        <attr name="toolbar_navigation_icon" format="reference" />
+        <attr name="toolbar_settings_icon" format="reference" />
+        <attr name="toolbar_settings_text" format="string" />
+        <attr name="toolbar_background_color" format="color" />
+        <attr name="toolbar_elements_color" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="SettingsButtonView">
+        <attr name="settings_button_view_title" format="string" />
+        <attr name="settings_button_view_description" format="string" />
+        <attr name="settings_button_view_icon" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="SettingsButtonSecondaryView">
+        <attr name="settings_button_secondary_view_title" format="string" />
+        <attr name="settings_button_secondary_view_icon" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="KeyboardView">
+        <attr name="keyboard_view_numbers" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="CustomTextInputLayout">
+        <attr name="custom_text_input_radius" format="enum">
+            <enum name="default_radius_4" value="0" />
+            <enum name="medium_radius_6" value="1" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="ErrorView">
+        <attr name="error_view_title" format="string" />
+        <attr name="error_view_show_title" format="boolean" />
+        <attr name="error_view_description" format="string" />
+        <attr name="error_view_show_description" format="boolean" />
+        <attr name="error_view_icon" format="reference" />
+        <attr name="error_view_show_button_one" format="boolean" />
+        <attr name="error_view_show_button_two" format="boolean" />
+        <attr name="error_view_button_one_title" format="string" />
+        <attr name="error_view_button_two_title" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="LoaderView">
+        <attr name="loader_view_message" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="ButtonImageTwoFields">
+        <attr name="button_image_two_fields_title" format="string" />
+        <attr name="button_image_two_fields_description" format="string" />
+        <attr name="button_image_two_fields_icon" format="reference" />
+    </declare-styleable>
+
+</resources>

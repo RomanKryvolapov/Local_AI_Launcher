@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_main_tab_three"
+    app:startDestination="@id/mainTabThreeFragment">
+
+    <fragment
+        android:id="@+id/mainTabThreeFragment"
+        android:name="com.romankryvolapov.localailauncher.ui.fragments.main.tabs.three.MainTabThreeFragment"
+        android:label="mainTabThreeFragment"
+        tools:layout="@layout/fragment_main_tab_three" />
+
+</navigation>

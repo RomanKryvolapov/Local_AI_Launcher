@@ -1,0 +1,112 @@
+/**
+ * Created 2025 by Roman Kryvolapov
+ **/
+
+apply plugin: 'com.android.library'
+apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'org.jetbrains.kotlin.kapt'
+apply plugin: 'org.jetbrains.kotlin.plugin.parcelize'
+apply plugin: 'com.google.devtools.ksp'
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file("local.properties").newDataInputStream())
+
+android {
+
+    compileSdk 35
+    namespace 'com.romankryvolapov.localailauncher.data'
+
+    defaultConfig {
+        minSdk 24
+        targetSdk 35
+        consumerProguardFiles "consumer-rules.pro"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            jniDebuggable true
+            renderscriptDebuggable true
+        }
+        release {
+            minifyEnabled true
+            jniDebuggable false
+            renderscriptDebuggable false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        all {
+            buildConfigField 'String', 'DATABASE_NAME', "\"" + properties['database_name'] + "\""
+            buildConfigField 'String', 'ENCRYPTED_SHARED_PREFERENCES_NAME', "\"" + properties['encrypted_shared_preferences_name'] + "\""
+            buildConfigField 'String', 'PROPERTY_USER_PASSWORD', "\"" + properties['property_user_password'] + "\""
+            buildConfigField 'String', 'PROPERTY_KEY_PIN_CODE', "\"" + properties['property_key_pin_code'] + "\""
+            buildConfigField 'String', 'ANDROID_KEYSTORE', "\"" + properties['android_keystore'] + "\""
+            buildConfigField 'String', 'MASTER_SYMMETRIC_KEY_ALIAS', "\"" + properties['master_symmetric_key_alias'] + "\""
+            buildConfigField 'String', 'MASTER_BIOMETRIC_KEY_ALIAS', "\"" + properties['master_biometric_key_alias'] + "\""
+            buildConfigField 'String', 'MASTER_PREFERENCES_KEY_ALIAS', "\"" + properties['master_preferences_key_alias'] + "\""
+            buildConfigField 'String', 'PROPERTY_KEY_FIREBASE_TOKEN', "\"" + properties['property_key_firebase_token_eid'] + "\""
+        }
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
+
+    packaging {
+        resources.excludes.add("META-INF/**")
+    }
+
+}
+
+dependencies {
+    implementation project(':domain')
+
+    implementation 'androidx.core:core-ktx:1.16.0'
+    implementation 'com.google.code.gson:gson:2.13.1'
+
+    // database
+    implementation 'androidx.room:room-runtime:2.7.1'
+    annotationProcessor 'androidx.room:room-compiler:2.7.1'
+    ksp 'androidx.room:room-compiler:2.7.1'
+    implementation 'androidx.room:room-ktx:2.7.1'
+    implementation 'net.zetetic:android-database-sqlcipher:4.5.4'
+    implementation 'androidx.sqlite:sqlite:2.5.0'
+
+    // coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2'
+
+    //  di
+    implementation 'io.insert-koin:koin-android:4.0.4'
+
+    // security
+    implementation 'androidx.security:security-crypto:1.1.0-alpha07'
+    implementation 'androidx.security:security-app-authenticator:1.0.0-beta01'
+    implementation "androidx.security:security-identity-credential:1.0.0-alpha03"
+
+    // common
+    implementation 'javax.inject:javax.inject:1'
+    implementation 'org.mapstruct:mapstruct:1.6.3'
+    kapt 'org.mapstruct:mapstruct-processor:1.6.3'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
+    implementation 'org.simpleframework:simple-xml:2.7.1'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
+    implementation 'org.bouncycastle:bcpkix-jdk15on:1.70'
+
+    // tests
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'io.insert-koin:koin-test:4.0.4'
+    testImplementation "androidx.arch.core:core-testing:2.2.0"
+    testImplementation 'io.insert-koin:koin-test-junit4:4.0.4'
+    testImplementation 'org.mockito:mockito-core:5.17.0'
+    testImplementation 'org.mockito.kotlin:mockito-kotlin:5.4.0'
+
+}

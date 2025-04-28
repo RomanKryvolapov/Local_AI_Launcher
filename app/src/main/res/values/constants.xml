@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Animations speeds -->
+    <integer name="short_duration">100</integer>
+    <integer name="medium_duration">150</integer>
+    <integer name="default_duration">250</integer>
+
+    <!-- Filter -->
+    <string name="upper_alphabet_number">ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</string>
+    <string name="number">0123456789</string>
+
+</resources>

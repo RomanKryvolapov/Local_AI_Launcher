@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_activity"
+    app:startDestination="@id/startFlowFragment">
+
+    <fragment
+        android:id="@+id/startFlowFragment"
+        android:name="com.romankryvolapov.localailauncher.ui.fragments.start.flow.StartFlowFragment"
+        android:label="startFlowFragment"
+        tools:layout="@layout/fragment_flow_container" />
+
+    <action
+        android:id="@+id/toStartFlowFragment"
+        app:destination="@id/startFlowFragment" />
+
+    <fragment
+        android:id="@+id/authFlowFragment"
+        android:name="com.romankryvolapov.localailauncher.ui.fragments.auth.flow.AuthFlowFragment"
+        android:label="startFlowFragment"
+        tools:layout="@layout/fragment_flow_container" />
+
+    <action
+        android:id="@+id/toAuthFlowFragment"
+        app:destination="@id/authFlowFragment" />
+
+    <fragment
+        android:id="@+id/mainTabsFlowFragment"
+        android:name="com.romankryvolapov.localailauncher.ui.fragments.main.flow.MainTabsFlowFragment"
+        android:label="mainTabsFlowFragment"
+        tools:layout="@layout/fragment_main_tabs_flow_container">
+
+        <argument
+            android:name="openOnTab"
+            app:argType="integer"
+            app:nullable="false" />
+
+    </fragment>
+
+    <action
+        android:id="@+id/toMainTabsFlowFragment"
+        app:destination="@id/mainTabsFlowFragment" />
+
+    <dialog
+        android:id="@+id/permissionBottomSheetFragment"
+        android:name="com.romankryvolapov.localailauncher.ui.fragments.permissions.PermissionBottomSheetFragment"
+        android:label="permissionBottomSheetFragment"
+        tools:layout="@layout/bottom_sheet_permission">
+
+        <argument
+            android:name="permissionId"
+            app:argType="string"
+            app:nullable="false" />
+
+    </dialog>
+
+    <action
+        android:id="@+id/toPermissionBottomSheetFragment"
+        app:destination="@id/permissionBottomSheetFragment" />
+
+    <dialog
+        android:id="@+id/biometricErrorBottomSheetFragment"
+        android:name="com.romankryvolapov.localailauncher.ui.fragments.error.biometric.BiometricErrorBottomSheetFragment"
+        android:label="biometricErrorBottomSheetFragment"
+        tools:layout="@layout/bottom_sheet_biometric_error" />
+
+    <action
+        android:id="@+id/toBiometricErrorBottomSheetFragment"
+        app:destination="@id/biometricErrorBottomSheetFragment" />
+
+    <dialog
+        android:id="@+id/commonBottomSheetWithSearchFragment"
+        android:name="com.romankryvolapov.localailauncher.ui.fragments.common.search.CommonBottomSheetWithSearchFragment"
+        android:label="commonBottomSheetWithSearchFragment"
+        tools:layout="@layout/bottom_sheet_with_search">
+
+        <argument
+            android:name="model"
+            app:argType="com.romankryvolapov.localailauncher.models.list.CommonDialogWithSearchUi"
+            app:nullable="false" />
+
+    </dialog>
+
+    <action
+        android:id="@+id/toCommonBottomSheetWithSearchFragment"
+        app:destination="@id/commonBottomSheetWithSearchFragment" />
+
+</navigation>

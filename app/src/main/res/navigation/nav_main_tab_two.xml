@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_main_tab_two"
+    app:startDestination="@id/mainTabTwoFragment">
+
+    <fragment
+        android:id="@+id/mainTabTwoFragment"
+        android:name="com.romankryvolapov.localailauncher.ui.fragments.main.tabs.two.MainTabTwoFragment"
+        android:label="mainTabTwoFragment"
+        tools:layout="@layout/fragment_main_tab_two" />
+
+
+</navigation>

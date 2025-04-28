@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/color_black"
+    android:clipToPadding="false"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <TextView
+        android:id="@+id/btn1"
+        style="@style/PassCodeButtonStyle"
+        android:enabled="true"
+        android:text="1"
+        app:layout_constraintBottom_toTopOf="@+id/btn4"
+        app:layout_constraintEnd_toStartOf="@id/btn2"
+        app:layout_constraintHeight_max="@dimen/pass_code_button_max_size"
+        app:layout_constraintHeight_min="@dimen/pass_code_button_min_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_max="@dimen/pass_code_button_max_size"
+        app:layout_constraintWidth_min="@dimen/pass_code_button_min_size" />
+
+    <TextView
+        android:id="@+id/btn2"
+        style="@style/PassCodeButtonStyle"
+        android:enabled="true"
+        android:text="2"
+        app:layout_constraintBottom_toTopOf="@+id/btn5"
+        app:layout_constraintEnd_toStartOf="@id/btn3"
+        app:layout_constraintHeight_max="@dimen/pass_code_button_max_size"
+        app:layout_constraintHeight_min="@dimen/pass_code_button_min_size"
+        app:layout_constraintStart_toEndOf="@id/btn1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_max="@dimen/pass_code_button_max_size"
+        app:layout_constraintWidth_min="@dimen/pass_code_button_min_size" />
+
+    <TextView
+        android:id="@+id/btn3"
+        style="@style/PassCodeButtonStyle"
+        android:enabled="true"
+        android:text="3"
+        app:layout_constraintBottom_toTopOf="@+id/btn6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_max="@dimen/pass_code_button_max_size"
+        app:layout_constraintHeight_min="@dimen/pass_code_button_min_size"
+        app:layout_constraintStart_toEndOf="@id/btn2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_max="@dimen/pass_code_button_max_size"
+        app:layout_constraintWidth_min="@dimen/pass_code_button_min_size" />
+
+    <TextView
+        android:id="@+id/btn4"
+        style="@style/PassCodeButtonStyle"
+        android:enabled="true"
+        android:text="4"
+        app:layout_constraintBottom_toTopOf="@+id/btn7"
+        app:layout_constraintEnd_toStartOf="@id/btn5"
+        app:layout_constraintHeight_max="@dimen/pass_code_button_max_size"
+        app:layout_constraintHeight_min="@dimen/pass_code_button_min_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn1"
+        app:layout_constraintWidth_max="@dimen/pass_code_button_max_size"
+        app:layout_constraintWidth_min="@dimen/pass_code_button_min_size" />
+
+    <TextView
+        android:id="@+id/btn5"
+        style="@style/PassCodeButtonStyle"
+        android:enabled="true"
+        android:text="5"
+        app:layout_constraintBottom_toTopOf="@+id/btn8"
+        app:layout_constraintEnd_toStartOf="@id/btn6"
+        app:layout_constraintHeight_max="@dimen/pass_code_button_max_size"
+        app:layout_constraintHeight_min="@dimen/pass_code_button_min_size"
+        app:layout_constraintStart_toEndOf="@id/btn4"
+        app:layout_constraintTop_toBottomOf="@id/btn2"
+        app:layout_constraintWidth_max="@dimen/pass_code_button_max_size"
+        app:layout_constraintWidth_min="@dimen/pass_code_button_min_size" />
+
+    <TextView
+        android:id="@+id/btn6"
+        style="@style/PassCodeButtonStyle"
+        android:enabled="true"
+        android:text="6"
+        app:layout_constraintBottom_toTopOf="@+id/btn9"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_max="@dimen/pass_code_button_max_size"
+        app:layout_constraintHeight_min="@dimen/pass_code_button_min_size"
+        app:layout_constraintStart_toEndOf="@+id/btn5"
+        app:layout_constraintTop_toBottomOf="@+id/btn3"
+        app:layout_constraintWidth_max="@dimen/pass_code_button_max_size"
+        app:layout_constraintWidth_min="@dimen/pass_code_button_min_size" />
+
+    <TextView
+        android:id="@+id/btn7"
+        style="@style/PassCodeButtonStyle"
+        android:enabled="true"
+        android:text="7"
+        app:layout_constraintBottom_toTopOf="@+id/btnFingerprint"
+        app:layout_constraintEnd_toStartOf="@id/btn8"
+        app:layout_constraintHeight_max="@dimen/pass_code_button_max_size"
+        app:layout_constraintHeight_min="@dimen/pass_code_button_min_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn4"
+        app:layout_constraintWidth_max="@dimen/pass_code_button_max_size"
+        app:layout_constraintWidth_min="@dimen/pass_code_button_min_size" />
+
+    <TextView
+        android:id="@+id/btn8"
+        style="@style/PassCodeButtonStyle"
+        android:enabled="true"
+        android:text="8"
+        app:layout_constraintBottom_toTopOf="@+id/btn0"
+        app:layout_constraintEnd_toStartOf="@id/btn9"
+        app:layout_constraintHeight_max="@dimen/pass_code_button_max_size"
+        app:layout_constraintHeight_min="@dimen/pass_code_button_min_size"
+        app:layout_constraintStart_toEndOf="@id/btn7"
+        app:layout_constraintTop_toBottomOf="@id/btn5"
+        app:layout_constraintWidth_max="@dimen/pass_code_button_max_size"
+        app:layout_constraintWidth_min="@dimen/pass_code_button_min_size" />
+
+    <TextView
+        android:id="@+id/btn9"
+        style="@style/PassCodeButtonStyle"
+        android:enabled="true"
+        android:text="9"
+        app:layout_constraintBottom_toTopOf="@+id/btnDelete"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_max="@dimen/pass_code_button_max_size"
+        app:layout_constraintHeight_min="@dimen/pass_code_button_min_size"
+        app:layout_constraintStart_toEndOf="@+id/btn8"
+        app:layout_constraintTop_toBottomOf="@+id/btn6"
+        app:layout_constraintWidth_max="@dimen/pass_code_button_max_size"
+        app:layout_constraintWidth_min="@dimen/pass_code_button_min_size" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/btnFingerprint"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_fingerprint"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn0"
+        app:layout_constraintHeight_max="@dimen/pass_code_button_max_size"
+        app:layout_constraintHeight_min="@dimen/pass_code_button_min_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn7"
+        app:layout_constraintWidth_max="@dimen/pass_code_button_max_size"
+        app:layout_constraintWidth_min="@dimen/pass_code_button_min_size"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/btn0"
+        style="@style/PassCodeButtonStyle"
+        android:enabled="true"
+        android:text="0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btnDelete"
+        app:layout_constraintHeight_max="@dimen/pass_code_button_max_size"
+        app:layout_constraintHeight_min="@dimen/pass_code_button_min_size"
+        app:layout_constraintStart_toEndOf="@id/btnFingerprint"
+        app:layout_constraintTop_toBottomOf="@id/btn8"
+        app:layout_constraintWidth_max="@dimen/pass_code_button_max_size"
+        app:layout_constraintWidth_min="@dimen/pass_code_button_min_size" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/btnDelete"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_backspace"
+        android:textSize="@dimen/default_text_size"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_max="@dimen/pass_code_button_max_size"
+        app:layout_constraintHeight_min="@dimen/pass_code_button_min_size"
+        app:layout_constraintStart_toEndOf="@id/btn0"
+        app:layout_constraintTop_toBottomOf="@+id/btn9"
+        app:layout_constraintWidth_max="@dimen/pass_code_button_max_size"
+        app:layout_constraintWidth_min="@dimen/pass_code_button_min_size"
+        tools:visibility="visible" />
+
+</merge>

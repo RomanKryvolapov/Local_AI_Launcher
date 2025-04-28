@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <selector>
+            <item android:state_focused="true">
+                <shape>
+                    <corners android:radius="@dimen/default_semi_corners_radius" />
+                    <solid android:color="@color/color_C6D9F0"/>
+                </shape>
+            </item>
+
+            <item>
+                <shape>
+                    <corners android:radius="@dimen/default_semi_corners_radius" />
+                    <solid android:color="@color/color_C6D9F0"/>
+                </shape>
+            </item>
+        </selector>
+    </item>
+</layer-list>

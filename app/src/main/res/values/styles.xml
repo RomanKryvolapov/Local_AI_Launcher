@@ -1,0 +1,1071 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="android:statusBarColor">@color/color_295999</item>
+        <item name="android:navigationBarColor">@color/color_1C3050</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="windowSplashScreenBackground">@color/color_white</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo</item>
+        <item name="postSplashScreenTheme">@style/Theme.App</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="29">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+
+    <style name="Theme.App" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!--        <item name="android:background">@color/color_white</item>-->
+        <item name="android:statusBarColor">@color/color_295999</item>
+        <item name="android:navigationBarColor">@color/color_1C3050</item>
+        <item name="colorPrimary">@color/color_295999</item>
+        <item name="colorPrimaryVariant">@color/color_295999</item>
+        <item name="colorOnPrimary">@color/color_white</item>
+        <item name="colorPrimaryDark">@color/color_295999</item>
+        <item name="colorSecondary">@color/color_295999</item>
+        <item name="colorSecondaryVariant">@color/color_295999</item>
+        <item name="colorOnSecondary">@color/color_295999</item>
+        <item name="colorAccent">@color/color_295999</item>
+        <item name="android:colorEdgeEffect">@color/color_295999</item>
+        <item name="android:windowBackground">@color/color_white</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="29">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="CustomListPopupWindowStyle" parent="Widget.AppCompat.ListPopupWindow">
+        <item name="android:popupBackground">@drawable/bg_popup_window_menu</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="BottomNavigationViewStyle" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="android:background">@color/color_295999</item>
+        <item name="itemRippleColor">@color/color_ripple</item>
+        <item name="itemTextAppearanceActive">@style/TextStyle.14sp.Regular.1C3050</item>
+        <item name="itemTextAppearanceInactive">@style/TextStyle.14sp.Regular.1C3050</item>
+        <item name="itemTextColor">@color/selector_bottom_navigation</item>
+        <item name="labelVisibilityMode">labeled</item>
+        <item name="itemIconTint">@color/selector_bottom_navigation</item>
+    </style>
+
+    <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bg_bottom_sheet_base</item>
+        <item name="behavior_peekHeight">300dp</item>
+    </style>
+
+    <style name="AppBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+        <item name="colorAccent">@color/color_295999</item>
+    </style>
+
+    <style name="BannerMessageStyle">
+        <item name="android:windowEnterAnimation">@anim/banner_slide_down</item>
+        <item name="android:windowExitAnimation">@anim/banner_slide_up</item>
+    </style>
+
+    <!-- Spinner -->
+
+    <style name="SpinnerStyle" parent="TextStyle.16sp.Regular.0C53B2">
+        <item name="android:fontFamily">@font/sofia_sans_regular</item>
+        <item name="android:textColor">@color/color_1C3050</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">@dimen/margin_8</item>
+        <item name="android:paddingBottom">@dimen/margin_8</item>
+        <item name="android:paddingStart">@dimen/margin_8</item>
+        <item name="android:paddingEnd">@dimen/margin_8</item>
+        <item name="android:background">@drawable/bg_text</item>
+    </style>
+
+    <style name="SpinnerNotEditableStyle" parent="SpinnerStyle">
+        <item name="android:background">@drawable/bg_text_not_editable</item>
+    </style>
+
+    <!-- Buttons -->
+
+    <style name="ButtonStyle">
+        <item name="android:paddingTop">@dimen/margin_5</item>
+        <item name="android:paddingBottom">@dimen/margin_5</item>
+        <item name="android:paddingStart">@dimen/margin_18</item>
+        <item name="android:paddingEnd">@dimen/margin_18</item>
+        <item name="android:layout_gravity">bottom</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:elevation">0dp</item>
+        <item name="cornerRadius">4dp</item>
+    </style>
+
+    <style name="ButtonStyle.background_1C3050_text_white">
+        <item name="android:textColor">@color/color_white</item>
+        <item name="drawableTint">@color/color_white</item>
+        <item name="android:background">@color/color_1C3050</item>
+    </style>
+
+    <style name="ButtonStyle.background_295999_text_white">
+        <item name="android:textColor">@color/color_white</item>
+        <item name="drawableTint">@color/color_white</item>
+        <item name="android:background">@drawable/bg_ripple_button_background_295999
+        </item>
+    </style>
+
+    <style name="ButtonStyle.background_018930_text_white">
+        <item name="android:textColor">@color/color_white</item>
+        <item name="drawableTint">@color/color_white</item>
+        <item name="android:background">@color/color_018930</item>
+    </style>
+
+    <style name="ButtonStyle.background_color_BF1212_text_white">
+        <item name="android:textColor">@color/color_white</item>
+        <item name="drawableTint">@color/color_white</item>
+        <item name="android:background">@drawable/bg_ripple_button_background_bf1212</item>
+    </style>
+
+    <style name="ButtonStyle.background_transparent_text_0C53B2">
+        <item name="android:textColor">@color/color_0C53B2</item>
+        <item name="drawableTint">@color/color_0C53B2</item>
+        <item name="android:background">@drawable/bg_ripple_button_background_light_gray</item>
+    </style>
+
+    <style name="ButtonStyle.background_transparent_text_0C53B2_stroke">
+        <item name="android:textColor">@color/color_0C53B2</item>
+        <item name="drawableTint">@color/color_0C53B2</item>
+        <item name="android:background">@drawable/bg_ripple_button_background_transparent</item>
+    </style>
+
+    <style name="ButtonStyle.background_transparent_text_white">
+        <item name="android:textColor">@color/color_white</item>
+        <item name="drawableTint">@color/color_white</item>
+        <item name="android:background">@color/color_transparent</item>
+    </style>
+
+
+    <style name="ButtonStyle.background_blue_text_white">
+        <item name="android:textColor">@color/color_white</item>
+        <item name="drawableTint">@color/color_white</item>
+        <item name="android:background">@color/color_0C53B2</item>
+    </style>
+
+
+    <style name="ButtonStyle.background_green_text_white">
+        <item name="android:textColor">@color/color_white</item>
+        <item name="drawableTint">@color/color_white</item>
+        <item name="android:background">@color/color_018930</item>
+    </style>
+
+    <style name="ButtonStyle.background_red_text_white">
+        <item name="android:textColor">@color/color_white</item>
+        <item name="drawableTint">@color/color_white</item>
+        <item name="android:background">@color/color_BF1212</item>
+    </style>
+
+    <style name="ButtonStyle.background_gray_text_white">
+        <item name="android:textColor">@color/color_white</item>
+        <item name="drawableTint">@color/color_white</item>
+        <item name="android:background">@color/color_gray_5</item>
+    </style>
+
+    <!-- Floating button -->
+
+    <style name="FloatingButton">
+        <item name="tint">@color/color_white</item>
+    </style>
+
+    <style name="FloatingButton.018930">
+        <item name="android:backgroundTint">@color/color_018930</item>
+    </style>
+
+    <style name="FloatingButton.F59E0B">
+        <item name="android:backgroundTint">@color/color_F59E0B</item>
+    </style>
+
+    <!-- CheckBox -->
+
+    <style name="CheckBoxStyle" parent="Base.Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:textColor">@color/color_1C3050</item>
+        <!--        <item name="buttonTint">@drawable/bg_check_box</item>-->
+    </style>
+
+    <!-- Tab layout -->
+
+    <style name="AppTabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabGravity">fill</item>
+        <item name="tabIndicator">@null</item>
+        <item name="tabMaxWidth">0dp</item>
+        <item name="tabIndicatorHeight">4dp</item>
+        <item name="tabMode">fixed</item>
+        <item name="tabIndicatorFullWidth">true</item>
+        <item name="android:tabStripEnabled">true</item>
+        <item name="tabRippleColor">@android:color/transparent</item>
+        <item name="tabTextColor">@color/selector_tab_text_color</item>
+        <item name="tabTextAppearance">@style/AppTabTextAppearance</item>
+    </style>
+
+    <style name="AppTabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/selector_tab_text_color</item>
+        <item name="fontFamily">@font/inter_regular</item>
+        <item name="fontWeight">400</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <!-- Text -->
+
+    <style name="TextStyle">
+        <item name="android:ellipsize">end</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
+        <!--        <item name="android:lineSpacingExtra">8dp</item>-->
+    </style>
+
+    <!-- Text 12sp -->
+
+    <style name="TextStyle.12sp">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="TextStyle.12sp.Regular">
+        <item name="android:fontFamily">@font/sofia_sans_regular</item>
+    </style>
+
+    <style name="TextStyle.12sp.Regular.1C3050">
+        <item name="android:textColor">@color/color_1C3050</item>
+    </style>
+
+    <style name="TextStyle.12sp.Regular.4A6484">
+        <item name="android:textColor">@color/color_4A6484</item>
+    </style>
+
+    <style name="TextStyle.12sp.Regular.0C53B2">
+        <item name="android:textColor">@color/color_0C53B2</item>
+    </style>
+
+    <style name="TextStyle.12sp.Regular.EFF6FF">
+        <item name="android:textColor">@color/color_EFF6FF</item>
+    </style>
+
+    <style name="TextStyle.12sp.Regular.BF1212">
+        <item name="android:textColor">@color/color_BF1212</item>
+    </style>
+
+    <style name="TextStyle.12sp.Regular.295999">
+        <item name="android:textColor">@color/color_295999</item>
+    </style>
+
+    <style name="TextStyle.12sp.Regular.018930">
+        <item name="android:textColor">@color/color_018930</item>
+    </style>
+
+    <style name="TextStyle.12sp.SemiBold">
+        <item name="android:fontFamily">@font/sofia_sans_semi_bold</item>
+    </style>
+
+    <style name="TextStyle.12sp.SemiBold.1C3050">
+        <item name="android:textColor">@color/color_1C3050</item>
+    </style>
+
+    <style name="TextStyle.12sp.SemiBold.4A6484">
+        <item name="android:textColor">@color/color_4A6484</item>
+    </style>
+
+    <style name="TextStyle.12sp.SemiBold.0C53B2">
+        <item name="android:textColor">@color/color_0C53B2</item>
+    </style>
+
+    <style name="TextStyle.12sp.SemiBold.EFF6FF">
+        <item name="android:textColor">@color/color_EFF6FF</item>
+    </style>
+
+    <style name="TextStyle.12sp.SemiBold.BF1212">
+        <item name="android:textColor">@color/color_BF1212</item>
+    </style>
+
+    <style name="TextStyle.12sp.SemiBold.295999">
+        <item name="android:textColor">@color/color_295999</item>
+    </style>
+
+    <style name="TextStyle.12sp.SemiBold.018930">
+        <item name="android:textColor">@color/color_018930</item>
+    </style>
+
+    <style name="TextStyle.12sp.Bold">
+        <item name="android:fontFamily">@font/sofia_sans_bold</item>
+    </style>
+
+    <style name="TextStyle.12sp.Bold.1C3050">
+        <item name="android:textColor">@color/color_1C3050</item>
+    </style>
+
+    <style name="TextStyle.12sp.Bold.4A6484">
+        <item name="android:textColor">@color/color_4A6484</item>
+    </style>
+
+    <style name="TextStyle.12sp.Bold.0C53B2">
+        <item name="android:textColor">@color/color_0C53B2</item>
+    </style>
+
+    <style name="TextStyle.12sp.Bold.EFF6FF">
+        <item name="android:textColor">@color/color_EFF6FF</item>
+    </style>
+
+    <style name="TextStyle.12sp.Bold.BF1212">
+        <item name="android:textColor">@color/color_BF1212</item>
+    </style>
+
+    <style name="TextStyle.12sp.Bold.295999">
+        <item name="android:textColor">@color/color_295999</item>
+    </style>
+
+    <style name="TextStyle.12sp.Bold.018930">
+        <item name="android:textColor">@color/color_018930</item>
+    </style>
+
+    <!-- Text 14sp -->
+
+    <style name="TextStyle.14sp">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="TextStyle.14sp.Regular">
+        <item name="android:fontFamily">@font/sofia_sans_regular</item>
+    </style>
+
+    <style name="TextStyle.14sp.Regular.1C3050">
+        <item name="android:textColor">@color/color_1C3050</item>
+    </style>
+
+    <style name="TextStyle.14sp.Regular.4A6484">
+        <item name="android:textColor">@color/color_4A6484</item>
+    </style>
+
+    <style name="TextStyle.14sp.Regular.0C53B2">
+        <item name="android:textColor">@color/color_0C53B2</item>
+    </style>
+
+    <style name="TextStyle.14sp.Regular.EFF6FF">
+        <item name="android:textColor">@color/color_EFF6FF</item>
+    </style>
+
+    <style name="TextStyle.14sp.Regular.white">
+        <item name="android:textColor">@color/color_white</item>
+    </style>
+
+    <style name="TextStyle.14sp.Regular.BF1212">
+        <item name="android:textColor">@color/color_BF1212</item>
+    </style>
+
+    <style name="TextStyle.14sp.Regular.94A3B8">
+        <item name="android:textColor">@color/color_94A3B8</item>
+    </style>
+
+    <style name="TextStyle.14sp.Regular.295999">
+        <item name="android:textColor">@color/color_295999</item>
+    </style>
+
+    <style name="TextStyle.14sp.Regular.018930">
+        <item name="android:textColor">@color/color_018930</item>
+    </style>
+
+    <style name="TextStyle.14sp.SemiBold">
+        <item name="android:fontFamily">@font/sofia_sans_semi_bold</item>
+    </style>
+
+    <style name="TextStyle.14sp.SemiBold.1C3050">
+        <item name="android:textColor">@color/color_1C3050</item>
+    </style>
+
+    <style name="TextStyle.14sp.SemiBold.4A6484">
+        <item name="android:textColor">@color/color_4A6484</item>
+    </style>
+
+    <style name="TextStyle.14sp.SemiBold.0C53B2">
+        <item name="android:textColor">@color/color_0C53B2</item>
+    </style>
+
+    <style name="TextStyle.14sp.SemiBold.EFF6FF">
+        <item name="android:textColor">@color/color_EFF6FF</item>
+    </style>
+
+    <style name="TextStyle.14sp.SemiBold.BF1212">
+        <item name="android:textColor">@color/color_BF1212</item>
+    </style>
+
+    <style name="TextStyle.14sp.SemiBold.295999">
+        <item name="android:textColor">@color/color_295999</item>
+    </style>
+
+    <style name="TextStyle.14sp.SemiBold.018930">
+        <item name="android:textColor">@color/color_018930</item>
+    </style>
+
+    <style name="TextStyle.14sp.Bold">
+        <item name="android:fontFamily">@font/sofia_sans_bold</item>
+    </style>
+
+    <style name="TextStyle.14sp.Bold.1C3050">
+        <item name="android:textColor">@color/color_1C3050</item>
+    </style>
+
+    <style name="TextStyle.14sp.Bold.4A6484">
+        <item name="android:textColor">@color/color_4A6484</item>
+    </style>
+
+    <style name="TextStyle.14sp.Bold.0C53B2">
+        <item name="android:textColor">@color/color_0C53B2</item>
+    </style>
+
+    <style name="TextStyle.14sp.Bold.EFF6FF">
+        <item name="android:textColor">@color/color_EFF6FF</item>
+    </style>
+
+    <style name="TextStyle.14sp.Bold.BF1212">
+        <item name="android:textColor">@color/color_BF1212</item>
+    </style>
+
+    <style name="TextStyle.14sp.Bold.295999">
+        <item name="android:textColor">@color/color_295999</item>
+    </style>
+
+    <style name="TextStyle.14sp.Bold.018930">
+        <item name="android:textColor">@color/color_018930</item>
+    </style>
+
+    <!-- Text 16sp -->
+
+    <style name="TextStyle.16sp">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="TextStyle.16sp.Regular">
+        <item name="android:fontFamily">@font/sofia_sans_regular</item>
+    </style>
+
+    <style name="TextStyle.16sp.Regular.1C3050">
+        <item name="android:textColor">@color/color_1C3050</item>
+    </style>
+
+    <style name="TextStyle.16sp.Regular.4A6484">
+        <item name="android:textColor">@color/color_4A6484</item>
+    </style>
+
+    <style name="TextStyle.16sp.Regular.0C53B2">
+        <item name="android:textColor">@color/color_0C53B2</item>
+    </style>
+
+    <style name="TextStyle.16sp.Regular.EFF6FF">
+        <item name="android:textColor">@color/color_EFF6FF</item>
+    </style>
+
+    <style name="TextStyle.16sp.Regular.BF1212">
+        <item name="android:textColor">@color/color_BF1212</item>
+    </style>
+
+    <style name="TextStyle.16sp.Regular.295999">
+        <item name="android:textColor">@color/color_295999</item>
+    </style>
+
+    <style name="TextStyle.16sp.Regular.018930">
+        <item name="android:textColor">@color/color_018930</item>
+    </style>
+
+    <style name="TextStyle.16sp.SemiBold">
+        <item name="android:fontFamily">@font/sofia_sans_semi_bold</item>
+    </style>
+
+    <style name="TextStyle.16sp.SemiBold.1C3050">
+        <item name="android:textColor">@color/color_1C3050</item>
+    </style>
+
+    <style name="TextStyle.16sp.SemiBold.4A6484">
+        <item name="android:textColor">@color/color_4A6484</item>
+    </style>
+
+    <style name="TextStyle.16sp.SemiBold.0C53B2">
+        <item name="android:textColor">@color/color_0C53B2</item>
+    </style>
+
+    <style name="TextStyle.16sp.SemiBold.EFF6FF">
+        <item name="android:textColor">@color/color_EFF6FF</item>
+    </style>
+
+    <style name="TextStyle.16sp.SemiBold.BF1212">
+        <item name="android:textColor">@color/color_BF1212</item>
+    </style>
+
+    <style name="TextStyle.16sp.SemiBold.295999">
+        <item name="android:textColor">@color/color_295999</item>
+    </style>
+
+    <style name="TextStyle.16sp.SemiBold.018930">
+        <item name="android:textColor">@color/color_018930</item>
+    </style>
+
+    <style name="TextStyle.16sp.Bold">
+        <item name="android:fontFamily">@font/sofia_sans_bold</item>
+    </style>
+
+    <style name="TextStyle.16sp.Bold.1C3050">
+        <item name="android:textColor">@color/color_1C3050</item>
+    </style>
+
+    <style name="TextStyle.16sp.Bold.4A6484">
+        <item name="android:textColor">@color/color_4A6484</item>
+    </style>
+
+    <style name="TextStyle.16sp.Bold.0C53B2">
+        <item name="android:textColor">@color/color_0C53B2</item>
+    </style>
+
+    <style name="TextStyle.16sp.Bold.EFF6FF">
+        <item name="android:textColor">@color/color_EFF6FF</item>
+    </style>
+
+    <style name="TextStyle.16sp.Bold.BF1212">
+        <item name="android:textColor">@color/color_BF1212</item>
+    </style>
+
+    <style name="TextStyle.16sp.Bold.295999">
+        <item name="android:textColor">@color/color_295999</item>
+    </style>
+
+    <style name="TextStyle.16sp.Bold.018930">
+        <item name="android:textColor">@color/color_018930</item>
+    </style>
+
+    <!-- Text 18sp -->
+
+    <style name="TextStyle.18sp">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="TextStyle.18sp.Regular">
+        <item name="android:fontFamily">@font/sofia_sans_regular</item>
+    </style>
+
+    <style name="TextStyle.18sp.Regular.1C3050">
+        <item name="android:textColor">@color/color_1C3050</item>
+    </style>
+
+    <style name="TextStyle.18sp.Regular.4A6484">
+        <item name="android:textColor">@color/color_4A6484</item>
+    </style>
+
+    <style name="TextStyle.18sp.Regular.0C53B2">
+        <item name="android:textColor">@color/color_0C53B2</item>
+    </style>
+
+    <style name="TextStyle.18sp.Regular.EFF6FF">
+        <item name="android:textColor">@color/color_EFF6FF</item>
+    </style>
+
+    <style name="TextStyle.18sp.Regular.BF1212">
+        <item name="android:textColor">@color/color_BF1212</item>
+    </style>
+
+    <style name="TextStyle.18sp.Regular.295999">
+        <item name="android:textColor">@color/color_295999</item>
+    </style>
+
+    <style name="TextStyle.18sp.Regular.018930">
+        <item name="android:textColor">@color/color_018930</item>
+    </style>
+
+    <style name="TextStyle.18sp.SemiBold">
+        <item name="android:fontFamily">@font/sofia_sans_semi_bold</item>
+    </style>
+
+    <style name="TextStyle.18sp.SemiBold.1C3050">
+        <item name="android:textColor">@color/color_1C3050</item>
+    </style>
+
+    <style name="TextStyle.18sp.SemiBold.4A6484">
+        <item name="android:textColor">@color/color_4A6484</item>
+    </style>
+
+    <style name="TextStyle.18sp.SemiBold.0C53B2">
+        <item name="android:textColor">@color/color_0C53B2</item>
+    </style>
+
+    <style name="TextStyle.18sp.SemiBold.EFF6FF">
+        <item name="android:textColor">@color/color_EFF6FF</item>
+    </style>
+
+    <style name="TextStyle.18sp.SemiBold.BF1212">
+        <item name="android:textColor">@color/color_BF1212</item>
+    </style>
+
+    <style name="TextStyle.18sp.SemiBold.295999">
+        <item name="android:textColor">@color/color_295999</item>
+    </style>
+
+    <style name="TextStyle.18sp.SemiBold.018930">
+        <item name="android:textColor">@color/color_018930</item>
+    </style>
+
+    <style name="TextStyle.18sp.Bold">
+        <item name="android:fontFamily">@font/sofia_sans_bold</item>
+    </style>
+
+    <style name="TextStyle.18sp.Bold.1C3050">
+        <item name="android:textColor">@color/color_1C3050</item>
+    </style>
+
+    <style name="TextStyle.18sp.Bold.4A6484">
+        <item name="android:textColor">@color/color_4A6484</item>
+    </style>
+
+    <style name="TextStyle.18sp.Bold.0C53B2">
+        <item name="android:textColor">@color/color_0C53B2</item>
+    </style>
+
+    <style name="TextStyle.18sp.Bold.EFF6FF">
+        <item name="android:textColor">@color/color_EFF6FF</item>
+    </style>
+
+    <style name="TextStyle.18sp.Bold.BF1212">
+        <item name="android:textColor">@color/color_BF1212</item>
+    </style>
+
+    <style name="TextStyle.18sp.Bold.295999">
+        <item name="android:textColor">@color/color_295999</item>
+    </style>
+
+    <style name="TextStyle.18sp.Bold.018930">
+        <item name="android:textColor">@color/color_018930</item>
+    </style>
+
+    <!-- Text 20sp -->
+
+    <style name="TextStyle.20sp">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="TextStyle.20sp.Regular">
+        <item name="android:fontFamily">@font/sofia_sans_regular</item>
+    </style>
+
+    <style name="TextStyle.20sp.Regular.1C3050">
+        <item name="android:textColor">@color/color_1C3050</item>
+    </style>
+
+    <style name="TextStyle.20sp.Regular.4A6484">
+        <item name="android:textColor">@color/color_4A6484</item>
+    </style>
+
+    <style name="TextStyle.20sp.Regular.0C53B2">
+        <item name="android:textColor">@color/color_0C53B2</item>
+    </style>
+
+    <style name="TextStyle.20sp.Regular.EFF6FF">
+        <item name="android:textColor">@color/color_EFF6FF</item>
+    </style>
+
+    <style name="TextStyle.20sp.Regular.BF1212">
+        <item name="android:textColor">@color/color_BF1212</item>
+    </style>
+
+    <style name="TextStyle.20sp.Regular.295999">
+        <item name="android:textColor">@color/color_295999</item>
+    </style>
+
+    <style name="TextStyle.20sp.Regular.018930">
+        <item name="android:textColor">@color/color_018930</item>
+    </style>
+
+    <style name="TextStyle.20sp.SemiBold">
+        <item name="android:fontFamily">@font/sofia_sans_semi_bold</item>
+    </style>
+
+    <style name="TextStyle.20sp.SemiBold.1C3050">
+        <item name="android:textColor">@color/color_1C3050</item>
+    </style>
+
+    <style name="TextStyle.20sp.SemiBold.4A6484">
+        <item name="android:textColor">@color/color_4A6484</item>
+    </style>
+
+    <style name="TextStyle.20sp.SemiBold.0C53B2">
+        <item name="android:textColor">@color/color_0C53B2</item>
+    </style>
+
+    <style name="TextStyle.20sp.SemiBold.EFF6FF">
+        <item name="android:textColor">@color/color_EFF6FF</item>
+    </style>
+
+    <style name="TextStyle.20sp.SemiBold.BF1212">
+        <item name="android:textColor">@color/color_BF1212</item>
+    </style>
+
+    <style name="TextStyle.20sp.SemiBold.295999">
+        <item name="android:textColor">@color/color_295999</item>
+    </style>
+
+    <style name="TextStyle.20sp.SemiBold.018930">
+        <item name="android:textColor">@color/color_018930</item>
+    </style>
+
+    <style name="TextStyle.20sp.Bold">
+        <item name="android:fontFamily">@font/sofia_sans_bold</item>
+    </style>
+
+    <style name="TextStyle.20sp.Bold.1C3050">
+        <item name="android:textColor">@color/color_1C3050</item>
+    </style>
+
+    <style name="TextStyle.20sp.Bold.4A6484">
+        <item name="android:textColor">@color/color_4A6484</item>
+    </style>
+
+    <style name="TextStyle.20sp.Bold.0C53B2">
+        <item name="android:textColor">@color/color_0C53B2</item>
+    </style>
+
+    <style name="TextStyle.20sp.Bold.EFF6FF">
+        <item name="android:textColor">@color/color_EFF6FF</item>
+    </style>
+
+    <style name="TextStyle.20sp.Bold.BF1212">
+        <item name="android:textColor">@color/color_BF1212</item>
+    </style>
+
+    <style name="TextStyle.20sp.Bold.295999">
+        <item name="android:textColor">@color/color_295999</item>
+    </style>
+
+    <style name="TextStyle.20sp.Bold.018930">
+        <item name="android:textColor">@color/color_018930</item>
+    </style>
+
+    <!-- Text 24sp -->
+
+    <style name="TextStyle.24sp">
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="TextStyle.24sp.Regular">
+        <item name="android:fontFamily">@font/sofia_sans_regular</item>
+    </style>
+
+    <style name="TextStyle.24sp.Regular.1C3050">
+        <item name="android:textColor">@color/color_1C3050</item>
+    </style>
+
+    <style name="TextStyle.24sp.Regular.4A6484">
+        <item name="android:textColor">@color/color_4A6484</item>
+    </style>
+
+    <style name="TextStyle.24sp.Regular.0C53B2">
+        <item name="android:textColor">@color/color_0C53B2</item>
+    </style>
+
+    <style name="TextStyle.24sp.Regular.EFF6FF">
+        <item name="android:textColor">@color/color_EFF6FF</item>
+    </style>
+
+    <style name="TextStyle.24sp.Regular.BF1212">
+        <item name="android:textColor">@color/color_BF1212</item>
+    </style>
+
+    <style name="TextStyle.24sp.Regular.295999">
+        <item name="android:textColor">@color/color_295999</item>
+    </style>
+
+    <style name="TextStyle.24sp.Regular.018930">
+        <item name="android:textColor">@color/color_018930</item>
+    </style>
+
+    <style name="TextStyle.24sp.SemiBold">
+        <item name="android:fontFamily">@font/sofia_sans_semi_bold</item>
+    </style>
+
+    <style name="TextStyle.24sp.SemiBold.1C3050">
+        <item name="android:textColor">@color/color_1C3050</item>
+    </style>
+
+    <style name="TextStyle.24sp.SemiBold.4A6484">
+        <item name="android:textColor">@color/color_4A6484</item>
+    </style>
+
+    <style name="TextStyle.24sp.SemiBold.0C53B2">
+        <item name="android:textColor">@color/color_0C53B2</item>
+    </style>
+
+    <style name="TextStyle.24sp.SemiBold.EFF6FF">
+        <item name="android:textColor">@color/color_EFF6FF</item>
+    </style>
+
+    <style name="TextStyle.24sp.SemiBold.BF1212">
+        <item name="android:textColor">@color/color_BF1212</item>
+    </style>
+
+    <style name="TextStyle.24sp.SemiBold.295999">
+        <item name="android:textColor">@color/color_295999</item>
+    </style>
+
+    <style name="TextStyle.24sp.SemiBold.018930">
+        <item name="android:textColor">@color/color_018930</item>
+    </style>
+
+    <style name="TextStyle.24sp.Bold">
+        <item name="android:fontFamily">@font/sofia_sans_bold</item>
+    </style>
+
+    <style name="TextStyle.24sp.Bold.1C3050">
+        <item name="android:textColor">@color/color_1C3050</item>
+    </style>
+
+    <style name="TextStyle.24sp.Bold.4A6484">
+        <item name="android:textColor">@color/color_4A6484</item>
+    </style>
+
+    <style name="TextStyle.24sp.Bold.0C53B2">
+        <item name="android:textColor">@color/color_0C53B2</item>
+    </style>
+
+    <style name="TextStyle.24sp.Bold.EFF6FF">
+        <item name="android:textColor">@color/color_EFF6FF</item>
+    </style>
+
+    <style name="TextStyle.24sp.Bold.BF1212">
+        <item name="android:textColor">@color/color_BF1212</item>
+    </style>
+
+    <style name="TextStyle.24sp.Bold.295999">
+        <item name="android:textColor">@color/color_295999</item>
+    </style>
+
+    <style name="TextStyle.24sp.Bold.018930">
+        <item name="android:textColor">@color/color_018930</item>
+    </style>
+
+    <!-- Text 32sp -->
+
+    <style name="TextStyle.32sp">
+        <item name="android:textSize">32sp</item>
+    </style>
+
+    <style name="TextStyle.32sp.Regular">
+        <item name="android:fontFamily">@font/sofia_sans_regular</item>
+    </style>
+
+    <style name="TextStyle.32sp.Regular.1C3050">
+        <item name="android:textColor">@color/color_1C3050</item>
+    </style>
+
+    <style name="TextStyle.32sp.Regular.4A6484">
+        <item name="android:textColor">@color/color_4A6484</item>
+    </style>
+
+    <style name="TextStyle.32sp.Regular.0C53B2">
+        <item name="android:textColor">@color/color_0C53B2</item>
+    </style>
+
+    <style name="TextStyle.32sp.Regular.EFF6FF">
+        <item name="android:textColor">@color/color_EFF6FF</item>
+    </style>
+
+    <style name="TextStyle.32sp.Regular.BF1212">
+        <item name="android:textColor">@color/color_BF1212</item>
+    </style>
+
+    <style name="TextStyle.32sp.Regular.295999">
+        <item name="android:textColor">@color/color_295999</item>
+    </style>
+
+    <style name="TextStyle.32sp.Regular.018930">
+        <item name="android:textColor">@color/color_018930</item>
+    </style>
+
+    <style name="TextStyle.32sp.Regular.FFFFFF">
+        <item name="android:textColor">@color/color_white</item>
+    </style>
+
+    <style name="TextStyle.32sp.SemiBold">
+        <item name="android:fontFamily">@font/sofia_sans_semi_bold</item>
+    </style>
+
+    <style name="TextStyle.32sp.SemiBold.1C3050">
+        <item name="android:textColor">@color/color_1C3050</item>
+    </style>
+
+    <style name="TextStyle.32sp.SemiBold.4A6484">
+        <item name="android:textColor">@color/color_4A6484</item>
+    </style>
+
+    <style name="TextStyle.32sp.SemiBold.0C53B2">
+        <item name="android:textColor">@color/color_0C53B2</item>
+    </style>
+
+    <style name="TextStyle.32sp.SemiBold.EFF6FF">
+        <item name="android:textColor">@color/color_EFF6FF</item>
+    </style>
+
+    <style name="TextStyle.32sp.SemiBold.BF1212">
+        <item name="android:textColor">@color/color_BF1212</item>
+    </style>
+
+    <style name="TextStyle.32sp.SemiBold.295999">
+        <item name="android:textColor">@color/color_295999</item>
+    </style>
+
+    <style name="TextStyle.32sp.SemiBold.018930">
+        <item name="android:textColor">@color/color_018930</item>
+    </style>
+
+    <style name="TextStyle.32sp.Bold">
+        <item name="android:fontFamily">@font/sofia_sans_bold</item>
+    </style>
+
+    <style name="TextStyle.32sp.Bold.1C3050">
+        <item name="android:textColor">@color/color_1C3050</item>
+    </style>
+
+    <style name="TextStyle.32sp.Bold.4A6484">
+        <item name="android:textColor">@color/color_4A6484</item>
+    </style>
+
+    <style name="TextStyle.32sp.Bold.0C53B2">
+        <item name="android:textColor">@color/color_0C53B2</item>
+    </style>
+
+    <style name="TextStyle.32sp.Bold.EFF6FF">
+        <item name="android:textColor">@color/color_EFF6FF</item>
+    </style>
+
+    <style name="TextStyle.32sp.Bold.BF1212">
+        <item name="android:textColor">@color/color_BF1212</item>
+    </style>
+
+    <style name="TextStyle.32sp.Bold.295999">
+        <item name="android:textColor">@color/color_295999</item>
+    </style>
+
+    <style name="TextStyle.32sp.Bold.018930">
+        <item name="android:textColor">@color/color_018930</item>
+    </style>
+
+    <!-- Text inputs -->
+    <style name="DefaultTextInputLayoutStyle" parent="ThemeOverlay.MaterialComponents.TextInputEditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/margin_16</item>
+        <item name="android:layout_marginEnd">@dimen/margin_16</item>
+        <item name="android:layout_marginTop">@dimen/margin_16</item>
+        <item name="boxStrokeColor">@android:color/transparent</item>
+        <item name="boxBackgroundMode">filled</item>
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
+        <item name="boxBackgroundColor">@android:color/transparent</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/default_small_corners_radius</item>
+        <item name="boxCornerRadiusTopStart">@dimen/default_small_corners_radius</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/default_small_corners_radius</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/default_small_corners_radius</item>
+        <item name="endIconDrawable">@drawable/ic_clean</item>
+        <item name="endIconMode">clear_text</item>
+        <item name="endIconTint">@null</item>
+        <item name="errorEnabled">false</item>
+        <item name="errorTextColor">@color/color_BF1212</item>
+        <item name="errorIconDrawable">@null</item>
+        <!-- Default hint color-->
+        <item name="android:textColorHint">@color/color_94A3B8</item>
+        <!-- Focused hint color-->
+        <item name="hintTextColor">@color/color_0C53B2</item>
+        <item name="hintTextAppearance">@style/TextStyle.12sp.Regular.0C53B2</item>
+        <item name="hintEnabled">true</item>
+    </style>
+
+    <style name="DefaultEditTextStyle" parent="TextStyle.16sp.Regular.0C53B2">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">@dimen/margin_32</item>
+        <item name="android:paddingBottom">@dimen/margin_8</item>
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">true</item>
+        <!--        <item name="android:background">@drawable/bg_input_layout_default</item>-->
+        <item name="android:textColorHint">@color/color_94A3B8</item>
+        <item name="android:inputType">text</item>
+        <item name="android:background">@drawable/bg_text</item>
+    </style>
+
+    <!-- Switches -->
+    <style name="SwitchStyle" parent="TextStyle.12sp.Regular.0C53B2">
+        <item name="switchPadding">8dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <!--        <item name="trackTint">@color/selector_switch_track</item>-->
+        <!--        <item name="thumbTint">@color/selector_switch_thumb</item>-->
+        <item name="colorControlActivated">@color/color_4A6484</item>
+        <item name="android:thumb">@drawable/thumb_selector</item>
+        <item name="track">@drawable/track_selector</item>
+    </style>
+
+    <!-- Dividers -->
+    <style name="VerticalDividerStyle">
+        <item name="android:layout_width">1dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/color_94A3B8</item>
+    </style>
+
+    <style name="HorizontalDividerStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/color_94A3B8</item>
+    </style>
+
+    <!-- Passcode -->
+
+    <style name="PinNumberStyle" parent="TextStyle.32sp.Bold.1C3050">
+        <item name="android:gravity">center</item>
+        <item name="android:inputType">numberPassword</item>
+        <item name="android:maxLength">1</item>
+        <item name="android:backgroundTint">@drawable/bg_pin_view_text_selector</item>
+    </style>
+
+    <style name="PassCodeButtonStyle" parent="TextStyle.32sp.Regular.FFFFFF">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:lineSpacingExtra">0dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <!--    <style name="PassCodeStyle" parent="TextStyle.32sp.Regular.1C3050">-->
+    <!--        <item name="android:layout_width">wrap_content</item>-->
+    <!--        <item name="android:layout_height">wrap_content</item>-->
+    <!--        <item name="android:focusable">false</item>-->
+    <!--        <item name="android:focusableInTouchMode">false</item>-->
+    <!--        <item name="android:gravity">center</item>-->
+    <!--        <item name="android:inputType">numberPassword</item>-->
+    <!--        <item name="android:paddingTop">@dimen/margin_16</item>-->
+    <!--        <item name="android:clipToPadding">false</item>-->
+    <!--        <item name="android:paddingStart">@dimen/margin_16</item>-->
+    <!--        <item name="android:paddingEnd">@dimen/margin_16</item>-->
+    <!--        <item name="android:paddingBottom">@dimen/margin_16</item>-->
+    <!--        <item name="android:theme">@style/PasscodeOtpViewTheme</item>-->
+    <!--        <item name="android:textColor">@color/color_0C53B2</item>-->
+    <!--        <item name="cursorColor">@android:color/transparent</item>-->
+    <!--        <item name="itemSpacing">@dimen/margin_24</item>-->
+    <!--    </style>-->
+
+    <style name="PasscodeOtpViewTheme" parent="Widget.AppCompat.EditText">
+        <item name="android:background">@null</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:maxLines">1</item>
+        <!--        <item name="android:textSelectHandleLeft">@drawable/zero_px_transparent</item>-->
+        <!--        <item name="android:textSelectHandleRight">@drawable/zero_px_transparent</item>-->
+        <!--        <item name="android:textSelectHandle">@drawable/zero_px_transparent</item>-->
+    </style>
+
+</resources>

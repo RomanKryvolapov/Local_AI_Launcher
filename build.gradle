@@ -1,0 +1,41 @@
+/**
+ * Created 2025 by Roman Kryvolapov
+ **/
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url 'https://maven.google.com'
+        }
+        maven {
+            url 'https://jitpack.io'
+        }
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:8.9.2"
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.20'
+        classpath 'androidx.navigation:navigation-safe-args-gradle-plugin:2.8.9'
+        classpath "org.jetbrains.kotlin:kotlin-serialization:2.1.20"
+    }
+}
+
+plugins {
+    id 'com.google.devtools.ksp' version '2.1.20-1.0.32' apply false
+    id 'org.jetbrains.kotlin.jvm' version '2.1.20' apply false
+    id 'org.jetbrains.kotlin.android' version '2.1.20' apply false
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url 'https://maven.google.com'
+        }
+        maven {
+            url 'https://jitpack.io'
+        }
+    }
+}

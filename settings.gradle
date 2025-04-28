@@ -1,0 +1,10 @@
+/**
+ * Created 2025 by Roman Kryvolapov
+ **/
+
+rootProject.name = "Local AI Launcher"
+include ':app'
+include ':data'
+include ':mlc4j'
+project(':mlc4j').projectDir = file('dist/lib/mlc4j')
+include ':domain'
