@@ -31,17 +31,43 @@ Copy the huggingface repository
 Make sure all the necessary files are present in config.json
 Run mlc_llm package
 
+also this commands can help:
 
+$Env:TVM_NDK_CC="C:\Users\Roman\AppData\Local\Android\Sdk\ndk\27.0.11718014\toolchains\llvm\prebuilt\windows-x86_64\bin\aarch64-linux-android24-clang"
+
+$Env:MLC_LLM_SOURCE_DIR="C:\ExampleProjects\mlc-llm"
+
+$env:JAVA_HOME="C:\Program Files\Java\jdk-17"
+$env:Path="$env:JAVA_HOME\bin;$env:Path"
+
+pip install --upgrade huggingface_hub
+
+huggingface-cli login
+
+conda activate your-environment
+
+conda install -c conda-forge cmake -y
+
+conda install -c conda-forge ninja
 
 init of git with lfs help:
 
-git init  
+git init
+
 git lfs install
+
 git lfs track "*.bin"  
+
 git lfs track "*.so"
+
 git lfs track "*.jar"
+
 cat .gitattributes
+
 git add .
+
 git commit -m "Initial commit with LFS support"
-git remote add origin https://github.com/repo.git
+
+git remote add origin https://github.com/RomanKryvolapov/Local_AI_Launcher.git
+
 git push -u origin master
