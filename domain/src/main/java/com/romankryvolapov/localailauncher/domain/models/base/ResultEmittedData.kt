@@ -51,7 +51,7 @@ data class ResultEmittedData<out T>(
             )
 
         fun <T> loading(
-            model: T?,
+            model: T? = null,
             message: String? = null,
         ): ResultEmittedData<T> =
             ResultEmittedData(

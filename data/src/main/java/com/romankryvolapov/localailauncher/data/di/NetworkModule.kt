@@ -12,7 +12,14 @@
 package com.romankryvolapov.localailauncher.data.di
 
 import com.google.gson.Gson
+import com.romankryvolapov.localailauncher.data.network.utils.ArrayConverterFactory
+import com.romankryvolapov.localailauncher.data.network.utils.NullOrEmptyConverterFactory
+import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logNetwork
+import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 
 private const val TAG = "NetworkModuleTag"
 
@@ -27,9 +34,36 @@ const val TIMEOUT = 60L
 
 val networkModule = module {
 
+    single<GsonConverterFactory> {
+        GsonConverterFactory.create()
+    }
+
+    single<SimpleXmlConverterFactory> {
+        SimpleXmlConverterFactory.create()
+    }
+
+    single<NullOrEmptyConverterFactory> {
+        NullOrEmptyConverterFactory()
+    }
 
     single<Gson> {
         Gson()
+    }
+
+    single<ArrayConverterFactory> {
+        ArrayConverterFactory()
+    }
+
+    single<HttpLoggingInterceptor>(named(LOGGING_INTERCEPTOR)) {
+        HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+    }
+
+    single<HttpLoggingInterceptor>(named(LOG_TO_FILE_INTERCEPTOR)) {
+        val logging = HttpLoggingInterceptor {
+            logNetwork(it)
+        }
+        logging.level = HttpLoggingInterceptor.Level.BODY
+        logging
     }
 
 }

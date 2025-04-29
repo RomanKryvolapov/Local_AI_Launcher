@@ -54,7 +54,9 @@ class SplashViewModel : BaseViewModel() {
         addMessage("OpenCL available: ${hasOpenCLLibrary()}")
 
         val applicationInfo = preferences.readApplicationInfo() ?: ApplicationInfo(
+            accessToken = "",
             isFirstFun = true,
+            refreshToken = "",
             applicationLanguage = ApplicationLanguage.EN,
         )
 

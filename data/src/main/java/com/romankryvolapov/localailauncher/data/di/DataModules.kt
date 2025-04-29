@@ -15,6 +15,7 @@ import org.koin.dsl.module
 
 val dataModules = module {
     includes(
+        apiModule,
         daoModule,
         commonModule,
         mappersModule,

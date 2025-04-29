@@ -81,6 +81,14 @@ dependencies {
     implementation 'net.zetetic:android-database-sqlcipher:4.5.4'
     implementation 'androidx.sqlite:sqlite:2.5.0'
 
+    // retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.11.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.11.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.12.0'
+    implementation platform('com.squareup.okhttp3:okhttp-bom:4.12.0')
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    implementation 'com.squareup.retrofit2:converter-simplexml:2.11.0'
+
     // coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2'
 

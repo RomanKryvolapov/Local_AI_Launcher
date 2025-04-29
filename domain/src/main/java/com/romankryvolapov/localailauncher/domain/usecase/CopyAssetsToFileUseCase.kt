@@ -53,9 +53,9 @@ class CopyAssetsToFileUseCase : BaseUseCase {
                 ResultEmittedData.error(
                     model = null,
                     error = null,
-                    title = "Engine error",
                     responseCode = null,
                     message = e.message,
+                    title = "Engine error",
                     errorType = ErrorType.SERVER_DATA_ERROR,
                 )
             )
