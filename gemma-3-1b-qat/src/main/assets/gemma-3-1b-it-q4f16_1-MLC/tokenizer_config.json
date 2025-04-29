@@ -2160,7 +2160,7 @@
       "normalized": false,
       "rstrip": false,
       "single_word": false,
-      "special": false
+      "special": true
     },
     "256000": {
       "content": "<end_of_image>",
@@ -2168,7 +2168,7 @@
       "normalized": false,
       "rstrip": false,
       "single_word": false,
-      "special": false
+      "special": true
     },
     "256001": {
       "content": "<unused99>",
@@ -51337,6 +51337,7 @@
   "image_token": "<image_soft_token>",
   "model_max_length": 1000000000000000019884624838656,
   "pad_token": "<pad>",
+  "processor_class": "Gemma3Processor",
   "sp_model_kwargs": null,
   "spaces_between_special_tokens": false,
   "tokenizer_class": "GemmaTokenizer",

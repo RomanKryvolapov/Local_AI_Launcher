@@ -26,7 +26,10 @@
         "attn_logit_softcapping": null,
         "bos_token_id": 2,
         "cache_implementation": "hybrid",
-        "eos_token_id": 1,
+        "eos_token_id": [
+          1,
+          106
+        ],
         "final_logit_softcapping": null,
         "initializer_range": 0.02,
         "max_position_embeddings": 32768,
@@ -36,20 +39,20 @@
         "rope_scaling": null,
         "sliding_window_pattern": 6,
         "torch_dtype": "bfloat16",
-        "transformers_version": "4.52.0.dev0",
+        "transformers_version": "4.50.0.dev0",
         "use_cache": true
       }
     },
     "vocab_size": 262144,
     "tensor_parallel_shards": 1,
     "max_batch_size": 128,
-    "context_window_size": 768,
+    "context_window_size": 8192,
     "sliding_window_size": -1,
     "prefill_chunk_size": 8192,
     "is_text_model": true
   },
   "vocab_size": 262144,
-  "context_window_size": 768,
+  "context_window_size": 8192,
   "sliding_window_size": -1,
   "prefill_chunk_size": 8192,
   "attention_sink_size": -1,
@@ -72,14 +75,16 @@
     "strip_space_in_decode": false
   },
   "conv_template": {
-    "name": "redpajama_chat",
+    "name": "gemma3_instruction",
     "system_template": "{system_message}",
     "system_message": "",
-    "system_prefix_token_ids": null,
+    "system_prefix_token_ids": [
+      2
+    ],
     "add_role_after_system_message": true,
     "roles": {
-      "user": "<human>",
-      "assistant": "<bot>"
+      "user": "<start_of_turn>user",
+      "assistant": "<start_of_turn>model"
     },
     "role_templates": {
       "user": "{user_message}",
@@ -88,15 +93,16 @@
     },
     "messages": [],
     "seps": [
-      "\n"
+      "<end_of_turn>\n"
     ],
-    "role_content_sep": ": ",
-    "role_empty_sep": ":",
+    "role_content_sep": "\n",
+    "role_empty_sep": "\n",
     "stop_str": [
-      "<human>"
+      "<end_of_turn>"
     ],
     "stop_token_ids": [
-      0
+      1,
+      106
     ],
     "function_string": "",
     "use_function_calling": false

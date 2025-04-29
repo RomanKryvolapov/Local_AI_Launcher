@@ -38,7 +38,6 @@ public class JSONFFIEngine {
 
     public void initBackgroundEngine(KotlinFunction callback) {
         Device device = Device.opencl();
-//        Device device = Device.vulkan();
 
         requestStreamCallback = Function.convertFunc(new Function.Callback() {
             @Override
