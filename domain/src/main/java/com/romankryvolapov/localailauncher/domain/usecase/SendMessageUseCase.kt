@@ -12,6 +12,7 @@ import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import org.koin.core.component.inject
 import java.util.UUID
 
 class SendMessageUseCase : BaseUseCase {
@@ -20,13 +21,14 @@ class SendMessageUseCase : BaseUseCase {
         private const val TAG = "CopyAssetsToFileUseCaseTag"
     }
 
+    private val engine: MLCEngine by inject()
+
     @Volatile
     private var isGenerationAllowed = true
 
     fun invoke(
         message: String,
         messageID: UUID,
-        engine: MLCEngine,
     ): Flow<ResultEmittedData<ChatMessageModel>> = flow {
         isGenerationAllowed = true
         try {

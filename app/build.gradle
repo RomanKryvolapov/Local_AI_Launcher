@@ -62,8 +62,6 @@ dependencies {
     implementation project(':domain')
     implementation project(':data')
 
-    implementation project(":gemma-3-1b-qat")
-
     // android
     implementation 'androidx.core:core-ktx:1.16.0'
     implementation 'androidx.appcompat:appcompat:1.7.0'

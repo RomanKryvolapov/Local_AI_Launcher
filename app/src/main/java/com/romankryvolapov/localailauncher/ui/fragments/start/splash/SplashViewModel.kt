@@ -3,7 +3,6 @@
  **/
 package com.romankryvolapov.localailauncher.ui.fragments.start.splash
 
-import ai.mlc.mlcllm.MLCEngine
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -16,6 +15,8 @@ import com.romankryvolapov.localailauncher.domain.MODEL_LIB
 import com.romankryvolapov.localailauncher.domain.MODEL_NAME
 import com.romankryvolapov.localailauncher.domain.models.base.onFailure
 import com.romankryvolapov.localailauncher.domain.models.base.onSuccess
+import com.romankryvolapov.localailauncher.domain.models.common.ApplicationInfo
+import com.romankryvolapov.localailauncher.domain.models.common.ApplicationLanguage
 import com.romankryvolapov.localailauncher.domain.usecase.CopyAssetsToFileUseCase
 import com.romankryvolapov.localailauncher.domain.usecase.StartEngineUseCase
 import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
@@ -26,7 +27,6 @@ import com.romankryvolapov.localailauncher.ui.BaseViewModel
 import kotlinx.coroutines.flow.onEach
 import org.koin.core.component.inject
 import java.io.File
-import kotlin.onSuccess
 import kotlin.system.exitProcess
 
 class SplashViewModel : BaseViewModel() {
@@ -35,7 +35,6 @@ class SplashViewModel : BaseViewModel() {
         private const val TAG = "SplashViewModelTag"
     }
 
-    private val engine: MLCEngine by inject()
     private val startEngineUseCase: StartEngineUseCase by inject()
     private val copyAssetsToFileUseCase: CopyAssetsToFileUseCase by inject()
 
@@ -51,19 +50,17 @@ class SplashViewModel : BaseViewModel() {
             preferences.logoutFromPreferences()
             logDebug("logoutFromPreferences", TAG)
         }
-        if (BuildConfig.DEBUG && DEBUG_PRINT_PREFERENCES_INFO) {
-            logDebug("PRINT_PREFERENCES_INFO", TAG)
-            val applicationInfo = preferences.readApplicationInfo()
-        }
 
         addMessage("OpenCL available: ${hasOpenCLLibrary()}")
 
-//        val isFirstRun = preferences.readApplicationInfo()?.isFirstFun == true
-        val isFirstRun = true
+        val applicationInfo = preferences.readApplicationInfo() ?: ApplicationInfo(
+            isFirstFun = true,
+            applicationLanguage = ApplicationLanguage.EN,
+        )
 
-        addMessage("Is first run: $isFirstRun")
+        addMessage("Is first run: ${applicationInfo.isFirstFun}")
 
-        if (isFirstRun) {
+        if (applicationInfo.isFirstFun) {
             copyAssetsToFileUseCase.invoke(
                 modelName = MODEL_NAME,
                 filesDir = currentContext.get().filesDir,
@@ -71,9 +68,19 @@ class SplashViewModel : BaseViewModel() {
             ).onEach { result ->
                 result.onSuccess { model, _, responseCode ->
                     addMessage("Model copied")
+                    preferences.saveApplicationInfo(
+                        applicationInfo.copy(
+                            isFirstFun = false
+                        )
+                    )
                     startEngine()
                 }.onFailure { error, title, message, responseCode, errorType ->
                     addMessage("Model not copied, error: $error")
+                    preferences.saveApplicationInfo(
+                        applicationInfo.copy(
+                            isFirstFun = true
+                        )
+                    )
                 }
             }.launchInScope(viewModelScope)
         } else {
@@ -84,7 +91,6 @@ class SplashViewModel : BaseViewModel() {
     private fun startEngine() {
         addMessage("Start engine")
         startEngineUseCase.invoke(
-            engine = engine,
             modelLib = MODEL_LIB,
             modelName = MODEL_NAME,
             filesDir = currentContext.get().filesDir,

@@ -9,7 +9,6 @@
  */
 package com.romankryvolapov.localailauncher.di
 
-import ai.mlc.mlcllm.MLCEngine
 import android.app.DownloadManager
 import android.app.NotificationManager
 import android.content.ClipboardManager
@@ -33,10 +32,6 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val appModule = module {
-
-    single<MLCEngine>{
-        MLCEngine()
-    }
 
     single<ClipboardManager> {
         ContextCompat.getSystemService(

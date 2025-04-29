@@ -7,7 +7,9 @@ import com.romankryvolapov.localailauncher.domain.usecase.base.BaseUseCase
 import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import org.koin.core.component.inject
 import java.io.File
+import kotlin.getValue
 
 class StartEngineUseCase : BaseUseCase {
 
@@ -15,10 +17,11 @@ class StartEngineUseCase : BaseUseCase {
         private const val TAG = "StartEngineUseCaseTag"
     }
 
+    private val engine: MLCEngine by inject()
+
     fun invoke(
         filesDir: File,
         modelLib: String,
-        engine: MLCEngine,
         modelName: String,
     ): Flow<ResultEmittedData<Unit>> = flow {
         logDebug("invoke modelName: $modelName modelLib: $modelLib", TAG)

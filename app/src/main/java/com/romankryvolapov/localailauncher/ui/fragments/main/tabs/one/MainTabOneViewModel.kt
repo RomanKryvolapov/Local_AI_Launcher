@@ -3,11 +3,6 @@
  **/
 package com.romankryvolapov.localailauncher.ui.fragments.main.tabs.one
 
-import ai.mlc.mlcllm.MLCEngine
-import ai.mlc.mlcllm.OpenAIProtocol.ChatCompletionMessage
-import ai.mlc.mlcllm.OpenAIProtocol.ChatCompletionRole
-import ai.mlc.mlcllm.OpenAIProtocol.StreamOptions
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.romankryvolapov.localailauncher.domain.models.base.onFailure
@@ -15,19 +10,15 @@ import com.romankryvolapov.localailauncher.domain.models.base.onLoading
 import com.romankryvolapov.localailauncher.domain.models.base.onSuccess
 import com.romankryvolapov.localailauncher.domain.usecase.SendMessageUseCase
 import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logError
 import com.romankryvolapov.localailauncher.extensions.launchInScope
-import com.romankryvolapov.localailauncher.extensions.launchWithDispatcher
 import com.romankryvolapov.localailauncher.extensions.readOnly
 import com.romankryvolapov.localailauncher.extensions.setValueOnMainThread
 import com.romankryvolapov.localailauncher.mappers.ChatMessageModelUiMapper
 import com.romankryvolapov.localailauncher.models.chat.ChatMessageAdapterMarker
 import com.romankryvolapov.localailauncher.models.chat.ChatMessageErrorUi
-import com.romankryvolapov.localailauncher.models.chat.ChatMessageModelUi
 import com.romankryvolapov.localailauncher.models.chat.ChatMessageUserUi
 import com.romankryvolapov.localailauncher.models.main.MainTabsEnum
 import com.romankryvolapov.localailauncher.ui.fragments.main.base.BaseMainTabViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.onEach
 import org.koin.core.component.inject
 import java.util.UUID
@@ -41,7 +32,6 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
 
     override var mainTabsEnum: MainTabsEnum? = MainTabsEnum.TAB_ONE
 
-    private val engine: MLCEngine by inject()
     private val sendMessageUseCase: SendMessageUseCase by inject()
     private val chatMessageModelUiMapper: ChatMessageModelUiMapper by inject()
 
@@ -64,7 +54,6 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
         _messagesLiveData.setValueOnMainThread(messagesMap.values.toList())
         val modelMessageID = UUID.randomUUID()
         sendMessageUseCase.invoke(
-            engine = engine,
             message = message,
             messageID = modelMessageID,
         ).onEach { result ->
