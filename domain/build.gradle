@@ -52,7 +52,8 @@ android {
 
 dependencies {
 
-    implementation project(":gemma-3-1b-qat")
+//    implementation project(":gemma-3-1b-qat")
+    implementation project(":gemma-3-4b-qat")
 
     // common
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2'
