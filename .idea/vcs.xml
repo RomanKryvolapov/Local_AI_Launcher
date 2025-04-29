@@ -2,5 +2,6 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/gemma-3-4b-qat/src/main/assets/gemma-3-4b-it-q4f16_1-MLC" vcs="Git" />
   </component>
 </project>

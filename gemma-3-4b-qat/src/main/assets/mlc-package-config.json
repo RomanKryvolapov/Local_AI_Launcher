@@ -1,0 +1,10 @@
+{
+    "device": "android",
+    "model_list": [
+        {
+            "model": "HF://mlc-ai/gemma-3-4b-it-q4f16_1-MLC",
+            "model_id": "gemma-3-4b-it-q4f16_1-MLC",
+            "estimated_vram_bytes": 3000000000
+        }
+    ]
+}

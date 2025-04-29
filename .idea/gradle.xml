@@ -14,6 +14,7 @@
             <option value="$PROJECT_DIR$/data" />
             <option value="$PROJECT_DIR$/domain" />
             <option value="$PROJECT_DIR$/gemma-3-1b-qat" />
+            <option value="$PROJECT_DIR$/gemma-3-4b-qat" />
           </set>
         </option>
       </GradleProjectSettings>
