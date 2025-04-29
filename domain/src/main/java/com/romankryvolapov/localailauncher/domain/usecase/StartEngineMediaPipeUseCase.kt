@@ -1,9 +1,10 @@
 /**
  * Created 2025 by Roman Kryvolapov
- */
+ **/
 package com.romankryvolapov.localailauncher.domain.usecase
 
-import android.content.res.AssetManager
+import android.content.Context
+import com.google.mediapipe.tasks.genai.llminference.LlmInference
 import com.romankryvolapov.localailauncher.domain.models.base.ErrorType
 import com.romankryvolapov.localailauncher.domain.models.base.ResultEmittedData
 import com.romankryvolapov.localailauncher.domain.usecase.base.BaseUseCase
@@ -15,62 +16,47 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import java.io.File
 
-class CopyAssetsToFileUseCase : BaseUseCase {
+class StartEngineMediaPipeUseCase : BaseUseCase {
 
     companion object {
-        private const val TAG = "CopyAssetsToFileUseCaseTag"
+        private const val TAG = "StartEngineMediaPipeUseCaseTag"
     }
 
     fun invoke(
-        filesDir: File,
-        modelName: String,
-        assetManager: AssetManager,
-    ): Flow<ResultEmittedData<Unit>> = flow {
+        file: File,
+        context: Context,
+    ): Flow<ResultEmittedData<LlmInference>> = flow {
         logDebug("invoke", TAG)
         emit(ResultEmittedData.loading())
         try {
-            clearFilesDir(filesDir)
-            val modelDir = File(filesDir, modelName)
-            if (!modelDir.exists()) {
-                modelDir.mkdirs()
-            }
-            assetManager.list(modelName)?.forEach { filename ->
-                assetManager.open("$modelName/$filename").use { inStream ->
-                    File(modelDir, filename).outputStream().use { outStream ->
-                        inStream.copyTo(outStream)
-                    }
-                }
-            }
+            val interfaceOptions = LlmInference.LlmInferenceOptions.builder()
+                .setModelPath(file.path)
+                .setMaxTokens(1000)
+                .setMaxTopK(64)
+                .setPreferredBackend(LlmInference.Backend.CPU)
+                .build()
+            val llmInference: LlmInference =
+                LlmInference.createFromOptions(context, interfaceOptions)
             emit(
                 ResultEmittedData.success(
-                    model = Unit,
                     message = null,
                     responseCode = null,
+                    model = llmInference,
                 )
             )
         } catch (e: Exception) {
-            logError("Error copying assets", e, TAG)
+            logError("Error", e, TAG)
             emit(
                 ResultEmittedData.error(
                     model = null,
                     error = null,
+                    title = "Engine error",
                     responseCode = null,
                     message = e.message,
-                    title = "Engine error",
                     errorType = ErrorType.EXCEPTION,
                 )
             )
         }
     }.flowOn(Dispatchers.IO)
-
-    private fun clearFilesDir(filesDir: File) {
-        filesDir.listFiles()?.forEach { file ->
-            if (file.isDirectory) {
-                file.deleteRecursively()
-            } else {
-                file.delete()
-            }
-        }
-    }
 
 }

@@ -5,10 +5,10 @@ package com.romankryvolapov.localailauncher.domain.usecase
 
 import com.romankryvolapov.localailauncher.domain.models.base.ResultEmittedData
 import com.romankryvolapov.localailauncher.domain.models.base.onFailure
-import com.romankryvolapov.localailauncher.domain.models.base.onLoading
 import com.romankryvolapov.localailauncher.domain.models.base.onSuccess
 import com.romankryvolapov.localailauncher.domain.repository.network.DownloadFromHuggingFaceNetworkRepository
 import com.romankryvolapov.localailauncher.domain.usecase.base.BaseUseCase
+import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
@@ -29,6 +29,8 @@ class DownloadFromHuggingFaceUseCase : BaseUseCase {
         fileName: String,
         huggingFaceToken: String,
     ): Flow<ResultEmittedData<File>> = flow {
+        logDebug("invoke", TAG)
+        emit(ResultEmittedData.loading())
         val file = File(filesDir, fileName)
         if (file.exists()) {
             emit(
@@ -44,9 +46,7 @@ class DownloadFromHuggingFaceUseCase : BaseUseCase {
             fileUrl = url,
             huggingFaceToken = huggingFaceToken,
         ).onEach { result ->
-            result.onLoading { _, _ ->
-                emit(ResultEmittedData.loading())
-            }.onSuccess { model, _, responseCode ->
+            result.onSuccess { model, _, responseCode ->
                 emit(
                     ResultEmittedData.success(
                         model = model,

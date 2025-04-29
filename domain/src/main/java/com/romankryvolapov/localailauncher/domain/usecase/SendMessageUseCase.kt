@@ -1,13 +1,12 @@
+/**
+ * Created 2025 by Roman Kryvolapov
+ **/
 package com.romankryvolapov.localailauncher.domain.usecase
 
 import ai.mlc.mlcllm.MLCEngine
 import ai.mlc.mlcllm.OpenAIProtocol.ChatCompletionMessage
 import ai.mlc.mlcllm.OpenAIProtocol.ChatCompletionRole
-import ai.mlc.mlcllm.OpenAIProtocol.ResponseFormat
 import ai.mlc.mlcllm.OpenAIProtocol.StreamOptions
-import android.util.Log.e
-import com.romankryvolapov.localailauncher.domain.DEBUG_PRINT_PREFERENCES_INFO
-import com.romankryvolapov.localailauncher.domain.Models
 import com.romankryvolapov.localailauncher.domain.models.ChatMessageModel
 import com.romankryvolapov.localailauncher.domain.models.base.ErrorType
 import com.romankryvolapov.localailauncher.domain.models.base.ResultEmittedData
@@ -36,6 +35,8 @@ class SendMessageUseCase : BaseUseCase {
         message: String,
         messageID: UUID,
     ): Flow<ResultEmittedData<ChatMessageModel>> = flow {
+        logDebug("invoke", TAG)
+        emit(ResultEmittedData.loading())
         isGenerationAllowed = true
         try {
             val streamingResponse = StringBuilder()
@@ -126,7 +127,7 @@ class SendMessageUseCase : BaseUseCase {
                     title = "Engine error",
                     responseCode = null,
                     message = e.message,
-                    errorType = ErrorType.SERVER_DATA_ERROR,
+                    errorType = ErrorType.EXCEPTION,
                 )
             )
         }

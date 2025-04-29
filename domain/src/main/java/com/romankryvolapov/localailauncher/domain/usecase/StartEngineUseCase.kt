@@ -1,3 +1,6 @@
+/**
+ * Created 2025 by Roman Kryvolapov
+ **/
 package com.romankryvolapov.localailauncher.domain.usecase
 
 import ai.mlc.mlcllm.MLCEngine
@@ -26,7 +29,8 @@ class StartEngineUseCase : BaseUseCase {
         modelLib: String,
         modelName: String,
     ): Flow<ResultEmittedData<Unit>> = flow {
-        logDebug("invoke modelName: $modelName modelLib: $modelLib", TAG)
+        logDebug("invoke", TAG)
+        emit(ResultEmittedData.loading())
         try {
             val modelDir = File(filesDir, modelName)
             val modelPath = modelDir.absolutePath
@@ -48,7 +52,7 @@ class StartEngineUseCase : BaseUseCase {
                     title = "Engine error",
                     responseCode = null,
                     message = e.message,
-                    errorType = ErrorType.SERVER_DATA_ERROR,
+                    errorType = ErrorType.EXCEPTION,
                 )
             )
         }
