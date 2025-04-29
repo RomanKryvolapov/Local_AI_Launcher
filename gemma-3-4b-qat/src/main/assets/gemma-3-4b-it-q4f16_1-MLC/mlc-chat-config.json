@@ -13,29 +13,40 @@
       "head_dim": 256,
       "rms_norm_eps": 1e-06,
       "hidden_activation": "gelu_pytorch_tanh",
-      "position_embedding_base": 10000,
+      "position_embedding_base": 1000000,
       "context_window_size": 8192,
       "prefill_chunk_size": 8192,
       "query_pre_attn_scalar": 256,
       "sliding_window": 1024,
       "kwargs": {
+        "attention_dropout": 0.0,
+        "attn_logit_softcapping": null,
+        "cache_implementation": "hybrid",
+        "final_logit_softcapping": null,
+        "initializer_range": 0.02,
+        "max_position_embeddings": 131072,
         "model_type": "gemma3_text",
+        "rope_local_base_freq": 10000,
         "rope_scaling": {
           "factor": 8.0,
           "rope_type": "linear"
-        }
+        },
+        "sliding_window_pattern": 6,
+        "torch_dtype": "bfloat16",
+        "use_cache": true,
+        "vocab_size": 262208
       }
     },
     "vocab_size": 262208,
     "tensor_parallel_shards": 1,
     "max_batch_size": 128,
-    "context_window_size": 8192,
+    "context_window_size": 768,
     "sliding_window_size": -1,
     "prefill_chunk_size": 8192,
     "is_text_model": false
   },
   "vocab_size": 262208,
-  "context_window_size": 8192,
+  "context_window_size": 768,
   "sliding_window_size": -1,
   "prefill_chunk_size": 8192,
   "attention_sink_size": -1,
@@ -58,16 +69,14 @@
     "strip_space_in_decode": false
   },
   "conv_template": {
-    "name": "gemma3_instruction",
+    "name": "redpajama_chat",
     "system_template": "{system_message}",
     "system_message": "",
-    "system_prefix_token_ids": [
-      2
-    ],
+    "system_prefix_token_ids": null,
     "add_role_after_system_message": true,
     "roles": {
-      "user": "<start_of_turn>user",
-      "assistant": "<start_of_turn>model"
+      "user": "<human>",
+      "assistant": "<bot>"
     },
     "role_templates": {
       "user": "{user_message}",
@@ -76,22 +85,21 @@
     },
     "messages": [],
     "seps": [
-      "<end_of_turn>\n"
+      "\n"
     ],
-    "role_content_sep": "\n",
-    "role_empty_sep": "\n",
+    "role_content_sep": ": ",
+    "role_empty_sep": ":",
     "stop_str": [
-      "<end_of_turn>"
+      "<human>"
     ],
     "stop_token_ids": [
-      1,
-      106
+      0
     ],
     "function_string": "",
     "use_function_calling": false
   },
   "pad_token_id": 0,
-  "bos_token_id": 2,
+  "bos_token_id": 1,
   "eos_token_id": [
     1,
     106

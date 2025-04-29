@@ -35,9 +35,9 @@ Make sure all the necessary files are present in config.json
 
 run in console from model folder:
 
-mlc_llm convert_weight . --quantization q4f16_1 -o ..\MLC
+mlc_llm convert_weight . --quantization q4f16_1 -o ..\4B_Recompiled
 
-mlc_llm gen_config . --quantization q4f16_1 --conv-template redpajama_chat --context-window-size 768 -o ..\MLC
+mlc_llm gen_config . --quantization q4f16_1 --conv-template redpajama_chat --context-window-size 768 -o ..\4B_Recompiled
 
 mlc_llm compile ..\MLC/mlc-chat-config.json --device android -o ..\android.tar
 

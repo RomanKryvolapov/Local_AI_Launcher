@@ -41,7 +41,7 @@ class SplashViewModel : BaseViewModel() {
     private val _messagesLiveData = MutableLiveData<String>()
     val messagesLiveData = _messagesLiveData.readOnly()
 
-    private val currentModel = Models.GEMMA_3_4B_QAT
+    private val currentModel = Models.GEMMA_3_1B_QAT
 
     override fun onFirstAttach() {
         logDebug("onFirstAttach", TAG)

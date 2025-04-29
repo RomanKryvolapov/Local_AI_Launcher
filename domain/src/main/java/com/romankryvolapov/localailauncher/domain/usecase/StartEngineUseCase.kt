@@ -5,8 +5,10 @@ import com.romankryvolapov.localailauncher.domain.models.base.ErrorType
 import com.romankryvolapov.localailauncher.domain.models.base.ResultEmittedData
 import com.romankryvolapov.localailauncher.domain.usecase.base.BaseUseCase
 import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import org.koin.core.component.inject
 import java.io.File
 import kotlin.getValue
@@ -28,6 +30,8 @@ class StartEngineUseCase : BaseUseCase {
         try {
             val modelDir = File(filesDir, modelName)
             val modelPath = modelDir.absolutePath
+            engine.reset()
+            engine.unload()
             engine.reload(modelPath, modelLib)
             emit(
                 ResultEmittedData.success(
@@ -48,6 +52,6 @@ class StartEngineUseCase : BaseUseCase {
                 )
             )
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
 }
