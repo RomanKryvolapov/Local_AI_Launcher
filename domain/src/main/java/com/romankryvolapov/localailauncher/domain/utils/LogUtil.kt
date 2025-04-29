@@ -321,6 +321,10 @@ object LogUtil {
                                 append(NEW_LINE)
                                 append(NEW_LINE)
                             }
+
+                             else -> {
+                                 // nothing
+                             }
                         }
                     }
                 }

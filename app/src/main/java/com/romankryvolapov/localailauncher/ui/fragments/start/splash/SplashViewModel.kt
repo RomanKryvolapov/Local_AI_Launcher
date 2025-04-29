@@ -10,9 +10,7 @@ import com.romankryvolapov.localailauncher.BuildConfig
 import com.romankryvolapov.localailauncher.NavActivityDirections
 import com.romankryvolapov.localailauncher.R
 import com.romankryvolapov.localailauncher.domain.DEBUG_LOGOUT_FROM_PREFERENCES
-import com.romankryvolapov.localailauncher.domain.DEBUG_PRINT_PREFERENCES_INFO
-import com.romankryvolapov.localailauncher.domain.MODEL_LIB
-import com.romankryvolapov.localailauncher.domain.MODEL_NAME
+import com.romankryvolapov.localailauncher.domain.Models
 import com.romankryvolapov.localailauncher.domain.models.base.onFailure
 import com.romankryvolapov.localailauncher.domain.models.base.onSuccess
 import com.romankryvolapov.localailauncher.domain.models.common.ApplicationInfo
@@ -43,6 +41,8 @@ class SplashViewModel : BaseViewModel() {
     private val _messagesLiveData = MutableLiveData<String>()
     val messagesLiveData = _messagesLiveData.readOnly()
 
+    private val currentModel = Models.GEMMA_3_4B_QAT
+
     override fun onFirstAttach() {
         logDebug("onFirstAttach", TAG)
 
@@ -60,9 +60,10 @@ class SplashViewModel : BaseViewModel() {
 
         addMessage("Is first run: ${applicationInfo.isFirstFun}")
 
-        if (applicationInfo.isFirstFun) {
+//        if (applicationInfo.isFirstFun) {
+        if (true) {
             copyAssetsToFileUseCase.invoke(
-                modelName = MODEL_NAME,
+                modelName = currentModel.modelName,
                 filesDir = currentContext.get().filesDir,
                 assetManager = currentContext.get().assets,
             ).onEach { result ->
@@ -91,8 +92,8 @@ class SplashViewModel : BaseViewModel() {
     private fun startEngine() {
         addMessage("Start engine")
         startEngineUseCase.invoke(
-            modelLib = MODEL_LIB,
-            modelName = MODEL_NAME,
+            modelLib = currentModel.modelLib,
+            modelName = currentModel.modelName,
             filesDir = currentContext.get().filesDir,
         ).onEach { result ->
             result.onSuccess { model, _, responseCode ->
