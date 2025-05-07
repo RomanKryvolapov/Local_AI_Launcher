@@ -1,0 +1,13 @@
+/**
+ * Created 2025 by Roman Kryvolapov
+ **/
+package com.romankryvolapov.localailauncher.domain.repository.database
+
+import com.romankryvolapov.localailauncher.domain.models.ChatMessageModel
+
+interface ChatDialogDatabaseRepository {
+
+    fun saveChatMessage(chatMessage: ChatMessageModel)
+
+
+}

@@ -11,27 +11,35 @@
  */
 package com.romankryvolapov.localailauncher.data.di
 
+import androidx.room.Room
+import com.romankryvolapov.localailauncher.data.BuildConfig.DATABASE_NAME
+import com.romankryvolapov.localailauncher.data.BuildConfig.PROPERTY_USER_PASSWORD
+import com.romankryvolapov.localailauncher.data.database.AppDatabase
+import net.sqlcipher.database.SupportFactory
+import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
+import kotlin.jvm.java
+import net.sqlcipher.database.SQLiteDatabase
 
 val databaseModule = module {
 
-//    single<AppDatabase> {
-//        try {
-//            val passPhrase = getKoin().getProperty(PROPERTY_USER_PASSWORD, "")
-//            val passPhraseBytes: ByteArray = SQLiteDatabase.getBytes(passPhrase.toCharArray())
-//            val factory = SupportFactory(passPhraseBytes)
-//            Room.databaseBuilder(androidContext(), AppDatabase::class.java, DATABASE_NAME)
-//                .openHelperFactory(factory)
-//                .fallbackToDestructiveMigration()
-//                .build().also {
-//                    // Check if DB create correctly. If no - will be exception.
-//                    it.openHelper.readableDatabase.isDatabaseIntegrityOk
-//                }
-//        } catch (e: Exception) {
-//            Room.databaseBuilder(androidContext(), AppDatabase::class.java, DATABASE_NAME)
-//                .fallbackToDestructiveMigration()
-//                .build()
-//        }
-//    }
+    single<AppDatabase> {
+        try {
+            val passPhrase = getKoin().getProperty(PROPERTY_USER_PASSWORD, "")
+            val passPhraseBytes: ByteArray = SQLiteDatabase.getBytes(passPhrase.toCharArray())
+            val factory = SupportFactory(passPhraseBytes)
+            Room.databaseBuilder(androidContext(), AppDatabase::class.java, DATABASE_NAME)
+                .openHelperFactory(factory)
+                .fallbackToDestructiveMigration()
+                .build().also {
+                    // Check if DB create correctly. If no - will be exception.
+                    it.openHelper.readableDatabase.isDatabaseIntegrityOk
+                }
+        } catch (e: Exception) {
+            Room.databaseBuilder(androidContext(), AppDatabase::class.java, DATABASE_NAME)
+                .fallbackToDestructiveMigration()
+                .build()
+        }
+    }
 
 }

@@ -33,6 +33,7 @@ class SendMessageUseCase : BaseUseCase {
 
     fun invoke(
         message: String,
+        dialogID: UUID,
         messageID: UUID,
     ): Flow<ResultEmittedData<ChatMessageModel>> = flow {
         logDebug("invoke", TAG)
@@ -79,6 +80,7 @@ class SendMessageUseCase : BaseUseCase {
                                     timeStamp = System.currentTimeMillis(),
                                     message = streamingResponse.toString(),
                                     messageData = "",
+                                    dialogID = dialogID,
                                 )
                             )
                         )
@@ -92,6 +94,7 @@ class SendMessageUseCase : BaseUseCase {
                                     timeStamp = System.currentTimeMillis(),
                                     message = streamingResponse.toString(),
                                     messageData = "",
+                                    dialogID = dialogID,
                                 ),
                             )
                         )
@@ -112,7 +115,8 @@ class SendMessageUseCase : BaseUseCase {
                                 id = messageID,
                                 timeStamp = System.currentTimeMillis(),
                                 message = streamingResponse.toString(),
-                                messageData = usageInfoText.toString()
+                                messageData = usageInfoText.toString(),
+                                dialogID = dialogID,
                             ),
                         )
                     )

@@ -27,7 +27,7 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
 
     companion object {
         private const val TAG = "MainTabOneViewModelTag"
-
+        private val dialogID = UUID.randomUUID()
     }
 
     override var mainTabsEnum: MainTabsEnum? = MainTabsEnum.TAB_ONE
@@ -52,23 +52,24 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
             message = message,
         )
         _messagesLiveData.setValueOnMainThread(messagesMap.values.toList())
-        val modelMessageID = UUID.randomUUID()
+        val messageID = UUID.randomUUID()
         sendMessageUseCase.invoke(
             message = message,
-            messageID = modelMessageID,
+            dialogID = dialogID,
+            messageID = messageID,
         ).onEach { result ->
             result.onLoading { model, _ ->
                 model?.let {
-                    messagesMap[modelMessageID] = chatMessageModelUiMapper.map(model)
+                    messagesMap[messageID] = chatMessageModelUiMapper.map(model)
                     _messagesLiveData.setValueOnMainThread(messagesMap.values.toList())
                 }
             }.onSuccess { model, _, _ ->
-                messagesMap[modelMessageID] = chatMessageModelUiMapper.map(model)
+                messagesMap[messageID] = chatMessageModelUiMapper.map(model)
                 _messagesLiveData.setValueOnMainThread(messagesMap.values.toList())
                 _isLoadingLiveData.setValueOnMainThread(false)
             }.onFailure { error, title, message, responseCode, errorType ->
-                messagesMap[modelMessageID] = ChatMessageErrorUi(
-                    id = modelMessageID,
+                messagesMap[messageID] = ChatMessageErrorUi(
+                    id = messageID,
                     message = message ?: "Unknown error",
                     timeStamp = System.currentTimeMillis(),
                 )

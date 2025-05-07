@@ -8,10 +8,6 @@ import kotlinx.parcelize.Parcelize
 import java.util.UUID
 
 @Parcelize
-data class ChatMessageModel(
+data class ChatDialogModel(
     val id: UUID,
-    val dialogID: UUID,
-    val timeStamp: Long,
-    val message: String,
-    val messageData: String
 ) : Parcelable

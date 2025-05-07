@@ -11,6 +11,7 @@
  */
 package com.romankryvolapov.localailauncher.data.di
 
+import com.romankryvolapov.localailauncher.data.mappers.database.ChatMessageEntityMapper
 import org.koin.dsl.module
 import org.simpleframework.xml.core.Persister
 
@@ -20,5 +21,8 @@ val mappersModule = module {
         Persister()
     }
 
+    single<ChatMessageEntityMapper> {
+        ChatMessageEntityMapper()
+    }
 
 }
