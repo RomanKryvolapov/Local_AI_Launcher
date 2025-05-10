@@ -5,12 +5,6 @@ package com.romankryvolapov.localailauncher.domain
 
 sealed class Models {
 
-    enum class Engine {
-        MLCEngine,
-        MediaPipe,
-        TensorFlow
-    }
-
     sealed class MLCEngineModel(
         val modelName: String,
         val modelLib: String

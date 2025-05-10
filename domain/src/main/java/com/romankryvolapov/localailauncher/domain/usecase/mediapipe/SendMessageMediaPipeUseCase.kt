@@ -3,14 +3,21 @@
  **/
 package com.romankryvolapov.localailauncher.domain.usecase.mediapipe
 
+import com.google.common.util.concurrent.ListenableFuture
+import com.google.common.util.concurrent.MoreExecutors
 import com.google.mediapipe.tasks.genai.llminference.LlmInference
+import com.google.mediapipe.tasks.genai.llminference.LlmInferenceSession
+import com.google.mediapipe.tasks.genai.llminference.LlmInferenceSession.LlmInferenceSessionOptions
+import com.google.mediapipe.tasks.genai.llminference.ProgressListener
+import com.romankryvolapov.localailauncher.domain.models.ChatMessageModel
 import com.romankryvolapov.localailauncher.domain.models.base.ErrorType
 import com.romankryvolapov.localailauncher.domain.models.base.ResultEmittedData
 import com.romankryvolapov.localailauncher.domain.usecase.base.BaseUseCase
 import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logError
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.callbackFlow
+import java.util.UUID
 
 class SendMessageMediaPipeUseCase : BaseUseCase {
 
@@ -19,15 +26,31 @@ class SendMessageMediaPipeUseCase : BaseUseCase {
     }
 
     fun invoke(
-        inputPrompt: String,
+        dialogID: UUID,
+        messageID: UUID,
+        message: String,
         llmInference: LlmInference,
-    ): Flow<ResultEmittedData<String>> = flow {
+        topK: Int = 40,
+        topP: Float = 1.0f,
+        randomSeed: Int = 0,
+        temperature: Float = 0.8f,
+    ): Flow<ResultEmittedData<ChatMessageModel>> = callbackFlow {
         logDebug("invoke", TAG)
-        emit(ResultEmittedData.loading())
+        trySend(ResultEmittedData.loading())
+        var session: LlmInferenceSession? = null
         try {
-            val result = llmInference.generateResponse(inputPrompt)
-            if (result.isEmpty()) {
-                emit(
+            val sessionOptions = LlmInferenceSessionOptions.builder()
+                .setTopK(topK)
+                .setTopP(topP)
+                .setTemperature(temperature)
+                .setRandomSeed(randomSeed)
+                .build()
+            session = try {
+                LlmInferenceSession.createFromOptions(llmInference, sessionOptions)
+            } catch (e: Exception) {
+                logError("createSession failed", e, TAG)
+                llmInference.close()
+                trySend(
                     ResultEmittedData.error(
                         model = null,
                         error = null,
@@ -37,18 +60,62 @@ class SendMessageMediaPipeUseCase : BaseUseCase {
                         errorType = ErrorType.EXCEPTION,
                     )
                 )
-            } else {
-                emit(
-                    ResultEmittedData.success(
-                        model = result,
-                        responseCode = null,
-                        message = null,
-                    )
-                )
+                llmInference.close()
+                close()
+                return@callbackFlow
             }
+            session.addQueryChunk(message)
+            val future: ListenableFuture<String> = session.generateResponseAsync(
+                ProgressListener { partial, done ->
+                    if (!done) {
+                        val loading = ChatMessageModel(
+                            id = messageID,
+                            message = partial,
+                            dialogID = dialogID,
+                            messageData = partial,
+                            timeStamp = System.currentTimeMillis(),
+                        )
+                        trySend(
+                            ResultEmittedData.loading(
+                                model = loading
+                            )
+                        )
+                    }
+                }
+            )
+            future.addListener({
+                val fullText = future.get()
+                if (fullText.isEmpty()) {
+                    trySend(
+                        ResultEmittedData.error(
+                            model = null,
+                            error = null,
+                            title = "Engine error",
+                            message = "Empty response",
+                            responseCode = null,
+                            errorType = ErrorType.EXCEPTION
+                        )
+                    )
+                } else {
+                    val result = ChatMessageModel(
+                        id = messageID,
+                        messageData = "",
+                        message = fullText,
+                        dialogID = dialogID,
+                        timeStamp = System.currentTimeMillis(),
+                    )
+                    trySend(
+                        ResultEmittedData.success(
+                            model = result,
+                            message = null,
+                            responseCode = null,
+                        )
+                    )
+                }
+            }, MoreExecutors.directExecutor())
         } catch (e: Exception) {
             logError("Error", e, TAG)
-            emit(
+            trySend(
                 ResultEmittedData.error(
                     model = null,
                     error = null,
@@ -58,6 +125,9 @@ class SendMessageMediaPipeUseCase : BaseUseCase {
                     errorType = ErrorType.EXCEPTION,
                 )
             )
+        } finally {
+            session?.close()
+// TODO           llmInference.close()
         }
     }
 

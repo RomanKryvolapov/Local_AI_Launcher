@@ -25,15 +25,18 @@ class StartEngineMediaPipeUseCase : BaseUseCase {
     fun invoke(
         modelFile: File,
         context: Context,
+        maxTopK: Int = 64,
+        maxTokens: Int = 1000,
+        backend:  LlmInference.Backend = LlmInference.Backend.CPU,
     ): Flow<ResultEmittedData<LlmInference>> = flow {
         logDebug("invoke", TAG)
         emit(ResultEmittedData.loading())
         try {
             val interfaceOptions = LlmInference.LlmInferenceOptions.builder()
                 .setModelPath(modelFile.path)
-                .setMaxTokens(1000)
-                .setMaxTopK(64)
-                .setPreferredBackend(LlmInference.Backend.CPU)
+                .setMaxTokens(maxTokens)
+                .setMaxTopK(maxTopK)
+                .setPreferredBackend(backend)
                 .build()
             val llmInference = LlmInference.createFromOptions(context, interfaceOptions)
             emit(
