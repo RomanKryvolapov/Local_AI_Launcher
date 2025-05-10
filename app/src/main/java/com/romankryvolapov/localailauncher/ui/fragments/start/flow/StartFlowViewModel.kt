@@ -1,5 +1,5 @@
 /**
- * Created 2025 by Roman Kryvolapov
+ * Created & Copyright 2025 by Roman Kryvolapov
  **/
 package com.romankryvolapov.localailauncher.ui.fragments.start.flow
 

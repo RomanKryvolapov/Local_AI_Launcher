@@ -2,7 +2,7 @@
  * Used to disable arrow key
  * Please follow code style when editing project
  * Please follow principles of clean architecture
- * Created 2023 by Roman Kryvolapov
+ * Created & Copyright 2025 by Roman Kryvolapov
  */
 package com.romankryvolapov.localailauncher.ui.view
 

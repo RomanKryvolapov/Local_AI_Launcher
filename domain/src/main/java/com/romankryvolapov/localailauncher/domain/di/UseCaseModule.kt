@@ -7,30 +7,37 @@
  * val name: Class by inject(parameters={parametersOf("param")}) -> parameter passing in class
  * Please follow code style when editing project
  * Please follow principles of clean architecture
- * Created 2025 by Roman Kryvolapov
+ * Created & Copyright 2025 by Roman Kryvolapov
  */
 package com.romankryvolapov.localailauncher.domain.di
 
-import com.romankryvolapov.localailauncher.domain.usecase.CopyAssetsToFileUseCase
+import com.romankryvolapov.localailauncher.domain.usecase.CopyAllAssetFilesToUserFilesUseCase
+import com.romankryvolapov.localailauncher.domain.usecase.CopyAssetFileToUserFilesUseCase
 import com.romankryvolapov.localailauncher.domain.usecase.DownloadFromHuggingFaceUseCase
-import com.romankryvolapov.localailauncher.domain.usecase.SendMessageMediaPipeUseCase
-import com.romankryvolapov.localailauncher.domain.usecase.SendMessageUseCase
-import com.romankryvolapov.localailauncher.domain.usecase.StartEngineMediaPipeUseCase
-import com.romankryvolapov.localailauncher.domain.usecase.StartEngineUseCase
+import com.romankryvolapov.localailauncher.domain.usecase.mediapipe.SendMessageMediaPipeUseCase
+import com.romankryvolapov.localailauncher.domain.usecase.mlcllm.SendMessageMLCEngineUseCase
+import com.romankryvolapov.localailauncher.domain.usecase.mediapipe.StartEngineMediaPipeUseCase
+import com.romankryvolapov.localailauncher.domain.usecase.mlcllm.StartMLCEngineUseCase
+import com.romankryvolapov.localailauncher.domain.usecase.tensorflow.SendMessageTensorFlowUseCase
+import com.romankryvolapov.localailauncher.domain.usecase.tensorflow.StartEngineTensorFlowUseCase
 import org.koin.dsl.module
 
 val useCaseModule = module {
 
-    factory<CopyAssetsToFileUseCase> {
-        CopyAssetsToFileUseCase()
+    factory<CopyAssetFileToUserFilesUseCase> {
+        CopyAssetFileToUserFilesUseCase()
     }
 
-    factory<StartEngineUseCase> {
-        StartEngineUseCase()
+    factory<CopyAllAssetFilesToUserFilesUseCase> {
+        CopyAllAssetFilesToUserFilesUseCase()
     }
 
-    factory<SendMessageUseCase> {
-        SendMessageUseCase()
+    factory<StartMLCEngineUseCase> {
+        StartMLCEngineUseCase()
+    }
+
+    factory<SendMessageMLCEngineUseCase> {
+        SendMessageMLCEngineUseCase()
     }
 
     factory<DownloadFromHuggingFaceUseCase> {
@@ -43,6 +50,14 @@ val useCaseModule = module {
 
     factory<SendMessageMediaPipeUseCase> {
         SendMessageMediaPipeUseCase()
+    }
+
+    factory<StartEngineTensorFlowUseCase> {
+        StartEngineTensorFlowUseCase()
+    }
+
+    factory<SendMessageTensorFlowUseCase> {
+        SendMessageTensorFlowUseCase()
     }
 
 }

@@ -1,5 +1,5 @@
 /**
- * Created 2025 by Roman Kryvolapov
+ * Created & Copyright 2025 by Roman Kryvolapov
  **/
 
 rootProject.name = "Local AI Launcher"
@@ -7,4 +7,3 @@ include ':app'
 include ':data'
 include ':domain'
 include ':gemma-3-1b-qat'
-include ':gemma-3-4b-qat'

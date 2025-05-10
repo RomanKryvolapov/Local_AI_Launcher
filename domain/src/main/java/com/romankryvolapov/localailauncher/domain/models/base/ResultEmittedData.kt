@@ -5,7 +5,7 @@
  * `LiveData<Result<T>>` to pass back the latest data to the UI with its fetch status.
  * Please follow code style when editing project
  * Please follow principles of clean architecture
- * Created 2025 by Roman Kryvolapov
+ * Created & Copyright 2025 by Roman Kryvolapov
  */
 package com.romankryvolapov.localailauncher.domain.models.base
 

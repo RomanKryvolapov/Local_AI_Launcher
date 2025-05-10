@@ -3,7 +3,7 @@
  * any arguments. This is more readable way.
  * Please follow code style when editing project
  * Please follow principles of clean architecture
- * Created 2025 by Roman Kryvolapov
+ * Created & Copyright 2025 by Roman Kryvolapov
  */
 package com.romankryvolapov.localailauncher.domain.extensions
 

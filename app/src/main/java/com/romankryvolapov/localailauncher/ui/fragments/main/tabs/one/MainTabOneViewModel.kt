@@ -1,14 +1,15 @@
 /**
- * Created 2025 by Roman Kryvolapov
+ * Created & Copyright 2025 by Roman Kryvolapov
  **/
 package com.romankryvolapov.localailauncher.ui.fragments.main.tabs.one
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.romankryvolapov.localailauncher.data.infrastructure.LaunchEngines
 import com.romankryvolapov.localailauncher.domain.models.base.onFailure
 import com.romankryvolapov.localailauncher.domain.models.base.onLoading
 import com.romankryvolapov.localailauncher.domain.models.base.onSuccess
-import com.romankryvolapov.localailauncher.domain.usecase.SendMessageUseCase
+import com.romankryvolapov.localailauncher.domain.usecase.mlcllm.SendMessageMLCEngineUseCase
 import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.extensions.launchInScope
 import com.romankryvolapov.localailauncher.extensions.readOnly
@@ -32,8 +33,9 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
 
     override var mainTabsEnum: MainTabsEnum? = MainTabsEnum.TAB_ONE
 
-    private val sendMessageUseCase: SendMessageUseCase by inject()
+    private val engines: LaunchEngines by inject()
     private val chatMessageModelUiMapper: ChatMessageModelUiMapper by inject()
+    private val sendMessageMLCEngineUseCase: SendMessageMLCEngineUseCase by inject()
 
     private val messagesMap = mutableMapOf<UUID, ChatMessageAdapterMarker>()
 
@@ -53,10 +55,11 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
         )
         _messagesLiveData.setValueOnMainThread(messagesMap.values.toList())
         val messageID = UUID.randomUUID()
-        sendMessageUseCase.invoke(
+        sendMessageMLCEngineUseCase.invoke(
             message = message,
             dialogID = dialogID,
             messageID = messageID,
+            mlcEngine = engines.mlcEngine!!
         ).onEach { result ->
             result.onLoading { model, _ ->
                 model?.let {
@@ -80,7 +83,7 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
     }
 
     fun cancelGeneration() {
-        sendMessageUseCase.cancel()
+        sendMessageMLCEngineUseCase.cancel()
     }
 
 }

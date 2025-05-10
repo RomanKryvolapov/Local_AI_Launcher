@@ -5,7 +5,7 @@
  * get<Class>{parametersOf("param")} -> parameter passing in module
  * single<Class>{(param: String)->Class(param)} -> parameter passing in module
  * val name: Class by inject(parameters={parametersOf("param")}) -> parameter passing in class
- * Created 2025 by Roman Kryvolapov
+ * Created & Copyright 2025 by Roman Kryvolapov
  */
 package com.romankryvolapov.localailauncher.domain.di
 
