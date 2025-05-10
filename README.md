@@ -98,6 +98,10 @@ git lfs track "*.so"
 
 git lfs track "*.jar"
 
+git lfs track "*.task"
+
+git lfs track "*.tflite"
+
 cat .gitattributes
 
 git add .

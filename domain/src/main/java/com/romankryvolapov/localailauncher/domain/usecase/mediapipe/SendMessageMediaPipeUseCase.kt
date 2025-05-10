@@ -15,6 +15,7 @@ import com.romankryvolapov.localailauncher.domain.models.base.ResultEmittedData
 import com.romankryvolapov.localailauncher.domain.usecase.base.BaseUseCase
 import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logError
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import java.util.UUID
@@ -65,14 +66,17 @@ class SendMessageMediaPipeUseCase : BaseUseCase {
                 return@callbackFlow
             }
             session.addQueryChunk(message)
+            val streamingResponse = StringBuilder()
             val future: ListenableFuture<String> = session.generateResponseAsync(
                 ProgressListener { partial, done ->
+                    logDebug("partial: $partial done: #done", TAG)
                     if (!done) {
+                        streamingResponse.append(partial)
                         val loading = ChatMessageModel(
                             id = messageID,
-                            message = partial,
+                            message = streamingResponse.toString(),
                             dialogID = dialogID,
-                            messageData = partial,
+                            messageData = "",
                             timeStamp = System.currentTimeMillis(),
                         )
                         trySend(
@@ -85,6 +89,7 @@ class SendMessageMediaPipeUseCase : BaseUseCase {
             )
             future.addListener({
                 val fullText = future.get()
+                logDebug("fullText: $fullText", TAG)
                 if (fullText.isEmpty()) {
                     trySend(
                         ResultEmittedData.error(
@@ -125,9 +130,10 @@ class SendMessageMediaPipeUseCase : BaseUseCase {
                     errorType = ErrorType.EXCEPTION,
                 )
             )
-        } finally {
+        }
+        awaitClose {
             session?.close()
-// TODO           llmInference.close()
+            llmInference.close()
         }
     }
 

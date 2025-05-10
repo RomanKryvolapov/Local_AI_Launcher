@@ -13,6 +13,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
+import android.view.WindowManager
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -81,6 +82,7 @@ class MainActivity : AppCompatActivity(),
         currentContext.attachBaseContext(this)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         bannerMessageWindowManager = BannerMessageWindowManager(this)
         setupNavController()
         subscribeToLiveData()

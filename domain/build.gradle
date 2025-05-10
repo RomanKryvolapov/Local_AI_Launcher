@@ -59,8 +59,8 @@ dependencies {
     // Build, Execution, Deployment →
     // Build Tools →
     // Gradle to 21 version
+
     api project(":gemma-3-1b-qat")
-    api  'org.tensorflow:tensorflow-lite:2.17.0'
     api "com.google.mediapipe:tasks-genai:0.10.23"
 
     // common

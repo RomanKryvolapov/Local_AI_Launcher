@@ -12,6 +12,7 @@ import com.romankryvolapov.localailauncher.domain.repository.common.PreferencesR
 import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logError
 import com.google.gson.Gson
+import com.romankryvolapov.localailauncher.domain.defaultApplicationInfo
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -28,12 +29,11 @@ internal class PreferencesRepositoryImpl : PreferencesRepository, KoinComponent 
         saveObject(value, PROPERTY_KEY_PIN_CODE)
     }
 
-    override fun readApplicationInfo(): ApplicationInfo? {
+    override fun readApplicationInfo(): ApplicationInfo {
         val value = readObject(ApplicationInfo::class.java, PROPERTY_KEY_PIN_CODE)
         logDebug("readPinCode value: $value", TAG)
-        return value
+        return value ?: defaultApplicationInfo
     }
-
 
     override fun logoutFromPreferences() {
         logDebug("logoutFromPreferences", TAG)

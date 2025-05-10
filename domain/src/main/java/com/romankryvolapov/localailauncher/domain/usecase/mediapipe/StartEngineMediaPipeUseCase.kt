@@ -4,12 +4,12 @@
 package com.romankryvolapov.localailauncher.domain.usecase.mediapipe
 
 import android.content.Context
+import android.util.Log
 import com.google.mediapipe.tasks.genai.llminference.LlmInference
 import com.romankryvolapov.localailauncher.domain.models.base.ErrorType
 import com.romankryvolapov.localailauncher.domain.models.base.ResultEmittedData
 import com.romankryvolapov.localailauncher.domain.usecase.base.BaseUseCase
 import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -27,32 +27,34 @@ class StartEngineMediaPipeUseCase : BaseUseCase {
         context: Context,
         maxTopK: Int = 64,
         maxTokens: Int = 1000,
-        backend:  LlmInference.Backend = LlmInference.Backend.CPU,
+        backend: LlmInference.Backend = LlmInference.Backend.CPU,
     ): Flow<ResultEmittedData<LlmInference>> = flow {
         logDebug("invoke", TAG)
         emit(ResultEmittedData.loading())
         try {
             val interfaceOptions = LlmInference.LlmInferenceOptions.builder()
-                .setModelPath(modelFile.path)
+                .setModelPath(modelFile.absolutePath)
                 .setMaxTokens(maxTokens)
                 .setMaxTopK(maxTopK)
                 .setPreferredBackend(backend)
                 .build()
             val llmInference = LlmInference.createFromOptions(context, interfaceOptions)
-            emit(
-                ResultEmittedData.success(
-                    message = null,
-                    responseCode = null,
-                    model = llmInference,
+            if (llmInference != null) {
+                emit(
+                    ResultEmittedData.success(
+                        message = null,
+                        responseCode = null,
+                        model = llmInference,
+                    )
                 )
-            )
+            }
         } catch (e: Exception) {
-            logError("Error", e, TAG)
+            Log.e(TAG, "exception: ${e.message}", e)
             emit(
                 ResultEmittedData.error(
                     model = null,
-                    error = null,
-                    title = "Engine error",
+                    error = e,
+                    title = "MediaPipe engine error",
                     responseCode = null,
                     message = e.message,
                     errorType = ErrorType.EXCEPTION,

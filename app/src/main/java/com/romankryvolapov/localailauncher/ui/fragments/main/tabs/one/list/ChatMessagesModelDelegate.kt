@@ -1,3 +1,6 @@
+/**
+ * Created & Copyright 2025 by Roman Kryvolapov
+ */
 package com.romankryvolapov.localailauncher.ui.fragments.main.tabs.one.list
 
 import android.view.View
@@ -47,6 +50,7 @@ class ChatMessagesModelDelegate :
             logDebug("bind message: ${model.message} messageData:  ${model.messageData}", TAG)
             binding.tvMessage.text = model.message
             binding.tvData.text = model.messageData
+            binding.tvData.visibility = if (model.messageData.isEmpty()) View.GONE else View.VISIBLE
         }
     }
 

@@ -9,7 +9,7 @@ interface PreferencesRepository {
 
     fun saveApplicationInfo(value: ApplicationInfo)
 
-    fun readApplicationInfo(): ApplicationInfo?
+    fun readApplicationInfo(): ApplicationInfo
 
     fun logoutFromPreferences()
 

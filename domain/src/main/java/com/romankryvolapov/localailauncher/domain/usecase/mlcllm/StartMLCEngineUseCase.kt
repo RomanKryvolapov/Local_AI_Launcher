@@ -4,6 +4,7 @@
 package com.romankryvolapov.localailauncher.domain.usecase.mlcllm
 
 import ai.mlc.mlcllm.MLCEngine
+import android.util.Log
 import com.romankryvolapov.localailauncher.domain.models.base.ErrorType
 import com.romankryvolapov.localailauncher.domain.models.base.ResultEmittedData
 import com.romankryvolapov.localailauncher.domain.usecase.base.BaseUseCase
@@ -17,7 +18,7 @@ import java.io.File
 class StartMLCEngineUseCase : BaseUseCase {
 
     companion object {
-        private const val TAG = "StartEngineUseCaseTag"
+        private const val TAG = "StartMLCEngineUseCaseTag"
     }
 
     fun invoke(
@@ -39,11 +40,12 @@ class StartMLCEngineUseCase : BaseUseCase {
                 )
             )
         } catch (e: Exception) {
+            Log.e(TAG, "exception: ${e.message}", e)
             emit(
                 ResultEmittedData.error(
                     model = null,
-                    error = null,
-                    title = "Engine error",
+                    error = e,
+                    title = "MLC engine error",
                     responseCode = null,
                     message = e.message,
                     errorType = ErrorType.EXCEPTION,

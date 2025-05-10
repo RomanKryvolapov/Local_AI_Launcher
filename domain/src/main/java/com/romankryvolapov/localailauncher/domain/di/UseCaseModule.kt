@@ -15,11 +15,9 @@ import com.romankryvolapov.localailauncher.domain.usecase.CopyAllAssetFilesToUse
 import com.romankryvolapov.localailauncher.domain.usecase.CopyAssetFileToUserFilesUseCase
 import com.romankryvolapov.localailauncher.domain.usecase.DownloadFromHuggingFaceUseCase
 import com.romankryvolapov.localailauncher.domain.usecase.mediapipe.SendMessageMediaPipeUseCase
-import com.romankryvolapov.localailauncher.domain.usecase.mlcllm.SendMessageMLCEngineUseCase
 import com.romankryvolapov.localailauncher.domain.usecase.mediapipe.StartEngineMediaPipeUseCase
+import com.romankryvolapov.localailauncher.domain.usecase.mlcllm.SendMessageMLCEngineUseCase
 import com.romankryvolapov.localailauncher.domain.usecase.mlcllm.StartMLCEngineUseCase
-import com.romankryvolapov.localailauncher.domain.usecase.tensorflow.SendMessageTensorFlowUseCase
-import com.romankryvolapov.localailauncher.domain.usecase.tensorflow.StartEngineTensorFlowUseCase
 import org.koin.dsl.module
 
 val useCaseModule = module {
@@ -50,14 +48,6 @@ val useCaseModule = module {
 
     factory<SendMessageMediaPipeUseCase> {
         SendMessageMediaPipeUseCase()
-    }
-
-    factory<StartEngineTensorFlowUseCase> {
-        StartEngineTensorFlowUseCase()
-    }
-
-    factory<SendMessageTensorFlowUseCase> {
-        SendMessageTensorFlowUseCase()
     }
 
 }
