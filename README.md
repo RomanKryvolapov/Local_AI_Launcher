@@ -76,17 +76,14 @@ This modular setup follows **Clean Architecture** principles and employs the **M
 
 ## Tech Stack
 
-* **Language**: Kotlin
-* **Build**: Gradle (Groovy DSL)
-* **Android SDK**: API 21+
+* **Language**: Kotlin, Java, C++
+* **Build**: Gradle Groovy DSL, CMake
 * **C++**: JNI wrappers for native inference libraries
 * **Libraries**:
 
-    * Jetpack Compose (UI)
-    * AndroidX Lifecycle (ViewModel, LiveData / Kotlin Flow)
-    * Dependency Injection (Hilt or Koin)
-    * MLC LLM, MediaPipe, ONNX Runtime, llama.cpp
-* **Supported ABIs**: arm64-v8a, armeabi-v7a, x86, x86\_64
+    * AndroidX Lifecycle, ViewModel, LiveData, Kotlin Flow
+    * Dependency Injection: Koin
+* **Supported ABIs**: arm64-v8a
 
 ## Directory Structure
 
