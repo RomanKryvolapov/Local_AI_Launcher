@@ -5,6 +5,7 @@ package com.romankryvolapov.localailauncher.domain
 
 import com.romankryvolapov.localailauncher.domain.Model.MLCEngineModel
 import com.romankryvolapov.localailauncher.domain.Model.MediaPipeModel
+import com.romankryvolapov.localailauncher.domain.Model.OnnxModel
 
 val models = mutableListOf<Model>(
     MLCEngineModel(
@@ -16,6 +17,11 @@ val models = mutableListOf<Model>(
     MediaPipeModel(
         modelID = "GEMMA_3_1B",
         modelName = "Gemma 3 1B",
-        modelFileName = "Gemma3-1B-IT_multi-prefill-seq_q4_ekv2048.task",
+        modelFileName = "mediapipe/Gemma3-1B-IT_multi-prefill-seq_q4_ekv2048.task",
     ),
+    OnnxModel(
+        modelID = "GEMMA_3_1B",
+        modelName = "Gemma 3 1B",
+        modelFileName = "onnx",
+    )
 )

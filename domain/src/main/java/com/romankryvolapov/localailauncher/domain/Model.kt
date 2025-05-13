@@ -36,4 +36,18 @@ sealed class Model(
         modelName = modelName,
         engineName = engineName,
     )
+
+    class OnnxModel(
+        override val modelID: String,
+        override val modelName: String,
+        override val engineID: String = "ONNX",
+        override val engineName: String = "ONNX",
+        val modelFileName: String
+    ) : Model(
+        modelID = modelID,
+        engineID = engineID,
+        modelName = modelName,
+        engineName = engineName,
+    )
+
 }

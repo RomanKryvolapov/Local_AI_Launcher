@@ -18,6 +18,8 @@ import com.romankryvolapov.localailauncher.domain.usecase.mediapipe.SendMessageM
 import com.romankryvolapov.localailauncher.domain.usecase.mediapipe.StartEngineMediaPipeUseCase
 import com.romankryvolapov.localailauncher.domain.usecase.mlcllm.SendMessageMLCEngineUseCase
 import com.romankryvolapov.localailauncher.domain.usecase.mlcllm.StartMLCEngineUseCase
+import com.romankryvolapov.localailauncher.domain.usecase.onnx.SendMessageOnnxEngineUseCase
+import com.romankryvolapov.localailauncher.domain.usecase.onnx.StartOnnxEngineUseCase
 import org.koin.dsl.module
 
 val useCaseModule = module {
@@ -48,6 +50,14 @@ val useCaseModule = module {
 
     factory<SendMessageMediaPipeUseCase> {
         SendMessageMediaPipeUseCase()
+    }
+
+    factory<StartOnnxEngineUseCase> {
+        StartOnnxEngineUseCase()
+    }
+
+    factory<SendMessageOnnxEngineUseCase> {
+        SendMessageOnnxEngineUseCase()
     }
 
 }

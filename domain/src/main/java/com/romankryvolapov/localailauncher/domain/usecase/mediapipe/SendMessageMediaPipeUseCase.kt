@@ -26,6 +26,8 @@ class SendMessageMediaPipeUseCase : BaseUseCase {
         private const val TAG = "SendMessageMediaPipeUseCaseTag"
     }
 
+    private var future: ListenableFuture<String>? = null
+
     fun invoke(
         dialogID: UUID,
         messageID: UUID,
@@ -67,7 +69,7 @@ class SendMessageMediaPipeUseCase : BaseUseCase {
             }
             session.addQueryChunk(message)
             val streamingResponse = StringBuilder()
-            val future: ListenableFuture<String> = session.generateResponseAsync(
+            future = session.generateResponseAsync(
                 ProgressListener { partial, done ->
                     logDebug("partial: $partial done: #done", TAG)
                     if (!done) {
@@ -87,10 +89,10 @@ class SendMessageMediaPipeUseCase : BaseUseCase {
                     }
                 }
             )
-            future.addListener({
-                val fullText = future.get()
+            future?.addListener({
+                val fullText = future?.get()
                 logDebug("fullText: $fullText", TAG)
-                if (fullText.isEmpty()) {
+                if (fullText?.isEmpty() == true) {
                     trySend(
                         ResultEmittedData.error(
                             model = null,
@@ -102,16 +104,15 @@ class SendMessageMediaPipeUseCase : BaseUseCase {
                         )
                     )
                 } else {
-                    val result = ChatMessageModel(
-                        id = messageID,
-                        messageData = "",
-                        message = fullText,
-                        dialogID = dialogID,
-                        timeStamp = System.currentTimeMillis(),
-                    )
                     trySend(
                         ResultEmittedData.success(
-                            model = result,
+                            model = ChatMessageModel(
+                                id = messageID,
+                                messageData = "",
+                                message = fullText ?: "",
+                                dialogID = dialogID,
+                                timeStamp = System.currentTimeMillis(),
+                            ),
                             message = null,
                             responseCode = null,
                         )
@@ -119,12 +120,12 @@ class SendMessageMediaPipeUseCase : BaseUseCase {
                 }
             }, MoreExecutors.directExecutor())
         } catch (e: Exception) {
-            logError("Error", e, TAG)
+            logError("Exception: ${e.message}", e, TAG)
             trySend(
                 ResultEmittedData.error(
                     model = null,
                     error = null,
-                    title = "Engine error",
+                    title = "MediaPipe engine error",
                     responseCode = null,
                     message = e.message,
                     errorType = ErrorType.EXCEPTION,
@@ -135,6 +136,10 @@ class SendMessageMediaPipeUseCase : BaseUseCase {
             session?.close()
             llmInference.close()
         }
+    }
+
+    fun cancel() {
+        future?.cancel(true)
     }
 
 }

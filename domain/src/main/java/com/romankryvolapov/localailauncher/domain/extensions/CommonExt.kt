@@ -35,3 +35,15 @@ fun String.sha256(): String? {
 fun String.capitalized(): String {
     return this.substring(0, 1).uppercase() + this.substring(1).lowercase();
 }
+
+fun <T> List<T>.nextOrFirst(current: T): T {
+    val index = indexOf(current)
+    if (index == -1) return current
+    return if (index + 1 < size) this[index + 1] else this.first()
+}
+
+fun <T> List<T>.nextOrFirstOrCurrent(current: T): T {
+    val index = indexOf(current)
+    if (index == -1) return current
+    return if (size == 1) current else if (index + 1 < size) this[index + 1] else this.first()
+}

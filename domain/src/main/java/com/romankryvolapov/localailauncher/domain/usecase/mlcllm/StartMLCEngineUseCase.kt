@@ -4,11 +4,11 @@
 package com.romankryvolapov.localailauncher.domain.usecase.mlcllm
 
 import ai.mlc.mlcllm.MLCEngine
-import android.util.Log
 import com.romankryvolapov.localailauncher.domain.models.base.ErrorType
 import com.romankryvolapov.localailauncher.domain.models.base.ResultEmittedData
 import com.romankryvolapov.localailauncher.domain.usecase.base.BaseUseCase
 import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -40,7 +40,7 @@ class StartMLCEngineUseCase : BaseUseCase {
                 )
             )
         } catch (e: Exception) {
-            Log.e(TAG, "exception: ${e.message}", e)
+            logError("Exception: ${e.message}", e, TAG)
             emit(
                 ResultEmittedData.error(
                     model = null,

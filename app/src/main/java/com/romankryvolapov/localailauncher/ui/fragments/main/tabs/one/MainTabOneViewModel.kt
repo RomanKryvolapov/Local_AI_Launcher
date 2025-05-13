@@ -11,6 +11,9 @@ import com.romankryvolapov.localailauncher.data.infrastructure.LaunchEngines
 import com.romankryvolapov.localailauncher.domain.Model
 import com.romankryvolapov.localailauncher.domain.Model.MLCEngineModel
 import com.romankryvolapov.localailauncher.domain.Model.MediaPipeModel
+import com.romankryvolapov.localailauncher.domain.Model.OnnxModel
+import com.romankryvolapov.localailauncher.domain.extensions.nextOrFirst
+import com.romankryvolapov.localailauncher.domain.extensions.nextOrFirstOrCurrent
 import com.romankryvolapov.localailauncher.domain.models
 import com.romankryvolapov.localailauncher.domain.models.base.onFailure
 import com.romankryvolapov.localailauncher.domain.models.base.onLoading
@@ -19,6 +22,8 @@ import com.romankryvolapov.localailauncher.domain.usecase.mediapipe.SendMessageM
 import com.romankryvolapov.localailauncher.domain.usecase.mediapipe.StartEngineMediaPipeUseCase
 import com.romankryvolapov.localailauncher.domain.usecase.mlcllm.SendMessageMLCEngineUseCase
 import com.romankryvolapov.localailauncher.domain.usecase.mlcllm.StartMLCEngineUseCase
+import com.romankryvolapov.localailauncher.domain.usecase.onnx.SendMessageOnnxEngineUseCase
+import com.romankryvolapov.localailauncher.domain.usecase.onnx.StartOnnxEngineUseCase
 import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.extensions.launchInScope
 import com.romankryvolapov.localailauncher.extensions.readOnly
@@ -33,6 +38,7 @@ import com.romankryvolapov.localailauncher.ui.fragments.main.base.BaseMainTabVie
 import kotlinx.coroutines.flow.onEach
 import org.koin.core.component.inject
 import java.io.File
+import java.time.temporal.TemporalAdjusters.next
 import java.util.UUID
 
 class MainTabOneViewModel : BaseMainTabViewModel() {
@@ -71,6 +77,9 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
     private val startEngineMediaPipeUseCase: StartEngineMediaPipeUseCase by inject()
     private val sendMessageMediaPipeUseCase: SendMessageMediaPipeUseCase by inject()
 
+    private val startOnnxEngineUseCase: StartOnnxEngineUseCase by inject()
+    private val sendMessageOnnxEngineUseCase: SendMessageOnnxEngineUseCase by inject()
+
     private val messagesMap = mutableMapOf<UUID, ChatMessageAdapterMarker>()
 
     private val _messagesLiveData = MutableLiveData<List<ChatMessageAdapterMarker>>()
@@ -85,7 +94,8 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
     private val _engineLoadStateLiveData = MutableLiveData<EngineLoadingState>()
     val engineLoadStateLiveData = _engineLoadStateLiveData.readOnly()
 
-    private val _engineGeneratingStateLiveData = MutableLiveData<EngineGeneratingState>(EngineGeneratingState.READY)
+    private val _engineGeneratingStateLiveData =
+        MutableLiveData<EngineGeneratingState>(EngineGeneratingState.READY)
     val engineGeneratingStateLiveData = _engineGeneratingStateLiveData.readOnly()
 
     private var selected: Model? = null
@@ -101,6 +111,7 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
     }
 
     fun sendMessage(message: String) {
+        logDebug("sendMessage message: $message", TAG)
         when (selected) {
             is MLCEngineModel -> {
                 if (engines.mlcEngine == null) {
@@ -117,6 +128,16 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
                     showErrorState(
                         title = StringSource(R.string.error_internal_error_short),
                         description = StringSource("MediaPipe engine not loaded")
+                    )
+                    return
+                }
+            }
+
+            is OnnxModel -> {
+                if (engines.simpleGenAI == null) {
+                    showErrorState(
+                        title = StringSource(R.string.error_internal_error_short),
+                        description = StringSource("ONNX engine not loaded")
                     )
                     return
                 }
@@ -139,14 +160,9 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
         )
         _messagesLiveData.setValueOnMainThread(messagesMap.values.toList())
         when (selected) {
-            is MLCEngineModel -> {
-                sendMessageMLC(message)
-            }
-
-            is MediaPipeModel -> {
-                sendMessageMediaPipe(message)
-            }
-
+            is MLCEngineModel -> sendMessageMLC(message)
+            is MediaPipeModel -> sendMessageMediaPipe(message)
+            is OnnxModel -> sendMessageOnnx(message)
             else -> {}
         }
     }
@@ -165,6 +181,7 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
                     messagesMap[messageID] = chatMessageModelUiMapper.map(model)
                     _messagesLiveData.setValueOnMainThread(messagesMap.values.toList())
                 }
+                _engineGeneratingStateLiveData.setValueOnMainThread(EngineGeneratingState.IN_PROCESS)
             }.onSuccess { model, _, _ ->
                 messagesMap[messageID] = chatMessageModelUiMapper.map(model)
                 _messagesLiveData.setValueOnMainThread(messagesMap.values.toList())
@@ -195,6 +212,38 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
                     messagesMap[messageID] = chatMessageModelUiMapper.map(model)
                     _messagesLiveData.setValueOnMainThread(messagesMap.values.toList())
                 }
+                _engineGeneratingStateLiveData.setValueOnMainThread(EngineGeneratingState.IN_PROCESS)
+            }.onSuccess { model, _, _ ->
+                messagesMap[messageID] = chatMessageModelUiMapper.map(model)
+                _messagesLiveData.setValueOnMainThread(messagesMap.values.toList())
+                _engineGeneratingStateLiveData.setValueOnMainThread(EngineGeneratingState.READY)
+            }.onFailure { error, title, message, responseCode, errorType ->
+                messagesMap[messageID] = ChatMessageErrorUi(
+                    id = messageID,
+                    message = message ?: "Unknown error",
+                    timeStamp = System.currentTimeMillis(),
+                )
+                _messagesLiveData.setValueOnMainThread(messagesMap.values.toList())
+                _engineGeneratingStateLiveData.setValueOnMainThread(EngineGeneratingState.READY)
+            }
+        }.launchInScope(viewModelScope)
+    }
+
+    private fun sendMessageOnnx(message: String) {
+        logDebug("sendMessageOnnx message: $message", TAG)
+        val messageID = UUID.randomUUID()
+        sendMessageOnnxEngineUseCase.invoke(
+            message = message,
+            dialogID = dialogID,
+            messageID = messageID,
+            engine = engines.simpleGenAI!!
+        ).onEach { result ->
+            result.onLoading { model, _ ->
+                model?.let {
+                    messagesMap[messageID] = chatMessageModelUiMapper.map(model)
+                    _messagesLiveData.setValueOnMainThread(messagesMap.values.toList())
+                }
+                _engineGeneratingStateLiveData.setValueOnMainThread(EngineGeneratingState.IN_PROCESS)
             }.onSuccess { model, _, _ ->
                 messagesMap[messageID] = chatMessageModelUiMapper.map(model)
                 _messagesLiveData.setValueOnMainThread(messagesMap.values.toList())
@@ -212,7 +261,10 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
     }
 
     fun cancelGeneration() {
+        logDebug("cancelGeneration", TAG)
         sendMessageMLCEngineUseCase.cancel()
+        sendMessageMediaPipeUseCase.cancel()
+        _engineGeneratingStateLiveData.setValueOnMainThread(EngineGeneratingState.READY)
     }
 
     fun onLoadClicked() {
@@ -222,6 +274,7 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
             when (selected) {
                 is MLCEngineModel -> startMLCEngine(selected as MLCEngineModel)
                 is MediaPipeModel -> startMediaPipeEngine(selected as MediaPipeModel)
+                is OnnxModel -> startOnnxEngine(selected as OnnxModel)
                 else -> {}
             }
         } else {
@@ -323,18 +376,59 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
         }.launchInScope(viewModelScope)
     }
 
+    private fun startOnnxEngine(modelEngine: OnnxModel) {
+        logDebug("Start ONNX engine", TAG)
+        updateEngineLoadingState(EngineLoadingState.LOADING)
+        hideErrorState()
+        val applicationInfo = preferences.readApplicationInfo()
+        preferences.saveApplicationInfo(
+            applicationInfo.copy(
+                selectedModelPosition = models.indexOf(modelEngine),
+            )
+        )
+        val modelFile = File(
+            currentContext.get().filesDir,
+            modelEngine.modelFileName
+        )
+        if (!modelFile.exists()) {
+            showErrorState(
+                title = StringSource(R.string.error_internal_error_short),
+                description = StringSource("ONNX engine error: file ${modelFile.path} not exist")
+            )
+            return
+        }
+        startOnnxEngineUseCase.invoke(
+            modelFile = modelFile,
+        ).onEach { result ->
+            result.onSuccess { model, _, responseCode ->
+                if (result.model == null) {
+                    showErrorState(
+                        title = StringSource(R.string.error_internal_error_short),
+                        description = StringSource("ONNX engine error: result.model is null")
+                    )
+                    return@onSuccess
+                }
+                engines.simpleGenAI = result.model
+                _engineLiveData.setValueOnMainThread(modelEngine.engineName)
+                _modelLiveData.setValueOnMainThread(modelEngine.modelName)
+                updateEngineLoadingState(EngineLoadingState.LOADED)
+                logDebug("ONNX engine loaded", TAG)
+            }.onFailure { error, title, message, responseCode, errorType ->
+                showErrorState(
+                    title = StringSource(R.string.error_internal_error_short),
+                    description = StringSource("ONNX engine error: $message")
+                )
+            }
+        }.launchInScope(viewModelScope)
+    }
+
     fun onSpinnerEngineClicked() {
         logDebug("onSpinnerEngineClicked", TAG)
         updateEngineLoadingState(EngineLoadingState.NOT_LOADED)
         selected = if (selected == null) {
             models.first()
         } else {
-            val nextSelected = models.firstOrNull { it::class != selected!!::class }
-            if (nextSelected != null) {
-                nextSelected
-            } else {
-                selected
-            }
+            models.nextOrFirstOrCurrent(selected)
         }
         _engineLiveData.setValueOnMainThread(selected?.engineName ?: "Unknown engine")
         _modelLiveData.setValueOnMainThread(selected?.modelName ?: "Unknown model")

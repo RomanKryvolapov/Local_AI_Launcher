@@ -17,7 +17,7 @@ android {
     namespace 'com.romankryvolapov.localailauncher.data'
 
     defaultConfig {
-        minSdk 24
+        minSdk 27
         targetSdk 35
         consumerProguardFiles "consumer-rules.pro"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

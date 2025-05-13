@@ -22,7 +22,7 @@ import java.util.UUID
 class SendMessageMLCEngineUseCase : BaseUseCase {
 
     companion object {
-        private const val TAG = "CopyAssetsToFileUseCaseTag"
+        private const val TAG = "SendMessageMLCEngineUseCaseTag"
     }
 
     @Volatile
@@ -121,12 +121,12 @@ class SendMessageMLCEngineUseCase : BaseUseCase {
                 }
             }
         } catch (e: Exception) {
-            logError("Error", e, TAG)
+            logError("Exception: ${e.message}", e, TAG)
             emit(
                 ResultEmittedData.error(
                     model = null,
                     error = null,
-                    title = "Engine error",
+                    title = "MLC engine error",
                     responseCode = null,
                     message = e.message,
                     errorType = ErrorType.EXCEPTION,

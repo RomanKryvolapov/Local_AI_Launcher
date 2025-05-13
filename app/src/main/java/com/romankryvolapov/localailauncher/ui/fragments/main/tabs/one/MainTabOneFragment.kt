@@ -69,7 +69,7 @@ class MainTabOneFragment :
         viewModel.messagesLiveData.observe(viewLifecycleOwner) {
             logDebug("messagesLiveData size: ${it.size}", TAG)
             adapter.items = it
-            binding.recyclerView.scrollToPosition(it.size)
+            binding.recyclerView.smoothScrollToPosition(adapter.itemCount - 1)
         }
         viewModel.engineLiveData.observe(viewLifecycleOwner) {
             binding.spinnerEngine.text = "Engine (click to change): $it"

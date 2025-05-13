@@ -4,12 +4,13 @@
 package com.romankryvolapov.localailauncher.domain.usecase.mediapipe
 
 import android.content.Context
-import android.util.Log
+import android.util.Log.e
 import com.google.mediapipe.tasks.genai.llminference.LlmInference
 import com.romankryvolapov.localailauncher.domain.models.base.ErrorType
 import com.romankryvolapov.localailauncher.domain.models.base.ResultEmittedData
 import com.romankryvolapov.localailauncher.domain.usecase.base.BaseUseCase
 import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -47,9 +48,22 @@ class StartEngineMediaPipeUseCase : BaseUseCase {
                         model = llmInference,
                     )
                 )
+                logDebug("Ready", TAG)
+            } else {
+                emit(
+                    ResultEmittedData.error(
+                        model = null,
+                        error = null,
+                        title = "MediaPipe engine error",
+                        responseCode = null,
+                        message = "MediaPipe engine is null",
+                        errorType = ErrorType.EXCEPTION,
+                    )
+                )
+                logError("llmInference == null", TAG)
             }
         } catch (e: Exception) {
-            Log.e(TAG, "exception: ${e.message}", e)
+            logError("Exception: ${e.message}", e, TAG)
             emit(
                 ResultEmittedData.error(
                     model = null,

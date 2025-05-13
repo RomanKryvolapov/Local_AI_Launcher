@@ -11,10 +11,13 @@ android {
     compileSdk 35
 
     defaultConfig {
-        minSdk 24
+        minSdk 27
         targetSdk 35
         versionCode 1
         versionName "1.0"
+        ndk {
+            abiFilters 'arm64-v8a'
+        }
     }
 
     compileOptions {
@@ -31,10 +34,20 @@ android {
             jniLibs.srcDirs = ['output']
         }
     }
+
+    aaptOptions {
+        noCompress "onnx", "tflite", "bin", "json", "gguf", "ggml", "model", "pt", "safetensors"
+    }
+
 }
 
 dependencies {
-    implementation fileTree(dir: 'output', include: ['*.jar'])
+    api fileTree(dir: 'output', include: ['*.jar', '*.aar'])
+
+    api 'com.microsoft.onnxruntime:onnxruntime-android:1.22.0'
+
+    api "com.google.mediapipe:tasks-genai:0.10.23"
+
     implementation 'androidx.core:core-ktx:1.16.0'
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'com.google.android.material:material:1.12.0'
