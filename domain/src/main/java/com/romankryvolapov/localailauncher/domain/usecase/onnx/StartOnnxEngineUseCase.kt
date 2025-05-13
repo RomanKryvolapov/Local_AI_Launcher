@@ -31,7 +31,7 @@ class StartOnnxEngineUseCase : BaseUseCase {
                     responseCode = null,
                 )
             )
-            logDebug("Ready", TAG)
+            logDebug("ready", TAG)
         } catch (e: Exception) {
             logError("Exception: ${e.message}", e, TAG)
             emit(

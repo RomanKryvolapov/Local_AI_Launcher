@@ -9,7 +9,7 @@
  */
 package com.romankryvolapov.localailauncher.di
 
-import com.romankryvolapov.localailauncher.mappers.ChatMessageModelUiMapper
+import com.romankryvolapov.localailauncher.mappers.chat.ChatMessageModelUiMapper
 import org.koin.dsl.module
 
 val mappersModule = module {

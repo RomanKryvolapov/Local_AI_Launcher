@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 import java.util.UUID
 
 @Parcelize
-class ChatMessageModelUi(
+data class ChatMessageModelUi(
     val id: UUID,
     val timeStamp: Long,
     val message: String,

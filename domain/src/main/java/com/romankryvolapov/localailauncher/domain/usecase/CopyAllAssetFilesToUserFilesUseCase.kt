@@ -10,8 +10,9 @@ import com.romankryvolapov.localailauncher.domain.usecase.base.BaseUseCase
 import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logError
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
 import java.io.File
 
@@ -24,22 +25,39 @@ class CopyAllAssetFilesToUserFilesUseCase : BaseUseCase {
     fun invoke(
         filesDir: File,
         assetManager: AssetManager,
-    ): Flow<ResultEmittedData<Unit>> = flow {
+    ): Flow<ResultEmittedData<String>> = callbackFlow {
         logDebug("invoke", TAG)
-        emit(ResultEmittedData.loading())
         try {
+            val totalFiles = countAssetFiles(assetManager, "")
+            var copiedCount = 0
             clearFilesDir(filesDir)
-            copyAssetsRecursively(assetManager, "", filesDir)
-            emit(
+            trySend(
+                ResultEmittedData.loading(
+                    model = "Coped 0 files from $totalFiles"
+                )
+            )
+            copyAssetsRecursively(
+                assetManager,
+                "",
+                filesDir
+            ) {
+                copiedCount++
+                trySend(
+                    ResultEmittedData.loading(
+                        model = "Coped $copiedCount files from $totalFiles"
+                    )
+                )
+            }
+            trySend(
                 ResultEmittedData.success(
-                    model = Unit,
+                    model = "Coped all files",
                     message = null,
                     responseCode = null,
                 )
             )
         } catch (e: Exception) {
             logError("Error copying assets", e, TAG)
-            emit(
+            trySend(
                 ResultEmittedData.error(
                     model = null,
                     error = null,
@@ -50,11 +68,29 @@ class CopyAllAssetFilesToUserFilesUseCase : BaseUseCase {
                 )
             )
         }
+        awaitClose {
+        }
     }.flowOn(Dispatchers.IO)
 
-    private fun copyAssetsRecursively(assetManager: AssetManager, path: String, destDir: File) {
-        val files = assetManager.list(path) ?: return
+    private fun countAssetFiles(assetManager: AssetManager, path: String): Int {
+        val files = assetManager.list(path) ?: return 0
         if (files.isEmpty()) {
+            return 1
+        }
+        return files.sumOf { file ->
+            val subPath = if (path.isEmpty()) file else "$path/$file"
+            countAssetFiles(assetManager, subPath)
+        }
+    }
+
+    private fun copyAssetsRecursively(
+        assetManager: AssetManager,
+        path: String,
+        destDir: File,
+        onFileCopied: () -> Unit
+    ) {
+        val entries = assetManager.list(path) ?: return
+        if (entries.isEmpty()) {
             val outFile = File(destDir, path)
             outFile.parentFile?.mkdirs()
             assetManager.open(path).use { inStream ->
@@ -62,21 +98,19 @@ class CopyAllAssetFilesToUserFilesUseCase : BaseUseCase {
                     inStream.copyTo(outStream)
                 }
             }
+            onFileCopied()
         } else {
-            for (file in files) {
-                val subPath = if (path.isEmpty()) file else "$path/$file"
-                copyAssetsRecursively(assetManager, subPath, destDir)
+            for (entry in entries) {
+                val subPath = if (path.isEmpty()) entry else "$path/$entry"
+                copyAssetsRecursively(assetManager, subPath, destDir, onFileCopied)
             }
         }
     }
 
     private fun clearFilesDir(filesDir: File) {
         filesDir.listFiles()?.forEach { file ->
-            if (file.isDirectory) {
-                file.deleteRecursively()
-            } else {
-                file.delete()
-            }
+            if (file.isDirectory) file.deleteRecursively()
+            else file.delete()
         }
     }
 }

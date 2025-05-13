@@ -12,6 +12,7 @@ package com.romankryvolapov.localailauncher.di
 import com.romankryvolapov.localailauncher.ui.fragments.main.tabs.one.list.ChatMessagesErrorDelegate
 import com.romankryvolapov.localailauncher.ui.fragments.main.tabs.one.list.ChatMessagesModelDelegate
 import com.romankryvolapov.localailauncher.ui.fragments.main.tabs.one.list.ChatMessagesUserDelegate
+import com.romankryvolapov.localailauncher.ui.fragments.start.splash.list.SplashLoadingMessagesDelegate
 import org.koin.dsl.module
 
 val delegatesModule = module {
@@ -26,6 +27,10 @@ val delegatesModule = module {
 
     single<ChatMessagesErrorDelegate> {
         ChatMessagesErrorDelegate()
+    }
+
+    single<SplashLoadingMessagesDelegate> {
+        SplashLoadingMessagesDelegate()
     }
 
 }

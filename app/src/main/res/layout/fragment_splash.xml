@@ -8,14 +8,18 @@
     android:background="@color/color_black"
     android:fitsSystemWindows="true">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvTitle"
-        style="@style/TextStyle.18sp.Bold.EFF6FF"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:singleLine="false"
-        android:text="Wait" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/margin_32"
+        android:layout_marginBottom="@dimen/margin_32"
+        android:background="@color/color_black"
+        android:clipToPadding="false"
+        android:scrollbars="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:itemCount="12"
+        tools:listitem="@layout/list_item_loading_element"
+        tools:visibility="visible" />
 
 </FrameLayout>

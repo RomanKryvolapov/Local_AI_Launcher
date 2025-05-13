@@ -3,24 +3,28 @@
  **/
 package com.romankryvolapov.localailauncher.ui.fragments.start.splash
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.romankryvolapov.localailauncher.BuildConfig
 import com.romankryvolapov.localailauncher.NavActivityDirections
 import com.romankryvolapov.localailauncher.R
 import com.romankryvolapov.localailauncher.domain.DEBUG_LOGOUT_FROM_PREFERENCES
+import com.romankryvolapov.localailauncher.domain.models
 import com.romankryvolapov.localailauncher.domain.models.base.onFailure
+import com.romankryvolapov.localailauncher.domain.models.base.onLoading
 import com.romankryvolapov.localailauncher.domain.models.base.onSuccess
 import com.romankryvolapov.localailauncher.domain.usecase.CopyAllAssetFilesToUserFilesUseCase
 import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.extensions.launchInScope
 import com.romankryvolapov.localailauncher.extensions.readOnly
 import com.romankryvolapov.localailauncher.extensions.setValueOnMainThread
+import com.romankryvolapov.localailauncher.models.common.StringSource
+import com.romankryvolapov.localailauncher.models.splash.SplashLoadingMessageUi
 import com.romankryvolapov.localailauncher.ui.BaseViewModel
 import kotlinx.coroutines.flow.onEach
 import org.koin.core.component.inject
 import java.io.File
+import java.util.UUID
 import kotlin.system.exitProcess
 
 class SplashViewModel : BaseViewModel() {
@@ -31,9 +35,9 @@ class SplashViewModel : BaseViewModel() {
 
     private val copyAllAssetFilesToUserFilesUseCase: CopyAllAssetFilesToUserFilesUseCase by inject()
 
-    private val messages = StringBuilder()
+    private val messages = mutableMapOf<UUID, SplashLoadingMessageUi>()
 
-    private val _messagesLiveData = MutableLiveData<String>()
+    private val _messagesLiveData = MutableLiveData<List<SplashLoadingMessageUi>>()
     val messagesLiveData = _messagesLiveData.readOnly()
 
     override fun onFirstAttach() {
@@ -44,19 +48,63 @@ class SplashViewModel : BaseViewModel() {
             logDebug("logoutFromPreferences", TAG)
         }
 
-        addMessage("OpenCL available: ${hasOpenCLLibrary()}")
+        addMessage(
+            model = SplashLoadingMessageUi(
+                message = "OpenCL available: ${hasOpenCLLibrary()}"
+            )
+        )
 
         val applicationInfo = preferences.readApplicationInfo()
 
-        addMessage("Is first run: ${applicationInfo.isFirstFun}")
+        addMessage(
+            model = SplashLoadingMessageUi(
+                message = "Is first run: ${applicationInfo.isFirstFun}"
+            )
+        )
+
+        models.forEach { model ->
+            val modelFile = File(
+                currentContext.get().filesDir,
+                model.modelFileName
+            )
+            if (modelFile.exists()) {
+                addMessage(
+                    model = SplashLoadingMessageUi(
+                        message = "${model.engineName} ${model.modelName} found"
+                    )
+                )
+            }  else {
+                addMessage(
+                    model = SplashLoadingMessageUi(
+                        message = "${model.engineName} ${model.modelName} not found"
+                    )
+                )
+                return
+            }
+        }
+
+        val copyAllAssetFilesToUserFilesMessageID = UUID.randomUUID()
+
         // TODO if (applicationInfo.isFirstFun) {
         if (true) {
             copyAllAssetFilesToUserFilesUseCase.invoke(
                 filesDir = currentContext.get().filesDir,
                 assetManager = currentContext.get().assets,
             ).onEach { result ->
-                result.onSuccess { model, _, responseCode ->
-                    addMessage("Model copied")
+                result.onLoading { model, _ ->
+                    addMessage(
+                        id = copyAllAssetFilesToUserFilesMessageID,
+                        model = SplashLoadingMessageUi(
+                            id = copyAllAssetFilesToUserFilesMessageID,
+                            message = model.toString(),
+                        )
+                    )
+                }.onSuccess { model, _, responseCode ->
+                    addMessage(
+                        model = SplashLoadingMessageUi(
+                            message = "Model copied",
+                        )
+                    )
                     preferences.saveApplicationInfo(
                         applicationInfo.copy(
                             isFirstFun = false
@@ -64,7 +112,11 @@ class SplashViewModel : BaseViewModel() {
                     )
                     openMainTabs()
                 }.onFailure { error, title, message, responseCode, errorType ->
-                    addMessage("Model not copied, error: $error")
+                    addMessage(
+                        model = SplashLoadingMessageUi(
+                            message = "Model not copied, error: $error",
+                        )
+                    )
                     preferences.saveApplicationInfo(
                         applicationInfo.copy(
                             isFirstFun = true
@@ -113,11 +165,13 @@ class SplashViewModel : BaseViewModel() {
         }
     }
 
-    private fun addMessage(message: String) {
-        Log.d(TAG, "addMessage: $message")
-        messages.append("\n")
-        messages.append(message)
-        _messagesLiveData.setValueOnMainThread(messages.toString())
+    private fun addMessage(
+        id: UUID = UUID.randomUUID(),
+        model: SplashLoadingMessageUi
+    ) {
+        logDebug("addMessage: ${model.message}", TAG)
+        messages[id] = model
+        _messagesLiveData.setValueOnMainThread(messages.values.toList())
     }
 
     private fun openMainTabs() {

@@ -7,16 +7,18 @@ import ai.mlc.mlcllm.MLCEngine
 import ai.mlc.mlcllm.OpenAIProtocol.ChatCompletionMessage
 import ai.mlc.mlcllm.OpenAIProtocol.ChatCompletionRole
 import ai.mlc.mlcllm.OpenAIProtocol.StreamOptions
-import com.romankryvolapov.localailauncher.domain.models.ChatMessageModel
+import com.romankryvolapov.localailauncher.domain.models.chat.ChatMessageModel
 import com.romankryvolapov.localailauncher.domain.models.base.ErrorType
 import com.romankryvolapov.localailauncher.domain.models.base.ResultEmittedData
 import com.romankryvolapov.localailauncher.domain.usecase.base.BaseUseCase
 import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logError
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 class SendMessageMLCEngineUseCase : BaseUseCase {
@@ -33,13 +35,13 @@ class SendMessageMLCEngineUseCase : BaseUseCase {
         dialogID: UUID,
         messageID: UUID,
         mlcEngine: MLCEngine,
-    ): Flow<ResultEmittedData<ChatMessageModel>> = flow {
+    ): Flow<ResultEmittedData<ChatMessageModel>> = callbackFlow {
         logDebug("invoke", TAG)
-        emit(ResultEmittedData.loading())
-        isGenerationAllowed = true
-        try {
-            val streamingResponse = StringBuilder()
-            var usageInfoText = StringBuilder()
+        val job = launch(Dispatchers.IO) {
+            trySend(ResultEmittedData.loading())
+            isGenerationAllowed = true
+            val messageStringBuilder = StringBuilder()
+            val usageInfoText = StringBuilder()
             val channel = mlcEngine.chat.completions.create(
                 messages = listOf(
                     ChatCompletionMessage(
@@ -65,73 +67,82 @@ class SendMessageMLCEngineUseCase : BaseUseCase {
                 stream_options = StreamOptions(include_usage = true), // Активирует потоковые данные или уточняет детали.
                 stop = listOf("<end_of_turn>")
             )
-            for (response in channel) {
-                response.choices.firstOrNull()?.delta?.content?.asText()?.let { textChunk ->
-                    streamingResponse.append(textChunk)
-                }
-                if (response.usage == null) {
-                    if (isGenerationAllowed) {
-                        emit(
-                            ResultEmittedData.loading(
-                                model = ChatMessageModel(
-                                    id = messageID,
-                                    timeStamp = System.currentTimeMillis(),
-                                    message = streamingResponse.toString(),
-                                    messageData = "",
-                                    dialogID = dialogID,
+            try {
+                for (response in channel) {
+                    response.choices.firstOrNull()?.delta?.content?.asText()?.let { textChunk ->
+                        messageStringBuilder.append(textChunk)
+                    }
+                    if (response.usage == null) {
+                        if (isGenerationAllowed) {
+                            trySend(
+                                ResultEmittedData.loading(
+                                    model = ChatMessageModel(
+                                        id = messageID,
+                                        timeStamp = System.currentTimeMillis(),
+                                        message = messageStringBuilder.toString(),
+                                        messageData = "",
+                                        dialogID = dialogID,
+                                    )
                                 )
                             )
-                        )
+                        } else {
+                            trySend(
+                                ResultEmittedData.success(
+                                    message = null,
+                                    responseCode = null,
+                                    model = ChatMessageModel(
+                                        id = messageID,
+                                        timeStamp = System.currentTimeMillis(),
+                                        message = messageStringBuilder.toString(),
+                                        messageData = "",
+                                        dialogID = dialogID,
+                                    ),
+                                )
+                            )
+                            return@launch
+                        }
                     } else {
-                        emit(
+                        usageInfoText.append("prompt: ${response.usage!!.prompt_tokens} tok ")
+                        usageInfoText.append("completion: ${response.usage!!.completion_tokens} tok ")
+                        usageInfoText.append("total: ${response.usage!!.total_tokens} tok ")
+                        usageInfoText.append("\n")
+                        usageInfoText.append("prefill: ${response.usage!!.extra?.prefill_tokens_per_s?.toInt()} tok/s ")
+                        usageInfoText.append("decode: ${response.usage!!.extra?.decode_tokens_per_s?.toInt()} tok/s ")
+                        trySend(
                             ResultEmittedData.success(
                                 message = null,
                                 responseCode = null,
                                 model = ChatMessageModel(
                                     id = messageID,
                                     timeStamp = System.currentTimeMillis(),
-                                    message = streamingResponse.toString(),
-                                    messageData = "",
+                                    message = messageStringBuilder.toString(),
+                                    messageData = usageInfoText.toString(),
                                     dialogID = dialogID,
                                 ),
                             )
                         )
-                        break
                     }
-                } else {
-                    usageInfoText.append("prompt: ${response.usage!!.prompt_tokens} tok ")
-                    usageInfoText.append("completion: ${response.usage!!.completion_tokens} tok ")
-                    usageInfoText.append("total: ${response.usage!!.total_tokens} tok ")
-                    usageInfoText.append("\n")
-                    usageInfoText.append("prefill: ${response.usage!!.extra?.prefill_tokens_per_s?.toInt()} tok/s ")
-                    usageInfoText.append("decode: ${response.usage!!.extra?.decode_tokens_per_s?.toInt()} tok/s ")
-                    emit(
-                        ResultEmittedData.success(
-                            message = null,
-                            responseCode = null,
-                            model = ChatMessageModel(
-                                id = messageID,
-                                timeStamp = System.currentTimeMillis(),
-                                message = streamingResponse.toString(),
-                                messageData = usageInfoText.toString(),
-                                dialogID = dialogID,
-                            ),
-                        )
-                    )
                 }
-            }
-        } catch (e: Exception) {
-            logError("Exception: ${e.message}", e, TAG)
-            emit(
-                ResultEmittedData.error(
-                    model = null,
-                    error = null,
-                    title = "MLC engine error",
-                    responseCode = null,
-                    message = e.message,
-                    errorType = ErrorType.EXCEPTION,
+                logDebug("result: $messageStringBuilder", TAG)
+            } catch (e: Exception) {
+                logError("Exception: ${e.message}", e, TAG)
+                trySend(
+                    ResultEmittedData.error(
+                        model = null,
+                        error = null,
+                        title = "MLC engine error",
+                        responseCode = null,
+                        message = e.message,
+                        errorType = ErrorType.EXCEPTION,
+                    )
                 )
-            )
+            } finally {
+                close()
+            }
+        }
+        awaitClose {
+            isGenerationAllowed = false
+            job.cancel()
         }
     }.flowOn(Dispatchers.IO)
 

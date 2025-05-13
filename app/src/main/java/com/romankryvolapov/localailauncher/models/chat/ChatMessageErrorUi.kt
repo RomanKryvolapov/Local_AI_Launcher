@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 import java.util.UUID
 
 @Parcelize
-class ChatMessageErrorUi(
+data class ChatMessageErrorUi(
     val id: UUID,
     val timeStamp: Long,
     val message: String,

@@ -6,4 +6,6 @@ rootProject.name = "Local AI Launcher"
 include ':app'
 include ':data'
 include ':domain'
-include ':gemma-3-1b-qat'
+include ':mlc-llm-engine'
+include ':mediapipe-engine'
+include ':onnx-engine'

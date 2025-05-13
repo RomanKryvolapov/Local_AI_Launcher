@@ -11,7 +11,7 @@ val models = mutableListOf<Model>(
     MLCEngineModel(
         modelID = "GEMMA_3_1B",
         modelName = "Gemma 3 1B",
-        modelFileName = "gemma-3-1b-it-q4f16_1-MLC",
+        modelFileName = "mlc/gemma-3-1b-it-q4f16_1-MLC",
         modelLib = "gemma3_text_q4f16_1_15281663a194ab7a82d5f6c3b0d59432",
     ),
     MediaPipeModel(

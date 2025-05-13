@@ -15,4 +15,18 @@ class LaunchEngines {
 
     var simpleGenAI: SimpleGenAI? = null
 
+    fun clear() {
+
+        mlcEngine?.reset()
+        mlcEngine?.unload()
+        mlcEngine = null
+
+        llmInference?.close()
+        llmInference = null
+
+        simpleGenAI?.close()
+        simpleGenAI = null
+
+    }
+
 }

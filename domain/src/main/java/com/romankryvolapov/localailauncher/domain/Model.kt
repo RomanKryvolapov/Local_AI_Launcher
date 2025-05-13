@@ -8,6 +8,7 @@ sealed class Model(
     open val engineID: String,
     open val modelName: String,
     open val engineName: String,
+    open val modelFileName: String,
 ) {
 
     class MLCEngineModel(
@@ -15,13 +16,14 @@ sealed class Model(
         override val modelName: String,
         override val engineID: String = "MLC",
         override val engineName: String = "MLC",
+        override val modelFileName: String,
         val modelLib: String,
-        val modelFileName: String,
     ) : Model(
         modelID = modelID,
         engineID = engineID,
         modelName = modelName,
         engineName = engineName,
+        modelFileName = modelFileName,
     )
 
     class MediaPipeModel(
@@ -29,12 +31,13 @@ sealed class Model(
         override val modelName: String,
         override val engineID: String = "MEDIA_PIPE",
         override val engineName: String = "MediaPipe",
-        val modelFileName: String
+        override val modelFileName: String,
     ) : Model(
         modelID = modelID,
         engineID = engineID,
         modelName = modelName,
         engineName = engineName,
+        modelFileName = modelFileName,
     )
 
     class OnnxModel(
@@ -42,12 +45,13 @@ sealed class Model(
         override val modelName: String,
         override val engineID: String = "ONNX",
         override val engineName: String = "ONNX",
-        val modelFileName: String
+        override val modelFileName: String,
     ) : Model(
         modelID = modelID,
         engineID = engineID,
         modelName = modelName,
         engineName = engineName,
+        modelFileName = modelFileName,
     )
 
 }

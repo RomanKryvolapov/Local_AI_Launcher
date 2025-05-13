@@ -4,7 +4,6 @@
 package com.romankryvolapov.localailauncher.domain.usecase.mediapipe
 
 import android.content.Context
-import android.util.Log.e
 import com.google.mediapipe.tasks.genai.llminference.LlmInference
 import com.romankryvolapov.localailauncher.domain.models.base.ErrorType
 import com.romankryvolapov.localailauncher.domain.models.base.ResultEmittedData
@@ -62,6 +61,7 @@ class StartEngineMediaPipeUseCase : BaseUseCase {
                 )
                 logError("llmInference == null", TAG)
             }
+            logDebug("ready", TAG)
         } catch (e: Exception) {
             logError("Exception: ${e.message}", e, TAG)
             emit(

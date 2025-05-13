@@ -3,7 +3,7 @@
  **/
 package com.romankryvolapov.localailauncher.domain.repository.database
 
-import com.romankryvolapov.localailauncher.domain.models.ChatMessageModel
+import com.romankryvolapov.localailauncher.domain.models.chat.ChatMessageModel
 
 interface ChatDialogDatabaseRepository {
 

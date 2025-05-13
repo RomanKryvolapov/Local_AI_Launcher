@@ -39,6 +39,7 @@ class StartMLCEngineUseCase : BaseUseCase {
                     responseCode = null,
                 )
             )
+            logDebug("ready", TAG)
         } catch (e: Exception) {
             logError("Exception: ${e.message}", e, TAG)
             emit(

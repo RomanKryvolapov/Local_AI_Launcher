@@ -10,11 +10,16 @@
 package com.romankryvolapov.localailauncher.di
 
 import com.romankryvolapov.localailauncher.ui.fragments.main.tabs.one.list.ChatMessagesAdapter
+import com.romankryvolapov.localailauncher.ui.fragments.start.splash.list.SplashLoadingMessagesAdapter
 import org.koin.dsl.module
 
 val adaptersModule = module {
 
     single<ChatMessagesAdapter> {
         ChatMessagesAdapter()
+    }
+
+    single<SplashLoadingMessagesAdapter> {
+        SplashLoadingMessagesAdapter()
     }
 }
