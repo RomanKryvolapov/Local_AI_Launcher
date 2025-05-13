@@ -3,13 +3,13 @@
  **/
 package com.romankryvolapov.localailauncher.ui.fragments.main.tabs.one
 
-import android.R.id.message
 import androidx.annotation.ColorRes
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.romankryvolapov.localailauncher.R
 import com.romankryvolapov.localailauncher.data.infrastructure.LaunchEngines
 import com.romankryvolapov.localailauncher.domain.Model
+import com.romankryvolapov.localailauncher.domain.Model.LlamaCppModel
 import com.romankryvolapov.localailauncher.domain.Model.MLCEngineModel
 import com.romankryvolapov.localailauncher.domain.Model.MediaPipeModel
 import com.romankryvolapov.localailauncher.domain.Model.OnnxModel
@@ -18,6 +18,8 @@ import com.romankryvolapov.localailauncher.domain.models
 import com.romankryvolapov.localailauncher.domain.models.base.onFailure
 import com.romankryvolapov.localailauncher.domain.models.base.onLoading
 import com.romankryvolapov.localailauncher.domain.models.base.onSuccess
+import com.romankryvolapov.localailauncher.domain.usecase.llama.SendMessageLLamaCppEngineUseCase
+import com.romankryvolapov.localailauncher.domain.usecase.llama.StartLLamaCppEngineUseCase
 import com.romankryvolapov.localailauncher.domain.usecase.mediapipe.SendMessageMediaPipeUseCase
 import com.romankryvolapov.localailauncher.domain.usecase.mediapipe.StartEngineMediaPipeUseCase
 import com.romankryvolapov.localailauncher.domain.usecase.mlcllm.SendMessageMLCEngineUseCase
@@ -35,7 +37,6 @@ import com.romankryvolapov.localailauncher.models.chat.ChatMessageUserUi
 import com.romankryvolapov.localailauncher.models.common.StringSource
 import com.romankryvolapov.localailauncher.models.main.MainTabsEnum
 import com.romankryvolapov.localailauncher.ui.fragments.main.base.BaseMainTabViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.onEach
 import org.koin.core.component.inject
 import java.io.File
@@ -79,6 +80,9 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
 
     private val startOnnxEngineUseCase: StartOnnxEngineUseCase by inject()
     private val sendMessageOnnxEngineUseCase: SendMessageOnnxEngineUseCase by inject()
+
+    private val startLLamaCppEngineUseCase: StartLLamaCppEngineUseCase by inject()
+    private val sendMessageLLamaCppEngineUseCase: SendMessageLLamaCppEngineUseCase by inject()
 
     private val messagesMap = mutableMapOf<UUID, ChatMessageAdapterMarker>()
 
@@ -145,6 +149,16 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
                 }
             }
 
+            is LlamaCppModel -> {
+                if (engines.llamaAndroid == null) {
+                    showErrorState(
+                        title = StringSource(R.string.error_internal_error_short),
+                        description = StringSource("LLama engine not loaded")
+                    )
+                    return
+                }
+            }
+
             else -> {
                 showErrorState(
                     title = StringSource(R.string.error_internal_error_short),
@@ -165,6 +179,7 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
             is MLCEngineModel -> sendMessageMLC(message)
             is MediaPipeModel -> sendMessageMediaPipe(message)
             is OnnxModel -> sendMessageOnnx(message)
+            is LlamaCppModel -> sendMessageLlama(message)
             else -> {}
         }
     }
@@ -176,7 +191,7 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
             message = message,
             dialogID = dialogID,
             messageID = messageID,
-            mlcEngine = engines.mlcEngine!!
+            engine = engines.mlcEngine!!
         ).onEach { result ->
             result.onLoading { model, _ ->
                 logDebug("sendMessageMLC onLoading model: ${model?.message}", TAG)
@@ -209,7 +224,7 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
             message = message,
             dialogID = dialogID,
             messageID = messageID,
-            llmInference = engines.llmInference!!
+            engine = engines.llmInference!!
         ).onEach { result ->
             result.onLoading { model, _ ->
                 logDebug("sendMessageOnnx onLoading model: ${model?.message}", TAG)
@@ -268,6 +283,39 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
         }.launchInJob(viewModelScope)
     }
 
+    private fun sendMessageLlama(message: String) {
+        logDebug("sendMessageLlama message: $message", TAG)
+        val messageID = UUID.randomUUID()
+        sendMessageLLamaCppEngineUseCase.invoke(
+            message = message,
+            dialogID = dialogID,
+            messageID = messageID,
+            engine = engines.llamaAndroid!!
+        ).onEach { result ->
+            result.onLoading { model, _ ->
+                logDebug("sendMessageLlama onLoading model: ${model?.message}", TAG)
+                model?.let {
+                    messagesMap[messageID] = chatMessageModelUiMapper.map(model)
+                    _messagesLiveData.setValueOnMainThread(messagesMap.values.toList())
+                }
+                _engineGeneratingStateLiveData.setValueOnMainThread(EngineGeneratingState.IN_PROCESS)
+            }.onSuccess { model, _, _ ->
+                logDebug("sendMessageLlama onSuccess model: ${model.message}", TAG)
+                messagesMap[messageID] = chatMessageModelUiMapper.map(model)
+                _messagesLiveData.setValueOnMainThread(messagesMap.values.toList())
+                _engineGeneratingStateLiveData.setValueOnMainThread(EngineGeneratingState.READY)
+            }.onFailure { error, title, message, responseCode, errorType ->
+                messagesMap[messageID] = ChatMessageErrorUi(
+                    id = messageID,
+                    message = message ?: "Unknown error",
+                    timeStamp = System.currentTimeMillis(),
+                )
+                _messagesLiveData.setValueOnMainThread(messagesMap.values.toList())
+                _engineGeneratingStateLiveData.setValueOnMainThread(EngineGeneratingState.READY)
+            }
+        }.launchInJob(viewModelScope)
+    }
+
     fun onLoadClicked() {
         logDebug("onLoadClicked", TAG)
         cancelGeneration()
@@ -279,6 +327,7 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
                 is MLCEngineModel -> startMLCEngine(selected as MLCEngineModel)
                 is MediaPipeModel -> startMediaPipeEngine(selected as MediaPipeModel)
                 is OnnxModel -> startOnnxEngine(selected as OnnxModel)
+                is LlamaCppModel -> startLlamaEngine(selected as LlamaCppModel)
                 else -> {
                     showErrorState(
                         title = StringSource(R.string.error_internal_error_short),
@@ -303,6 +352,7 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
         sendMessageMLCEngineUseCase.cancel()
         sendMessageMediaPipeUseCase.cancel()
         sendMessageOnnxEngineUseCase.cancel()
+        sendMessageLLamaCppEngineUseCase.cancel()
         _engineGeneratingStateLiveData.setValueOnMainThread(EngineGeneratingState.READY)
     }
 
@@ -417,6 +467,44 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
                 showErrorState(
                     title = StringSource(R.string.error_internal_error_short),
                     description = StringSource("ONNX engine error: $message")
+                )
+            }
+        }.launchInJob(viewModelScope)
+    }
+
+    private fun startLlamaEngine(modelEngine: LlamaCppModel) {
+        logDebug("Start LLama.cpp engine", TAG)
+        val modelFile = File(
+            currentContext.get().filesDir,
+            modelEngine.modelFileName
+        )
+        if (!modelFile.exists()) {
+            showErrorState(
+                title = StringSource(R.string.error_internal_error_short),
+                description = StringSource("LLama.cpp engine error: file ${modelFile.path} not exist")
+            )
+            return
+        }
+        startLLamaCppEngineUseCase.invoke(
+            modelFile = modelFile,
+        ).onEach { result ->
+            result.onSuccess { model, _, responseCode ->
+                if (result.model == null) {
+                    showErrorState(
+                        title = StringSource(R.string.error_internal_error_short),
+                        description = StringSource("LLama.cpp engine error: result.model is null")
+                    )
+                    return@onSuccess
+                }
+                engines.llamaAndroid = result.model
+                _engineLiveData.setValueOnMainThread(modelEngine.engineName)
+                _modelLiveData.setValueOnMainThread(modelEngine.modelName)
+                updateEngineLoadingState(EngineLoadingState.LOADED)
+                logDebug("LLama.cpp engine loaded", TAG)
+            }.onFailure { error, title, message, responseCode, errorType ->
+                showErrorState(
+                    title = StringSource(R.string.error_internal_error_short),
+                    description = StringSource("LLama.cpp engine error: $message")
                 )
             }
         }.launchInJob(viewModelScope)

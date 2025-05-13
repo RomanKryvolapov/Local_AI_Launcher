@@ -62,27 +62,6 @@ class SplashViewModel : BaseViewModel() {
             )
         )
 
-        models.forEach { model ->
-            val modelFile = File(
-                currentContext.get().filesDir,
-                model.modelFileName
-            )
-            if (modelFile.exists()) {
-                addMessage(
-                    model = SplashLoadingMessageUi(
-                        message = "${model.engineName} ${model.modelName} found"
-                    )
-                )
-            }  else {
-                addMessage(
-                    model = SplashLoadingMessageUi(
-                        message = "${model.engineName} ${model.modelName} not found"
-                    )
-                )
-                return
-            }
-        }
-
         val copyAllAssetFilesToUserFilesMessageID = UUID.randomUUID()
 
         // TODO if (applicationInfo.isFirstFun) {
@@ -110,7 +89,7 @@ class SplashViewModel : BaseViewModel() {
                             isFirstFun = false
                         )
                     )
-                    openMainTabs()
+                    checkEnginesFiles()
                 }.onFailure { error, title, message, responseCode, errorType ->
                     addMessage(
                         model = SplashLoadingMessageUi(
@@ -125,6 +104,30 @@ class SplashViewModel : BaseViewModel() {
                 }
             }.launchInScope(viewModelScope)
         }
+    }
+
+    private fun checkEnginesFiles() {
+        models.forEach { model ->
+            val modelFile = File(
+                currentContext.get().filesDir,
+                model.modelFileName
+            )
+            if (modelFile.exists()) {
+                addMessage(
+                    model = SplashLoadingMessageUi(
+                        message = "${model.engineName} ${model.modelName} found"
+                    )
+                )
+            } else {
+                addMessage(
+                    model = SplashLoadingMessageUi(
+                        message = "${model.engineName} ${model.modelName} not found"
+                    )
+                )
+                return
+            }
+        }
+        openMainTabs()
     }
 
 //    private fun loadModelFile(filename: String): MappedByteBuffer {

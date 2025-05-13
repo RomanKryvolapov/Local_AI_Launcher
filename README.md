@@ -5,13 +5,18 @@ Launching the Gemma 3 LLM model on an Android smartphone using different Ai engi
 Currently implemented: 
 MLC LLM, 
 MediaPipe, 
-ONNX
+ONNX,
+llama.cpp
 
-In future updates: 
-llama.cpp, 
+In future updates:
 PyTorch, 
 and others
 
-Downloading from HuggingFace, history, model settings and other functions will also be implemented.
+Also: 
+Downloading from HuggingFace, 
+history, 
+model settings 
+and other functions will be implemented.
 
-My site: https://romankryvolapov.com/en/ 
+My site:
+https://romankryvolapov.com/en/ 

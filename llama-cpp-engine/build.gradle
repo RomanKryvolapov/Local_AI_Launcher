@@ -1,0 +1,74 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.serialization'
+}
+
+android {
+
+    namespace 'com.google'
+
+    compileSdk 35
+
+    defaultConfig {
+        minSdk 27
+        targetSdk 35
+        versionCode 1
+        versionName "1.0"
+        ndk {
+            abiFilters 'arm64-v8a'
+        }
+        externalNativeBuild {
+            cmake {
+                arguments "-DLLAMA_CURL=OFF",
+                        "-DLLAMA_BUILD_COMMON=ON",
+                        "-DGGML_LLAMAFILE=OFF",
+                        "-DCMAKE_BUILD_TYPE=Release"
+                cppFlags "-frtti", "-fexceptions"
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['output']
+        }
+    }
+
+    aaptOptions {
+        noCompress "onnx", "tflite", "bin", "json", "gguf", "ggml", "model", "pt", "safetensors"
+    }
+
+    externalNativeBuild {
+        cmake {
+            path("src/main/cpp/CMakeLists.txt")
+            version = "3.22.1"
+        }
+    }
+
+    //     // опционально: копировать модель в рабочий каталог
+    //    sourceSets {
+    //        main {
+    //            assets.srcDirs += 'src/main/assets'
+    //        }
+    //    }
+
+}
+
+dependencies {
+    api fileTree(dir: 'output', include: ['*.jar', '*.aar'])
+
+    implementation 'androidx.core:core-ktx:1.16.0'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1'
+}

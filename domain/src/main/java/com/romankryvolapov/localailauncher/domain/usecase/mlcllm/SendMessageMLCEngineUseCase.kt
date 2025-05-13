@@ -34,7 +34,7 @@ class SendMessageMLCEngineUseCase : BaseUseCase {
         message: String,
         dialogID: UUID,
         messageID: UUID,
-        mlcEngine: MLCEngine,
+        engine: MLCEngine,
     ): Flow<ResultEmittedData<ChatMessageModel>> = callbackFlow {
         logDebug("invoke", TAG)
         val job = launch(Dispatchers.IO) {
@@ -42,7 +42,7 @@ class SendMessageMLCEngineUseCase : BaseUseCase {
             isGenerationAllowed = true
             val messageStringBuilder = StringBuilder()
             val usageInfoText = StringBuilder()
-            val channel = mlcEngine.chat.completions.create(
+            val channel = engine.chat.completions.create(
                 messages = listOf(
                     ChatCompletionMessage(
                         role = ChatCompletionRole.user,

@@ -54,4 +54,19 @@ sealed class Model(
         modelFileName = modelFileName,
     )
 
+
+    class LlamaCppModel(
+        override val modelID: String,
+        override val modelName: String,
+        override val engineID: String = "LLAMA_CPP",
+        override val engineName: String = "LLama.cpp",
+        override val modelFileName: String,
+    ) : Model(
+        modelID = modelID,
+        engineID = engineID,
+        modelName = modelName,
+        engineName = engineName,
+        modelFileName = modelFileName,
+    )
+
 }

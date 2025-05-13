@@ -3,11 +3,17 @@
  */
 package com.romankryvolapov.localailauncher.domain
 
+import com.romankryvolapov.localailauncher.domain.Model.LlamaCppModel
 import com.romankryvolapov.localailauncher.domain.Model.MLCEngineModel
 import com.romankryvolapov.localailauncher.domain.Model.MediaPipeModel
 import com.romankryvolapov.localailauncher.domain.Model.OnnxModel
 
 val models = mutableListOf<Model>(
+    LlamaCppModel(
+        modelID = "GEMMA_3_1B",
+        modelName = "Gemma 3 1B",
+        modelFileName = "llama/gemma-3-1B-it-QAT-Q4_0.gguf",
+    ),
     MLCEngineModel(
         modelID = "GEMMA_3_1B",
         modelName = "Gemma 3 1B",
@@ -23,5 +29,5 @@ val models = mutableListOf<Model>(
         modelID = "GEMMA_3_1B",
         modelName = "Gemma 3 1B",
         modelFileName = "onnx",
-    )
+    ),
 )

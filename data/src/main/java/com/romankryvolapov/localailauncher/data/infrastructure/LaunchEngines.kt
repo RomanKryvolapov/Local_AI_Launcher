@@ -6,6 +6,7 @@ package com.romankryvolapov.localailauncher.data.infrastructure
 import ai.mlc.mlcllm.MLCEngine
 import ai.onnxruntime.genai.SimpleGenAI
 import com.google.mediapipe.tasks.genai.llminference.LlmInference
+import com.romankryvolapov.localailauncher.llama.LLamaAndroid
 
 class LaunchEngines {
 
@@ -14,6 +15,8 @@ class LaunchEngines {
     var llmInference: LlmInference? = null
 
     var simpleGenAI: SimpleGenAI? = null
+
+    var llamaAndroid: LLamaAndroid? = null
 
     fun clear() {
 
@@ -26,6 +29,8 @@ class LaunchEngines {
 
         simpleGenAI?.close()
         simpleGenAI = null
+
+        llamaAndroid = null
 
     }
 

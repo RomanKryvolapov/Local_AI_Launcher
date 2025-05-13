@@ -36,7 +36,7 @@ class SendMessageMediaPipeUseCase : BaseUseCase {
         dialogID: UUID,
         messageID: UUID,
         message: String,
-        llmInference: LlmInference,
+        engine: LlmInference,
         topK: Int = 40,
         topP: Float = 1.0f,
         randomSeed: Int = 0,
@@ -57,10 +57,10 @@ class SendMessageMediaPipeUseCase : BaseUseCase {
                     .setRandomSeed(randomSeed)
                     .build()
                 session = try {
-                    LlmInferenceSession.createFromOptions(llmInference, sessionOptions)
+                    LlmInferenceSession.createFromOptions(engine, sessionOptions)
                 } catch (e: Exception) {
                     logError("createSession failed", e, TAG)
-                    llmInference.close()
+                    engine.close()
                     trySend(
                         ResultEmittedData.error(
                             model = null,
@@ -118,7 +118,7 @@ class SendMessageMediaPipeUseCase : BaseUseCase {
                                 ResultEmittedData.error(
                                     model = null,
                                     error = null,
-                                    title = "Engine error",
+                                    title = "MediaPipe engine error",
                                     message = "Empty response",
                                     responseCode = null,
                                     errorType = ErrorType.EXCEPTION

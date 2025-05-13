@@ -14,6 +14,8 @@ package com.romankryvolapov.localailauncher.domain.di
 import com.romankryvolapov.localailauncher.domain.usecase.CopyAllAssetFilesToUserFilesUseCase
 import com.romankryvolapov.localailauncher.domain.usecase.CopyAssetFileToUserFilesUseCase
 import com.romankryvolapov.localailauncher.domain.usecase.DownloadFromHuggingFaceUseCase
+import com.romankryvolapov.localailauncher.domain.usecase.llama.SendMessageLLamaCppEngineUseCase
+import com.romankryvolapov.localailauncher.domain.usecase.llama.StartLLamaCppEngineUseCase
 import com.romankryvolapov.localailauncher.domain.usecase.mediapipe.SendMessageMediaPipeUseCase
 import com.romankryvolapov.localailauncher.domain.usecase.mediapipe.StartEngineMediaPipeUseCase
 import com.romankryvolapov.localailauncher.domain.usecase.mlcllm.SendMessageMLCEngineUseCase
@@ -58,6 +60,14 @@ val useCaseModule = module {
 
     factory<SendMessageOnnxEngineUseCase> {
         SendMessageOnnxEngineUseCase()
+    }
+
+    factory<StartLLamaCppEngineUseCase> {
+        StartLLamaCppEngineUseCase()
+    }
+
+    factory<SendMessageLLamaCppEngineUseCase> {
+        SendMessageLLamaCppEngineUseCase()
     }
 
 }

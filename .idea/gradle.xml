@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/data" />
             <option value="$PROJECT_DIR$/domain" />
+            <option value="$PROJECT_DIR$/llama-cpp-engine" />
             <option value="$PROJECT_DIR$/mediapipe-engine" />
             <option value="$PROJECT_DIR$/mlc-llm-engine" />
             <option value="$PROJECT_DIR$/onnx-engine" />
