@@ -1,3 +1,6 @@
+/**
+ * Created & Copyright 2025 by Roman Kryvolapov
+ */
 package com.romankryvolapov.localailauncher.domain.usecase.llama
 
 import com.romankryvolapov.localailauncher.domain.models.base.ErrorType
@@ -8,7 +11,6 @@ import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logError
 import com.romankryvolapov.localailauncher.llama.LLamaAndroid
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import java.io.File

@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.romankryvolapov.localailauncher.BuildConfig
 import com.romankryvolapov.localailauncher.NavActivityDirections
 import com.romankryvolapov.localailauncher.R
+import com.romankryvolapov.localailauncher.domain.DEBUG_FORCE_REPLACE_ASSETS
 import com.romankryvolapov.localailauncher.domain.DEBUG_LOGOUT_FROM_PREFERENCES
 import com.romankryvolapov.localailauncher.domain.models
 import com.romankryvolapov.localailauncher.domain.models.base.onFailure
@@ -18,7 +19,6 @@ import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.extensions.launchInScope
 import com.romankryvolapov.localailauncher.extensions.readOnly
 import com.romankryvolapov.localailauncher.extensions.setValueOnMainThread
-import com.romankryvolapov.localailauncher.models.common.StringSource
 import com.romankryvolapov.localailauncher.models.splash.SplashLoadingMessageUi
 import com.romankryvolapov.localailauncher.ui.BaseViewModel
 import kotlinx.coroutines.flow.onEach
@@ -64,8 +64,7 @@ class SplashViewModel : BaseViewModel() {
 
         val copyAllAssetFilesToUserFilesMessageID = UUID.randomUUID()
 
-        // TODO if (applicationInfo.isFirstFun) {
-        if (true) {
+        if (applicationInfo.isFirstFun || DEBUG_FORCE_REPLACE_ASSETS) {
             copyAllAssetFilesToUserFilesUseCase.invoke(
                 filesDir = currentContext.get().filesDir,
                 assetManager = currentContext.get().assets,

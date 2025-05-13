@@ -1,3 +1,6 @@
+/**
+ * Created & Copyright 2025 by Roman Kryvolapov
+ */
 package com.romankryvolapov.localailauncher.ui.fragments.start.splash.list
 
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter

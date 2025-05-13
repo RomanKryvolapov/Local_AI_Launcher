@@ -1,3 +1,6 @@
+/**
+ * Created & Copyright 2025 by Roman Kryvolapov
+ */
 package com.romankryvolapov.localailauncher.domain.usecase.onnx
 
 import ai.onnxruntime.genai.GeneratorParams

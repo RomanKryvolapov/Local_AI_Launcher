@@ -1,3 +1,6 @@
+/**
+ * Created & Copyright 2025 by Roman Kryvolapov
+ */
 package com.romankryvolapov.localailauncher.domain.usecase.llama
 
 import com.romankryvolapov.localailauncher.domain.models.base.ErrorType
@@ -8,6 +11,7 @@ import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logError
 import com.romankryvolapov.localailauncher.llama.LLamaAndroid
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -15,6 +19,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.CancellationException
 import java.util.UUID
 
 class SendMessageLLamaCppEngineUseCase : BaseUseCase {
@@ -23,8 +28,7 @@ class SendMessageLLamaCppEngineUseCase : BaseUseCase {
         private const val TAG = "SendMessageLLamaCppEngineUseCaseTag"
     }
 
-    @Volatile
-    private var isGenerationAllowed = true
+    private var generationJob: Job? = null
 
     fun invoke(
         dialogID: UUID,
@@ -33,9 +37,8 @@ class SendMessageLLamaCppEngineUseCase : BaseUseCase {
         engine: LLamaAndroid,
     ): Flow<ResultEmittedData<ChatMessageModel>> = callbackFlow {
         logDebug("invoke", TAG)
-        val job = launch(Dispatchers.IO) {
+        generationJob = launch(Dispatchers.IO) {
             trySend(ResultEmittedData.loading())
-            isGenerationAllowed = true
             val messageStringBuilder = StringBuilder()
             engine.send(message).onCompletion { error ->
                 if (error == null) {
@@ -54,6 +57,8 @@ class SendMessageLLamaCppEngineUseCase : BaseUseCase {
                         )
                     )
                     logDebug("result: $messageStringBuilder", TAG)
+                } else if (error is CancellationException) {
+                    logDebug("generation cancelled", TAG)
                 } else {
                     logError("onCompletion exception: ${error.message}", error, TAG)
                     trySend(
@@ -96,13 +101,12 @@ class SendMessageLLamaCppEngineUseCase : BaseUseCase {
             }
         }
         awaitClose {
-            isGenerationAllowed = false
-            job.cancel()
+            generationJob?.cancel()
         }
     }.flowOn(Dispatchers.IO)
 
     fun cancel() {
-        isGenerationAllowed = false
+        generationJob?.cancel()
     }
 
 }

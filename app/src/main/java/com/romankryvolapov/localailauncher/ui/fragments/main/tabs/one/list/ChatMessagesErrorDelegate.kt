@@ -1,3 +1,6 @@
+/**
+ * Created & Copyright 2025 by Roman Kryvolapov
+ */
 package com.romankryvolapov.localailauncher.ui.fragments.main.tabs.one.list
 
 import android.view.ViewGroup
