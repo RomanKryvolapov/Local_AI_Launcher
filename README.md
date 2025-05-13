@@ -1,10 +1,6 @@
 # Local AI Launcher
 
-Launching the **Gemma 3 LLM** model on an Android smartphone using various AI engines.
-
-## Website
-
-Visit the project site: [romankryvolapov.com](https://romankryvolapov.com/en/)
+Launching the LLM models on an Android smartphone using various AI engines.
 
 ## Current Implementations
 
@@ -60,3 +56,50 @@ Visit the project site: [romankryvolapov.com](https://romankryvolapov.com/en/)
 * [Llama (language model) (Wikipedia)](https://en.wikipedia.org/wiki/Llama_%28language_model%29)
 * [Language model benchmark (Wikipedia)](https://en.wikipedia.org/wiki/Language_model_benchmark)
 * [Model evaluation paper (arXiv)](https://arxiv.org/html/2410.03613v1)
+
+## Architecture
+
+### Modular Clean Architecture
+
+* **app**: Android application module containing UI (Jetpack Compose), ViewModels, and orchestrating engine modules.
+* **domain**: Core business logic with use case definitions and the `IAIEngine` interface.
+* **data**: Data layer responsible for model loading, history persistence, and repository implementations.
+* **Engine modules**:
+
+    * **mlc-llm-engine**: JNI integration with MLC LLM ([github.com/mlc-ai/mlc-llm](https://github.com/mlc-ai/mlc-llm)).
+    * **mediapipe-engine**: MediaPipe graph integration for TensorFlow Lite inference ([ai.google.dev/edge/mediapipe/solutions/guide](https://ai.google.dev/edge/mediapipe/solutions/guide)).
+    * **onnx-engine**: ONNX Runtime GenAI Java API integration ([onnxruntime.ai/docs/genai/api/java.html](https://onnxruntime.ai/docs/genai/api/java.html)).
+    * **llama-cpp-engine**: JNI wrapper for llama.cpp C++ inference ([github.com/ggml-org/llama.cpp](https://github.com/ggml-org/llama.cpp)).
+* **gradle**: Common Gradle scripts for model compilation and dependency management.
+
+This modular setup follows **Clean Architecture** principles and employs the **MVVM** pattern with Android Architecture Components.
+
+## Tech Stack
+
+* **Language**: Kotlin
+* **Build**: Gradle (Groovy DSL)
+* **Android SDK**: API 21+
+* **C++**: JNI wrappers for native inference libraries
+* **Libraries**:
+
+    * Jetpack Compose (UI)
+    * AndroidX Lifecycle (ViewModel, LiveData / Kotlin Flow)
+    * Dependency Injection (Hilt or Koin)
+    * MLC LLM, MediaPipe, ONNX Runtime, llama.cpp
+* **Supported ABIs**: arm64-v8a, armeabi-v7a, x86, x86\_64
+
+## Directory Structure
+
+```
+Local_AI_Launcher/
+├── app/                 # Android application module
+├── domain/              # Core business logic and interfaces
+├── data/                # Data layer and repositories
+├── mlc-llm-engine/      # MLC LLM integration
+├── mediapipe-engine/    # MediaPipe integration
+├── onnx-engine/         # ONNX Runtime integration
+├── llama-cpp-engine/    # llama.cpp integration
+├── gradle/              # Custom Gradle scripts
+├── settings.gradle      # Project settings
+└── build.gradle         # Top-level build script
+```
