@@ -65,7 +65,6 @@ Launching the LLM models on an Android smartphone using various AI engines.
 * **domain**: Core business logic with use case definitions and the `IAIEngine` interface.
 * **data**: Data layer responsible for model loading, history persistence, and repository implementations.
 * **Engine modules**:
-
     * **mlc-llm-engine**: JNI integration with MLC LLM ([github.com/mlc-ai/mlc-llm](https://github.com/mlc-ai/mlc-llm)).
     * **mediapipe-engine**: MediaPipe graph integration for TensorFlow Lite inference ([ai.google.dev/edge/mediapipe/solutions/guide](https://ai.google.dev/edge/mediapipe/solutions/guide)).
     * **onnx-engine**: ONNX Runtime GenAI Java API integration ([onnxruntime.ai/docs/genai/api/java.html](https://onnxruntime.ai/docs/genai/api/java.html)).
@@ -81,7 +80,6 @@ This modular setup follows **Clean Architecture** principles and employs the **M
 * **Android SDK**: API 21+
 * **C++**: JNI wrappers for native inference libraries
 * **Libraries**:
-
     * Jetpack Compose (UI)
     * AndroidX Lifecycle (ViewModel, LiveData / Kotlin Flow)
     * Dependency Injection (Hilt or Koin)
