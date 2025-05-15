@@ -4,8 +4,8 @@
 package com.romankryvolapov.localailauncher.ui.fragments.common.search
 
 import androidx.lifecycle.viewModelScope
-import com.romankryvolapov.localailauncher.domain.extensions.readOnly
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.common.extensions.readOnly
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.extensions.launchWithDispatcher
 import com.romankryvolapov.localailauncher.extensions.readOnly
 import com.romankryvolapov.localailauncher.extensions.setValueOnMainThread

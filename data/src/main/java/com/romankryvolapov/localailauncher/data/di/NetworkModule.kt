@@ -14,7 +14,7 @@ package com.romankryvolapov.localailauncher.data.di
 import com.google.gson.Gson
 import com.romankryvolapov.localailauncher.data.network.utils.ArrayConverterFactory
 import com.romankryvolapov.localailauncher.data.network.utils.NullOrEmptyConverterFactory
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logNetwork
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logNetwork
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.qualifier.named
 import org.koin.dsl.module

@@ -4,7 +4,7 @@
 package com.romankryvolapov.localailauncher.data.network.utils
 
 import com.romankryvolapov.localailauncher.domain.repository.common.PreferencesRepository
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logDebug
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

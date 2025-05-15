@@ -7,7 +7,7 @@ import android.widget.EdgeEffect
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logError
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logError
 import com.romankryvolapov.localailauncher.utils.RecyclerViewAdapterDataObserver
 
 /**

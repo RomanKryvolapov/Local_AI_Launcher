@@ -11,7 +11,7 @@ import androidx.core.content.withStyledAttributes
 import androidx.core.view.isVisible
 import com.romankryvolapov.localailauncher.R
 import com.romankryvolapov.localailauncher.databinding.LayoutErrorBinding
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.extensions.onClickThrottle
 
 class ErrorView @JvmOverloads constructor(

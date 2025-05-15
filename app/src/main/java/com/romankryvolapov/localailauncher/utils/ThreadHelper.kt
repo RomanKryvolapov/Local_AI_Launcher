@@ -4,7 +4,7 @@
 package com.romankryvolapov.localailauncher.utils
 
 import android.os.Looper
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logError
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logError
 
 private const val TAG = "ThreadHelperTag"
 

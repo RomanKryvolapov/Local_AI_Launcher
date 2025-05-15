@@ -3,7 +3,7 @@
  **/
 package com.romankryvolapov.localailauncher.ui.fragments.start.flow
 
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.ui.fragments.base.flow.BaseFlowViewModel
 
 class StartFlowViewModel : BaseFlowViewModel() {

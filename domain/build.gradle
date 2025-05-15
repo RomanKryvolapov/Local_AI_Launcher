@@ -1,16 +1,17 @@
 /**
  * Created & Copyright 2025 by Roman Kryvolapov
  **/
-
 apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'org.jetbrains.kotlin.kapt'
 apply plugin: 'org.jetbrains.kotlin.plugin.parcelize'
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 
 android {
 
-    compileSdk 35
     namespace 'com.romankryvolapov.localailauncher.domain'
+
+    compileSdk 35
 
     defaultConfig {
         minSdk 27
@@ -18,7 +19,6 @@ android {
         consumerProguardFiles "consumer-rules.pro"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
 
     buildTypes {
         debug {
@@ -48,6 +48,10 @@ android {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
+    aaptOptions {
+        noCompress "onnx", "tflite", "bin", "json", "gguf", "ggml", "model", "pt", "safetensors"
+    }
+
 }
 
 dependencies {
@@ -65,12 +69,15 @@ dependencies {
     api project(":onnx-engine")
     api project(":llama-cpp-engine")
 
+    api project(':common')
+
     // common
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2'
     implementation 'io.insert-koin:koin-android:4.0.4'
     implementation 'javax.inject:javax.inject:1'
     implementation 'com.google.code.gson:gson:2.13.1'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1'
 
     // tests
     testImplementation 'junit:junit:4.13.2'

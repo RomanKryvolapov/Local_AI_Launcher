@@ -6,7 +6,7 @@ package com.romankryvolapov.localailauncher.ui.activity
 import android.content.Intent
 import androidx.annotation.CallSuper
 import com.romankryvolapov.localailauncher.R
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.models.common.StartDestination
 import com.romankryvolapov.localailauncher.ui.BaseViewModel
 

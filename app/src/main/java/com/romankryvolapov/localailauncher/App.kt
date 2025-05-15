@@ -4,10 +4,12 @@
 package com.romankryvolapov.localailauncher
 
 import android.app.Application
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.data.di.dataModules
 import com.romankryvolapov.localailauncher.di.appModules
 import com.romankryvolapov.localailauncher.domain.di.domainModules
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.domain.externalFilesDirectory
+import com.romankryvolapov.localailauncher.domain.internalFilesDirectory
 import leakcanary.LeakCanary
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -23,6 +25,8 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         logDebug("onCreate", TAG)
+        externalFilesDirectory = getExternalFilesDir(null)!!
+        internalFilesDirectory = filesDir
         setupKoin()
         configureLeakCanary()
     }

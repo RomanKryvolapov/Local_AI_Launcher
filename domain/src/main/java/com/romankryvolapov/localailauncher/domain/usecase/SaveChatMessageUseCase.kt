@@ -3,18 +3,12 @@
  **/
 package com.romankryvolapov.localailauncher.domain.usecase
 
-import ai.mlc.mlcllm.MLCEngine
-import com.romankryvolapov.localailauncher.domain.usecase.base.BaseUseCase
-import org.koin.core.component.inject
-import kotlin.getValue
+import com.romankryvolapov.localailauncher.common.models.common.BaseUseCase
 
 class SaveChatMessageUseCase  : BaseUseCase {
 
     companion object {
         private const val TAG = "CopyAssetsToFileUseCaseTag"
     }
-
-    private val engine: MLCEngine by inject()
-
 
 }

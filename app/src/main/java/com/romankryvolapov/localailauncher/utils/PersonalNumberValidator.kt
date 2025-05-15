@@ -6,7 +6,7 @@ package com.romankryvolapov.localailauncher.utils
 import android.annotation.SuppressLint
 import android.icu.text.SimpleDateFormat
 import androidx.core.text.isDigitsOnly
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logError
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logError
 
 fun isValidLNCH(lnch: String): Boolean {
     if (!lnch.isDigitsOnly()) return false

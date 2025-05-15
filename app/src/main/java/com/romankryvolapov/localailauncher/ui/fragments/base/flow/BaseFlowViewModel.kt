@@ -5,7 +5,7 @@
  **/
 package com.romankryvolapov.localailauncher.ui.fragments.base.flow
 
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logError
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logError
 import com.romankryvolapov.localailauncher.ui.BaseViewModel
 
 abstract class BaseFlowViewModel : BaseViewModel() {

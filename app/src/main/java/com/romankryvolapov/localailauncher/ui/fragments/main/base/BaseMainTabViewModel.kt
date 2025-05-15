@@ -4,7 +4,7 @@
 package com.romankryvolapov.localailauncher.ui.fragments.main.base
 
 import com.romankryvolapov.localailauncher.R
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.models.common.DialogMessage
 import com.romankryvolapov.localailauncher.models.common.StringSource
 import com.romankryvolapov.localailauncher.ui.BaseViewModel

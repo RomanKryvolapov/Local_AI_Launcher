@@ -14,7 +14,8 @@
     <!-- Bottom navigation -->
     <string name="nav_main_tab_1">Chat</string>
     <string name="nav_main_tab_2">History</string>
-    <string name="nav_main_tab_3">Settings</string>
+    <string name="nav_main_tab_3">Models</string>
+    <string name="nav_main_tab_4">Settings</string>
 
     <!-- Common errors -->
     <string name="error">Something went wrong</string>

@@ -1,12 +1,14 @@
-plugins {
-    id 'com.android.library'
-    id 'org.jetbrains.kotlin.android'
-    id 'org.jetbrains.kotlin.plugin.serialization'
-}
+/**
+ * Created & Copyright 2025 by Roman Kryvolapov
+ **/
+apply plugin: 'com.android.library'
+apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'org.jetbrains.kotlin.plugin.parcelize'
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 
 android {
 
-    namespace 'com.google.mediapipe'
+    namespace 'com.romankryvolapov.localailauncher.mediapipe'
 
     compileSdk 35
 
@@ -43,6 +45,8 @@ android {
 
 dependencies {
     api fileTree(dir: 'output', include: ['*.jar', '*.aar'])
+
+    implementation project(':common')
 
     api "com.google.mediapipe:tasks-genai:0.10.23"
 

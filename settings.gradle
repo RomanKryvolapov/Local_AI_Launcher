@@ -1,11 +1,11 @@
 /**
  * Created & Copyright 2025 by Roman Kryvolapov
  **/
-
 rootProject.name = "Local AI Launcher"
 include ':app'
 include ':data'
 include ':domain'
+include ':common'
 include ':mlc-llm-engine'
 include ':mediapipe-engine'
 include ':onnx-engine'

@@ -4,7 +4,7 @@
 package com.romankryvolapov.localailauncher.ui.fragments.start.splash
 
 import com.romankryvolapov.localailauncher.databinding.FragmentSplashBinding
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.extensions.enableChangeAnimations
 import com.romankryvolapov.localailauncher.ui.fragments.base.BaseFragment
 import com.romankryvolapov.localailauncher.ui.fragments.start.splash.list.SplashLoadingMessagesAdapter
@@ -31,7 +31,7 @@ class SplashFragment : BaseFragment<FragmentSplashBinding, SplashViewModel>() {
         viewModel.messagesLiveData.observe(viewLifecycleOwner) {
             logDebug("messagesLiveData size: ${it.size}", TAG)
             adapter.items = it
-            binding.recyclerView.smoothScrollToPosition(adapter.itemCount - 1)
+            binding.recyclerView.smoothScrollToPosition(adapter.itemCount)
         }
     }
 

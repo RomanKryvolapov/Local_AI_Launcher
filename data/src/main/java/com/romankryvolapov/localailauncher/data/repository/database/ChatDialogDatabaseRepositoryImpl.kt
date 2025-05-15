@@ -5,7 +5,7 @@ package com.romankryvolapov.localailauncher.data.repository.database
 
 import com.romankryvolapov.localailauncher.data.database.dao.ChatMessageDao
 import com.romankryvolapov.localailauncher.data.mappers.database.ChatMessageEntityMapper
-import com.romankryvolapov.localailauncher.domain.models.chat.ChatMessageModel
+import com.romankryvolapov.localailauncher.common.models.ChatMessageModel
 import com.romankryvolapov.localailauncher.domain.repository.database.ChatDialogDatabaseRepository
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

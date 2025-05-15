@@ -3,7 +3,7 @@
  */
 package com.romankryvolapov.localailauncher.utils
 
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logError
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logError
 
 class AppUncaughtExceptionHandler : Thread.UncaughtExceptionHandler {
 

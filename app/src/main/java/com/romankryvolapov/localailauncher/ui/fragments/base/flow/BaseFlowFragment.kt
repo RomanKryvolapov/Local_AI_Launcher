@@ -11,7 +11,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.viewbinding.ViewBinding
 import com.romankryvolapov.localailauncher.ui.fragments.base.BaseFragment
 import com.romankryvolapov.localailauncher.R
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.models.common.AlertDialogResult
 import com.romankryvolapov.localailauncher.models.common.DialogMessage
 import com.romankryvolapov.localailauncher.models.common.StartDestination

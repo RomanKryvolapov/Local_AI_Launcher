@@ -25,6 +25,11 @@ enum class MainTabsEnum(
         R.id.nav_main_tab_three,
         R.navigation.nav_main_tab_three,
         R.id.mainTabThreeFragment,
+    ),
+    TAB_FOUR(
+        R.id.nav_main_tab_four,
+        R.navigation.nav_main_tab_four,
+        R.id.mainTabFourFragment,
     );
 
     companion object {

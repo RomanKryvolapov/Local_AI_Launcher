@@ -4,15 +4,13 @@
 package com.romankryvolapov.localailauncher.models.list
 
 import android.os.Parcelable
-import android.text.InputType
 import androidx.annotation.ColorRes
 import com.romankryvolapov.localailauncher.R
-import com.romankryvolapov.localailauncher.domain.models.base.TypeEnum
+import com.romankryvolapov.localailauncher.common.models.common.TypeEnum
 import com.romankryvolapov.localailauncher.domain.models.common.OriginalModel
 import com.romankryvolapov.localailauncher.extensions.equalTo
 import com.romankryvolapov.localailauncher.models.common.StringSource
 import kotlinx.parcelize.Parcelize
-import java.lang.reflect.Type
 
 @Parcelize
 data class CommonEditTextUi(

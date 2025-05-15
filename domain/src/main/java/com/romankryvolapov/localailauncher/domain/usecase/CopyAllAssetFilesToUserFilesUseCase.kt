@@ -4,11 +4,11 @@
 package com.romankryvolapov.localailauncher.domain.usecase
 
 import android.content.res.AssetManager
-import com.romankryvolapov.localailauncher.domain.models.base.ErrorType
-import com.romankryvolapov.localailauncher.domain.models.base.ResultEmittedData
-import com.romankryvolapov.localailauncher.domain.usecase.base.BaseUseCase
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logError
+import com.romankryvolapov.localailauncher.common.models.common.ErrorType
+import com.romankryvolapov.localailauncher.common.models.common.ResultEmittedData
+import  com.romankryvolapov.localailauncher.common.models.common.BaseUseCase
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -33,18 +33,19 @@ class CopyAllAssetFilesToUserFilesUseCase : BaseUseCase {
             clearFilesDir(filesDir)
             trySend(
                 ResultEmittedData.loading(
-                    model = "Coped 0 files from $totalFiles"
+                    model = "0 from $totalFiles"
                 )
             )
             copyAssetsRecursively(
                 assetManager,
                 "",
                 filesDir
-            ) {
+            ) { filePath ->
+                logDebug(filePath, TAG)
                 copiedCount++
                 trySend(
                     ResultEmittedData.loading(
-                        model = "Coped $copiedCount files from $totalFiles"
+                        model = "$copiedCount from $totalFiles:\n$filePath"
                     )
                 )
             }
@@ -87,7 +88,7 @@ class CopyAllAssetFilesToUserFilesUseCase : BaseUseCase {
         assetManager: AssetManager,
         path: String,
         destDir: File,
-        onFileCopied: () -> Unit
+        onFileCopied: (filePath: String) -> Unit
     ) {
         val entries = assetManager.list(path) ?: return
         if (entries.isEmpty()) {
@@ -98,7 +99,7 @@ class CopyAllAssetFilesToUserFilesUseCase : BaseUseCase {
                     inStream.copyTo(outStream)
                 }
             }
-            onFileCopied()
+            onFileCopied(path)
         } else {
             for (entry in entries) {
                 val subPath = if (path.isEmpty()) entry else "$path/$entry"

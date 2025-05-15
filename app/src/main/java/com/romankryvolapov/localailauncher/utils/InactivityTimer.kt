@@ -6,7 +6,7 @@ package com.romankryvolapov.localailauncher.utils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.romankryvolapov.localailauncher.domain.DEFAULT_INACTIVITY_TIMEOUT_MILLISECONDS
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.extensions.readOnly
 import com.romankryvolapov.localailauncher.extensions.setValueOnMainThread
 import kotlinx.coroutines.CoroutineScope

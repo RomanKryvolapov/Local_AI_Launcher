@@ -3,7 +3,7 @@
  */
 package com.romankryvolapov.localailauncher.data.network.utils
 
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logError
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logError
 import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.asResponseBody
 import org.koin.core.component.KoinComponent

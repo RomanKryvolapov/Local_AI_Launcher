@@ -3,34 +3,33 @@
  **/
 package com.romankryvolapov.localailauncher.ui.fragments.main.tabs.one
 
+import ai.onnxruntime.genai.usecase.SendMessageOnnxEngineUseCase
+import ai.onnxruntime.genai.usecase.StartOnnxEngineUseCase
 import androidx.annotation.ColorRes
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.romankryvolapov.localailauncher.R
-import com.romankryvolapov.localailauncher.data.infrastructure.LaunchEngines
+import com.romankryvolapov.localailauncher.common.extensions.nextOrFirstOrCurrent
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.common.models.common.onFailure
+import com.romankryvolapov.localailauncher.common.models.common.onLoading
+import com.romankryvolapov.localailauncher.common.models.common.onSuccess
 import com.romankryvolapov.localailauncher.domain.Model
 import com.romankryvolapov.localailauncher.domain.Model.LlamaCppModel
 import com.romankryvolapov.localailauncher.domain.Model.MLCEngineModel
 import com.romankryvolapov.localailauncher.domain.Model.MediaPipeModel
 import com.romankryvolapov.localailauncher.domain.Model.OnnxModel
-import com.romankryvolapov.localailauncher.domain.extensions.nextOrFirstOrCurrent
 import com.romankryvolapov.localailauncher.domain.models
-import com.romankryvolapov.localailauncher.domain.models.base.onFailure
-import com.romankryvolapov.localailauncher.domain.models.base.onLoading
-import com.romankryvolapov.localailauncher.domain.models.base.onSuccess
-import com.romankryvolapov.localailauncher.domain.usecase.llama.SendMessageLLamaCppEngineUseCase
-import com.romankryvolapov.localailauncher.domain.usecase.llama.StartLLamaCppEngineUseCase
-import com.romankryvolapov.localailauncher.domain.usecase.mediapipe.SendMessageMediaPipeUseCase
-import com.romankryvolapov.localailauncher.domain.usecase.mediapipe.StartEngineMediaPipeUseCase
-import com.romankryvolapov.localailauncher.domain.usecase.mlcllm.SendMessageMLCEngineUseCase
-import com.romankryvolapov.localailauncher.domain.usecase.mlcllm.StartMLCEngineUseCase
-import com.romankryvolapov.localailauncher.domain.usecase.onnx.SendMessageOnnxEngineUseCase
-import com.romankryvolapov.localailauncher.domain.usecase.onnx.StartOnnxEngineUseCase
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.extensions.launchInJob
 import com.romankryvolapov.localailauncher.extensions.readOnly
 import com.romankryvolapov.localailauncher.extensions.setValueOnMainThread
+import com.romankryvolapov.localailauncher.llama.usecase.SendMessageLLamaCppEngineUseCase
+import com.romankryvolapov.localailauncher.llama.usecase.StartLLamaCppEngineUseCase
 import com.romankryvolapov.localailauncher.mappers.chat.ChatMessageModelUiMapper
+import com.romankryvolapov.localailauncher.mediapipe.usecase.SendMessageMediaPipeUseCase
+import com.romankryvolapov.localailauncher.mediapipe.usecase.StartEngineMediaPipeUseCase
+import com.romankryvolapov.localailauncher.mlcllm.usecase.SendMessageMLCEngineUseCase
+import com.romankryvolapov.localailauncher.mlcllm.usecase.StartMLCEngineUseCase
 import com.romankryvolapov.localailauncher.models.chat.ChatMessageAdapterMarker
 import com.romankryvolapov.localailauncher.models.chat.ChatMessageErrorUi
 import com.romankryvolapov.localailauncher.models.chat.ChatMessageUserUi
@@ -67,8 +66,6 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
     }
 
     override var mainTabsEnum: MainTabsEnum? = MainTabsEnum.TAB_ONE
-
-    private val engines: LaunchEngines by inject()
 
     private val chatMessageModelUiMapper: ChatMessageModelUiMapper by inject()
 
@@ -118,55 +115,6 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
 
     fun sendMessage(message: String) {
         logDebug("sendMessage message: $message", TAG)
-        when (selected) {
-            is MLCEngineModel -> {
-                if (engines.mlcEngine == null) {
-                    showErrorState(
-                        title = StringSource(R.string.error_internal_error_short),
-                        description = StringSource("MLC engine not loaded")
-                    )
-                    return
-                }
-            }
-
-            is MediaPipeModel -> {
-                if (engines.llmInference == null) {
-                    showErrorState(
-                        title = StringSource(R.string.error_internal_error_short),
-                        description = StringSource("MediaPipe engine not loaded")
-                    )
-                    return
-                }
-            }
-
-            is OnnxModel -> {
-                if (engines.simpleGenAI == null) {
-                    showErrorState(
-                        title = StringSource(R.string.error_internal_error_short),
-                        description = StringSource("ONNX engine not loaded")
-                    )
-                    return
-                }
-            }
-
-            is LlamaCppModel -> {
-                if (engines.llamaAndroid == null) {
-                    showErrorState(
-                        title = StringSource(R.string.error_internal_error_short),
-                        description = StringSource("LLama engine not loaded")
-                    )
-                    return
-                }
-            }
-
-            else -> {
-                showErrorState(
-                    title = StringSource(R.string.error_internal_error_short),
-                    description = StringSource("Not selected engine or model")
-                )
-                return
-            }
-        }
         hideErrorState()
         _engineGeneratingStateLiveData.setValueOnMainThread(EngineGeneratingState.IN_PROCESS)
         messagesMap[UUID.randomUUID()] = ChatMessageUserUi(
@@ -191,7 +139,6 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
             message = message,
             dialogID = dialogID,
             messageID = messageID,
-            engine = engines.mlcEngine!!
         ).onEach { result ->
             result.onLoading { model, _ ->
                 logDebug("sendMessageMLC onLoading model: ${model?.message}", TAG)
@@ -224,7 +171,6 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
             message = message,
             dialogID = dialogID,
             messageID = messageID,
-            engine = engines.llmInference!!
         ).onEach { result ->
             result.onLoading { model, _ ->
                 logDebug("sendMessageOnnx onLoading model: ${model?.message}", TAG)
@@ -257,7 +203,6 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
             message = message,
             dialogID = dialogID,
             messageID = messageID,
-            engine = engines.simpleGenAI!!
         ).onEach { result ->
             result.onLoading { model, _ ->
                 logDebug("sendMessageOnnx onLoading model: ${model?.message}", TAG)
@@ -290,7 +235,6 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
             message = message,
             dialogID = dialogID,
             messageID = messageID,
-            engine = engines.llamaAndroid!!
         ).onEach { result ->
             result.onLoading { model, _ ->
                 logDebug("sendMessageLlama onLoading model: ${model?.message}", TAG)
@@ -319,7 +263,10 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
     fun onLoadClicked() {
         logDebug("onLoadClicked", TAG)
         cancelGeneration()
-        engines.clear()
+        com.romankryvolapov.localailauncher.llama.clear()
+        com.romankryvolapov.localailauncher.mediapipe.clear()
+        com.romankryvolapov.localailauncher.mlcllm.clear()
+        ai.onnxruntime.genai.clear()
         if (selected != null && engineLoadingState == EngineLoadingState.NOT_LOADED) {
             updateEngineLoadingState(EngineLoadingState.LOADING)
             hideErrorState()
@@ -358,10 +305,7 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
 
     private fun startMLCEngine(modelEngine: MLCEngineModel) {
         logDebug("Start MLC engine", TAG)
-        val modelFile = File(
-            currentContext.get().filesDir,
-            modelEngine.modelFileName
-        )
+        val modelFile = File(modelEngine.filePath)
         if (!modelFile.exists()) {
             showErrorState(
                 title = StringSource(R.string.error_internal_error_short),
@@ -381,7 +325,6 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
                     )
                     return@onSuccess
                 }
-                engines.mlcEngine = result.model
                 _engineLiveData.setValueOnMainThread(modelEngine.engineName)
                 _modelLiveData.setValueOnMainThread(modelEngine.modelName)
                 updateEngineLoadingState(EngineLoadingState.LOADED)
@@ -397,10 +340,7 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
 
     private fun startMediaPipeEngine(modelEngine: MediaPipeModel) {
         logDebug("Start MediaPipe engine", TAG)
-        val modelFile = File(
-            currentContext.get().filesDir,
-            modelEngine.modelFileName
-        )
+        val modelFile = File(modelEngine.filePath)
         if (!modelFile.exists()) {
             showErrorState(
                 title = StringSource(R.string.error_internal_error_short),
@@ -420,7 +360,6 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
                     )
                     return@onSuccess
                 }
-                engines.llmInference = result.model
                 _engineLiveData.setValueOnMainThread(modelEngine.engineName)
                 _modelLiveData.setValueOnMainThread(modelEngine.modelName)
                 updateEngineLoadingState(EngineLoadingState.LOADED)
@@ -436,10 +375,7 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
 
     private fun startOnnxEngine(modelEngine: OnnxModel) {
         logDebug("Start ONNX engine", TAG)
-        val modelFile = File(
-            currentContext.get().filesDir,
-            modelEngine.modelFileName
-        )
+        val modelFile = File(modelEngine.filePath)
         if (!modelFile.exists()) {
             showErrorState(
                 title = StringSource(R.string.error_internal_error_short),
@@ -458,7 +394,6 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
                     )
                     return@onSuccess
                 }
-                engines.simpleGenAI = result.model
                 _engineLiveData.setValueOnMainThread(modelEngine.engineName)
                 _modelLiveData.setValueOnMainThread(modelEngine.modelName)
                 updateEngineLoadingState(EngineLoadingState.LOADED)
@@ -474,10 +409,7 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
 
     private fun startLlamaEngine(modelEngine: LlamaCppModel) {
         logDebug("Start LLama.cpp engine", TAG)
-        val modelFile = File(
-            currentContext.get().filesDir,
-            modelEngine.modelFileName
-        )
+        val modelFile = File(modelEngine.filePath)
         if (!modelFile.exists()) {
             showErrorState(
                 title = StringSource(R.string.error_internal_error_short),
@@ -496,7 +428,6 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
                     )
                     return@onSuccess
                 }
-                engines.llamaAndroid = result.model
                 _engineLiveData.setValueOnMainThread(modelEngine.engineName)
                 _modelLiveData.setValueOnMainThread(modelEngine.modelName)
                 updateEngineLoadingState(EngineLoadingState.LOADED)

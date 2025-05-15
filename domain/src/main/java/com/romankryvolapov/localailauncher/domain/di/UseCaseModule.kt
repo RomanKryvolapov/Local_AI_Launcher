@@ -11,17 +11,19 @@
  */
 package com.romankryvolapov.localailauncher.domain.di
 
+import ai.onnxruntime.genai.usecase.SendMessageOnnxEngineUseCase
+import ai.onnxruntime.genai.usecase.StartOnnxEngineUseCase
+import com.romankryvolapov.localailauncher.domain.usecase.ClearFilesDirectoryUseCase
 import com.romankryvolapov.localailauncher.domain.usecase.CopyAllAssetFilesToUserFilesUseCase
 import com.romankryvolapov.localailauncher.domain.usecase.CopyAssetFileToUserFilesUseCase
-import com.romankryvolapov.localailauncher.domain.usecase.DownloadFromHuggingFaceUseCase
-import com.romankryvolapov.localailauncher.domain.usecase.llama.SendMessageLLamaCppEngineUseCase
-import com.romankryvolapov.localailauncher.domain.usecase.llama.StartLLamaCppEngineUseCase
-import com.romankryvolapov.localailauncher.domain.usecase.mediapipe.SendMessageMediaPipeUseCase
-import com.romankryvolapov.localailauncher.domain.usecase.mediapipe.StartEngineMediaPipeUseCase
-import com.romankryvolapov.localailauncher.domain.usecase.mlcllm.SendMessageMLCEngineUseCase
-import com.romankryvolapov.localailauncher.domain.usecase.mlcllm.StartMLCEngineUseCase
-import com.romankryvolapov.localailauncher.domain.usecase.onnx.SendMessageOnnxEngineUseCase
-import com.romankryvolapov.localailauncher.domain.usecase.onnx.StartOnnxEngineUseCase
+import com.romankryvolapov.localailauncher.domain.usecase.DownloadToExternalFilesDirectoryUseCase
+import com.romankryvolapov.localailauncher.llama.usecase.GetGGUFModelParametersUseCase
+import com.romankryvolapov.localailauncher.llama.usecase.SendMessageLLamaCppEngineUseCase
+import com.romankryvolapov.localailauncher.llama.usecase.StartLLamaCppEngineUseCase
+import com.romankryvolapov.localailauncher.mediapipe.usecase.SendMessageMediaPipeUseCase
+import com.romankryvolapov.localailauncher.mediapipe.usecase.StartEngineMediaPipeUseCase
+import com.romankryvolapov.localailauncher.mlcllm.usecase.SendMessageMLCEngineUseCase
+import com.romankryvolapov.localailauncher.mlcllm.usecase.StartMLCEngineUseCase
 import org.koin.dsl.module
 
 val useCaseModule = module {
@@ -42,8 +44,8 @@ val useCaseModule = module {
         SendMessageMLCEngineUseCase()
     }
 
-    factory<DownloadFromHuggingFaceUseCase> {
-        DownloadFromHuggingFaceUseCase()
+    factory<DownloadToExternalFilesDirectoryUseCase> {
+        DownloadToExternalFilesDirectoryUseCase()
     }
 
     factory<StartEngineMediaPipeUseCase> {
@@ -68,6 +70,14 @@ val useCaseModule = module {
 
     factory<SendMessageLLamaCppEngineUseCase> {
         SendMessageLLamaCppEngineUseCase()
+    }
+
+    factory<GetGGUFModelParametersUseCase> {
+        GetGGUFModelParametersUseCase()
+    }
+
+    factory<ClearFilesDirectoryUseCase> {
+        ClearFilesDirectoryUseCase()
     }
 
 }

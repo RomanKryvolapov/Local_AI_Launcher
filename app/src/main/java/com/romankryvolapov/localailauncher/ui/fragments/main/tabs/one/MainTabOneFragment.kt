@@ -4,7 +4,7 @@
 package com.romankryvolapov.localailauncher.ui.fragments.main.tabs.one
 
 import com.romankryvolapov.localailauncher.databinding.FragmentMainTabOneBinding
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.extensions.enableChangeAnimations
 import com.romankryvolapov.localailauncher.extensions.onClickThrottle
 import com.romankryvolapov.localailauncher.extensions.setTextColorResource

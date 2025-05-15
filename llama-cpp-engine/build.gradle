@@ -1,12 +1,14 @@
-plugins {
-    id 'com.android.library'
-    id 'org.jetbrains.kotlin.android'
-    id 'org.jetbrains.kotlin.plugin.serialization'
-}
+/**
+ * Created & Copyright 2025 by Roman Kryvolapov
+ **/
+apply plugin: 'com.android.library'
+apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'org.jetbrains.kotlin.plugin.parcelize'
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 
 android {
 
-    namespace 'com.google'
+    namespace 'com.romankryvolapov.localailauncher.llama'
 
     compileSdk 35
 
@@ -55,20 +57,17 @@ android {
         }
     }
 
-    //     // опционально: копировать модель в рабочий каталог
-    //    sourceSets {
-    //        main {
-    //            assets.srcDirs += 'src/main/assets'
-    //        }
-    //    }
-
 }
 
 dependencies {
+
     api fileTree(dir: 'output', include: ['*.jar', '*.aar'])
+
+    implementation project(':common')
 
     implementation 'androidx.core:core-ktx:1.16.0'
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1'
+
 }

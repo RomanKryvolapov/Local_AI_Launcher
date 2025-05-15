@@ -6,7 +6,7 @@ package com.romankryvolapov.localailauncher.data.mappers.database
 import com.romankryvolapov.localailauncher.data.mappers.base.BaseReverseMapper
 import com.romankryvolapov.localailauncher.data.models.database.ChatMessageEntity
 import com.romankryvolapov.localailauncher.data.utils.StrictMapperConfig
-import com.romankryvolapov.localailauncher.domain.models.chat.ChatMessageModel
+import com.romankryvolapov.localailauncher.common.models.ChatMessageModel
 import org.mapstruct.Mapper
 import org.mapstruct.factory.Mappers
 import kotlin.jvm.java

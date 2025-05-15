@@ -8,7 +8,7 @@ sealed class Model(
     open val engineID: String,
     open val modelName: String,
     open val engineName: String,
-    open val modelFileName: String,
+    open val filePath: String,
 ) {
 
     class MLCEngineModel(
@@ -16,14 +16,14 @@ sealed class Model(
         override val modelName: String,
         override val engineID: String = "MLC",
         override val engineName: String = "MLC",
-        override val modelFileName: String,
+        override val filePath: String,
         val modelLib: String,
     ) : Model(
         modelID = modelID,
         engineID = engineID,
         modelName = modelName,
         engineName = engineName,
-        modelFileName = modelFileName,
+        filePath = filePath,
     )
 
     class MediaPipeModel(
@@ -31,13 +31,13 @@ sealed class Model(
         override val modelName: String,
         override val engineID: String = "MEDIA_PIPE",
         override val engineName: String = "MediaPipe",
-        override val modelFileName: String,
+        override val filePath: String,
     ) : Model(
         modelID = modelID,
         engineID = engineID,
         modelName = modelName,
         engineName = engineName,
-        modelFileName = modelFileName,
+        filePath = filePath,
     )
 
     class OnnxModel(
@@ -45,13 +45,13 @@ sealed class Model(
         override val modelName: String,
         override val engineID: String = "ONNX",
         override val engineName: String = "ONNX",
-        override val modelFileName: String,
+        override val filePath: String,
     ) : Model(
         modelID = modelID,
         engineID = engineID,
         modelName = modelName,
         engineName = engineName,
-        modelFileName = modelFileName,
+        filePath = filePath,
     )
 
 
@@ -60,13 +60,13 @@ sealed class Model(
         override val modelName: String,
         override val engineID: String = "LLAMA_CPP",
         override val engineName: String = "LLama.cpp",
-        override val modelFileName: String,
+        override val filePath: String,
     ) : Model(
         modelID = modelID,
         engineID = engineID,
         modelName = modelName,
         engineName = engineName,
-        modelFileName = modelFileName,
+        filePath = filePath,
     )
 
 }

@@ -5,7 +5,7 @@ package com.romankryvolapov.localailauncher.ui.fragments.start.flow
 
 import com.romankryvolapov.localailauncher.R
 import com.romankryvolapov.localailauncher.databinding.FragmentFlowContainerBinding
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.models.common.StartDestination
 import com.romankryvolapov.localailauncher.ui.fragments.base.flow.BaseFlowFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel

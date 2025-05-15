@@ -3,7 +3,7 @@
  */
 package com.romankryvolapov.localailauncher.models.common
 
-import com.romankryvolapov.localailauncher.domain.models.base.TypeEnum
+import com.romankryvolapov.localailauncher.common.models.common.TypeEnum
 
 enum class ButtonColorUi(
     override val type: String,

@@ -4,7 +4,7 @@
 package com.romankryvolapov.localailauncher.utils
 
 import androidx.recyclerview.widget.RecyclerView
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logDebug
 
 class RecyclerViewAdapterDataObserver : RecyclerView.AdapterDataObserver() {
 

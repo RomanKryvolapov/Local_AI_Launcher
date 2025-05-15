@@ -17,7 +17,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import com.romankryvolapov.localailauncher.R
 import com.romankryvolapov.localailauncher.databinding.LayoutBannerViewBinding
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logError
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logError
 import com.romankryvolapov.localailauncher.extensions.backgroundColor
 import com.romankryvolapov.localailauncher.extensions.onClickThrottle
 import com.romankryvolapov.localailauncher.models.common.BannerMessage

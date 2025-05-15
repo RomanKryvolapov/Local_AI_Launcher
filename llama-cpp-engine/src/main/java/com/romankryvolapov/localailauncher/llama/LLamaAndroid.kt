@@ -36,7 +36,7 @@ class LLamaAndroid {
         }
     }.asCoroutineDispatcher()
 
-    private val nlen: Int = 64
+    private val nlen: Int = 2014
 
     private external fun log_to_android()
     private external fun load_model(filename: String): Long
@@ -79,6 +79,30 @@ class LLamaAndroid {
 
     private external fun kv_cache_clear(context: Long)
 
+    // uint32_t n_ctx;             // text context, 0 = from model
+    //        uint32_t n_batch;           // logical maximum batch size that can be submitted to llama_decode
+    //        uint32_t n_ubatch;          // physical maximum batch size
+    //        uint32_t n_seq_max;         // max number of sequences (i.e. distinct states for recurrent models)
+    //        int32_t  n_threads;         // number of threads to use for generation
+    //        int32_t  n_threads_batch;   // number of threads to use for batch processing
+
+    private external fun new_context_with_params(
+        model: Long,
+        contextSize: Int,
+        nBatch: Int,
+        nUbatch: Int,
+        nSeqMax: Int,
+        nThreads: Int,
+        nThreadsBatch: Int,
+        ropeFreqBase: Float,
+        ropeFreqScale: Float,
+        embeddings: Boolean,
+        offloadKqv: Boolean,
+        flashAttn: Boolean,
+        noPerf: Boolean,
+        opOffload: Boolean
+    ): Long
+
     suspend fun bench(pp: Int, tg: Int, pl: Int, nr: Int = 1): String {
         return withContext(runLoop) {
             when (val state = threadLocalState.get()) {
@@ -97,9 +121,25 @@ class LLamaAndroid {
             when (threadLocalState.get()) {
                 is State.Idle -> {
                     val model = load_model(pathToModel)
-                    if (model == 0L)  throw IllegalStateException("load_model() failed")
+                    if (model == 0L) throw IllegalStateException("load_model() failed")
 
-                    val context = new_context(model)
+//                    val context = new_context(model)
+                    val context = new_context_with_params(
+                        model = model,
+                        contextSize = 32768,
+                        nBatch = 2048,
+                        nUbatch = 512,
+                        nSeqMax = 1,
+                        nThreads = 4,
+                        nThreadsBatch = 2,
+                        ropeFreqBase = 1000000.0f,
+                        ropeFreqScale = 1.0f,
+                        embeddings = false,
+                        offloadKqv = true,
+                        flashAttn = false,
+                        noPerf = false,
+                        opOffload = true
+                    )
                     if (context == 0L) throw IllegalStateException("new_context() failed")
 
                     val batch = new_batch(512, 0, 1)
@@ -111,6 +151,7 @@ class LLamaAndroid {
                     Log.i(tag, "Loaded model $pathToModel")
                     threadLocalState.set(State.Loaded(model, context, batch, sampler))
                 }
+
                 else -> throw IllegalStateException("Model already loaded")
             }
         }
@@ -119,7 +160,8 @@ class LLamaAndroid {
     fun send(message: String, formatChat: Boolean = false): Flow<String> = flow {
         when (val state = threadLocalState.get()) {
             is State.Loaded -> {
-                val ncur = IntVar(completion_init(state.context, state.batch, message, formatChat, nlen))
+                val ncur =
+                    IntVar(completion_init(state.context, state.batch, message, formatChat, nlen))
                 while (ncur.value <= nlen) {
                     val str = completion_loop(state.context, state.batch, state.sampler, nlen, ncur)
                     if (str == null) {
@@ -129,6 +171,7 @@ class LLamaAndroid {
                 }
                 kv_cache_clear(state.context)
             }
+
             else -> {}
         }
     }.flowOn(runLoop)
@@ -149,6 +192,7 @@ class LLamaAndroid {
 
                     threadLocalState.set(State.Idle)
                 }
+
                 else -> {}
             }
         }
@@ -168,13 +212,14 @@ class LLamaAndroid {
         }
 
         private sealed interface State {
-            data object Idle: State
-            data class Loaded(val model: Long, val context: Long, val batch: Long, val sampler: Long): State
+            data object Idle : State
+            data class Loaded(
+                val model: Long,
+                val context: Long,
+                val batch: Long,
+                val sampler: Long
+            ) : State
         }
 
-        // Enforce only one instance of Llm.
-        private val _instance: LLamaAndroid = LLamaAndroid()
-
-        fun instance(): LLamaAndroid = _instance
     }
 }

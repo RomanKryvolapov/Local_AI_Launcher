@@ -450,3 +450,62 @@ JNIEXPORT void JNICALL
 Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_kv_1cache_1clear(JNIEnv *, jobject, jlong context) {
     llama_kv_self_clear(reinterpret_cast<llama_context *>(context));
 }
+
+extern "C"
+JNIEXPORT jlong JNICALL
+Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_new_1context_1with_1params(
+        JNIEnv *env,
+        jobject /* this */,
+        jlong  jmodel,
+        jint   jctx_size,
+        jint   jn_batch,
+        jint   jn_ubatch,
+        jint   jn_seq_max,
+        jint   jn_threads,
+        jint   jn_threads_batch,
+        jfloat jrope_freq_base,
+        jfloat jrope_freq_scale,
+        jboolean jembeddings,
+        jboolean joffload_kqv,
+        jboolean jflash_attn,
+        jboolean jno_perf,
+        jboolean jop_offload
+) {
+
+    auto model = reinterpret_cast<llama_model *>(jmodel);
+
+    if (!model) {
+        LOGe("new_context(): model cannot be null");
+        env->ThrowNew(env->FindClass("java/lang/IllegalArgumentException"), "Model cannot be null");
+        return 0;
+    }
+
+    llama_context_params ctx_params = llama_context_default_params();
+
+    ctx_params.n_ctx            = (uint32_t) jctx_size;
+    ctx_params.n_batch          = (uint32_t) jn_batch;
+    ctx_params.n_ubatch         = (uint32_t) jn_ubatch;
+    ctx_params.n_seq_max        = (uint32_t) jn_seq_max;
+    ctx_params.n_threads        = (int32_t) jn_threads;
+    ctx_params.n_threads_batch  = (int32_t) jn_threads_batch;
+
+    ctx_params.rope_freq_base   = (float) jrope_freq_base;
+    ctx_params.rope_freq_scale  = (float) jrope_freq_scale;
+
+    ctx_params.embeddings       = (bool) jembeddings;
+    ctx_params.offload_kqv      = (bool) joffload_kqv;
+    ctx_params.flash_attn       = (bool) jflash_attn;
+    ctx_params.no_perf          = (bool) jno_perf;
+    ctx_params.op_offload       = (bool) jop_offload;
+
+    llama_context *context = llama_new_context_with_model(model, ctx_params);
+
+    if (!context) {
+        LOGe("llama_new_context_with_model() returned null)");
+        env->ThrowNew(env->FindClass("java/lang/IllegalStateException"),
+                      "llama_new_context_with_model() returned null)");
+        return 0;
+    }
+
+    return reinterpret_cast<jlong>(context);
+}

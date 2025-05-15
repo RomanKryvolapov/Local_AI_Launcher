@@ -10,7 +10,7 @@ import android.widget.FrameLayout
 import androidx.core.content.withStyledAttributes
 import com.romankryvolapov.localailauncher.R
 import com.romankryvolapov.localailauncher.databinding.LayoutLoaderBinding
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.extensions.setBackgroundColorResource
 
 class LoaderView @JvmOverloads constructor(

@@ -65,8 +65,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import com.romankryvolapov.localailauncher.R
 import com.romankryvolapov.localailauncher.data.extensions.getParcelableCompat
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logError
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logError
 import com.romankryvolapov.localailauncher.extensions.findActivityNavController
 import com.romankryvolapov.localailauncher.extensions.findParentFragmentByType
 import com.romankryvolapov.localailauncher.extensions.findParentFragmentResultListenerFragmentManager

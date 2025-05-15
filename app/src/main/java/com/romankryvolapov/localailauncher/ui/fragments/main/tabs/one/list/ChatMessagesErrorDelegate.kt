@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegate
 import com.romankryvolapov.localailauncher.databinding.ListItemChatMessageErrorBinding
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.extensions.inflateBinding
 import com.romankryvolapov.localailauncher.models.chat.ChatMessageAdapterMarker
 import com.romankryvolapov.localailauncher.models.chat.ChatMessageErrorUi

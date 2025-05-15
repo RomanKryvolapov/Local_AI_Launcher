@@ -4,11 +4,11 @@
 package com.romankryvolapov.localailauncher.domain.usecase
 
 import android.content.res.AssetManager
-import com.romankryvolapov.localailauncher.domain.models.base.ErrorType
-import com.romankryvolapov.localailauncher.domain.models.base.ResultEmittedData
-import com.romankryvolapov.localailauncher.domain.usecase.base.BaseUseCase
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logError
+import com.romankryvolapov.localailauncher.common.models.common.ErrorType
+import com.romankryvolapov.localailauncher.common.models.common.ResultEmittedData
+import  com.romankryvolapov.localailauncher.common.models.common.BaseUseCase
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

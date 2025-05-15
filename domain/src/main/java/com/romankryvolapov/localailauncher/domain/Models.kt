@@ -3,31 +3,31 @@
  */
 package com.romankryvolapov.localailauncher.domain
 
-import com.romankryvolapov.localailauncher.domain.Model.LlamaCppModel
-import com.romankryvolapov.localailauncher.domain.Model.MLCEngineModel
-import com.romankryvolapov.localailauncher.domain.Model.MediaPipeModel
-import com.romankryvolapov.localailauncher.domain.Model.OnnxModel
-
-val models = mutableListOf<Model>(
-    LlamaCppModel(
-        modelID = "GEMMA_3_1B",
-        modelName = "Gemma 3 1B",
-        modelFileName = "llama/gemma-3-1B-it-QAT-Q4_0.gguf",
+val models = mutableListOf(
+//    LlamaCppModel(
+//        modelID = "GEMMA_3_1B",
+//        modelName = "Gemma 3 1B",
+//        modelFileName = "llama/gemma-3-1B-it-QAT-Q4_0.gguf",
+//    ),
+    Model.LlamaCppModel(
+        modelID = "GEMMA_3_4B",
+        modelName = "Gemma 3 4B",
+        filePath = "${externalFilesDirectory.absolutePath}/models/gemma-3-4B-it-QAT-Q4_0.gguf",
     ),
-    MLCEngineModel(
+    Model.MLCEngineModel(
         modelID = "GEMMA_3_1B",
         modelName = "Gemma 3 1B",
-        modelFileName = "mlc/gemma-3-1b-it-q4f16_1-MLC",
         modelLib = "gemma3_text_q4f16_1_15281663a194ab7a82d5f6c3b0d59432",
+        filePath = "${internalFilesDirectory.absolutePath}/mlc/gemma-3-1b-it-q4f16_1-MLC",
     ),
-    MediaPipeModel(
+    Model.MediaPipeModel(
         modelID = "GEMMA_3_1B",
         modelName = "Gemma 3 1B",
-        modelFileName = "mediapipe/Gemma3-1B-IT_multi-prefill-seq_q4_ekv2048.task",
+        filePath = "${internalFilesDirectory.absolutePath}/mediapipe/Gemma3-1B-IT_multi-prefill-seq_q4_ekv2048.task",
     ),
-    OnnxModel(
+    Model.OnnxModel(
         modelID = "GEMMA_3_1B",
         modelName = "Gemma 3 1B",
-        modelFileName = "onnx",
+        filePath = "${internalFilesDirectory.absolutePath}/onnx",
     ),
 )

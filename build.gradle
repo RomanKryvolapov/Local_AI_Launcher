@@ -1,7 +1,6 @@
 /**
  * Created & Copyright 2025 by Roman Kryvolapov
  **/
-
 buildscript {
     repositories {
         google()
@@ -14,7 +13,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:8.9.2"
+        classpath "com.android.tools.build:gradle:8.10.0"
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.20'
         classpath 'androidx.navigation:navigation-safe-args-gradle-plugin:2.8.9'
         classpath "org.jetbrains.kotlin:kotlin-serialization:2.1.20"

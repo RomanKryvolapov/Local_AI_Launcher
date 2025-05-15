@@ -9,8 +9,8 @@ import com.romankryvolapov.localailauncher.data.BuildConfig.PROPERTY_KEY_FIREBAS
 import com.romankryvolapov.localailauncher.data.BuildConfig.PROPERTY_KEY_PIN_CODE
 import com.romankryvolapov.localailauncher.domain.models.common.ApplicationInfo
 import com.romankryvolapov.localailauncher.domain.repository.common.PreferencesRepository
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logError
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logError
 import com.google.gson.Gson
 import com.romankryvolapov.localailauncher.domain.defaultApplicationInfo
 import org.koin.core.component.KoinComponent

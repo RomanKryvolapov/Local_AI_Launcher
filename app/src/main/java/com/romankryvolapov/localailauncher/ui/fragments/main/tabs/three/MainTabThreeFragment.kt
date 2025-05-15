@@ -20,9 +20,7 @@ class MainTabThreeFragment :
     override val viewModel: MainTabThreeViewModel by viewModel()
 
     override fun setupControls() {
-        binding.toolbar.navigationClickListener = {
-            viewModel.onBackPressed()
-        }
+
     }
 
     override fun onAlertDialogResult(result: AlertDialogResult) {

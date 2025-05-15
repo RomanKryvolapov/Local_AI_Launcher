@@ -1,8 +1,10 @@
-plugins {
-    id 'com.android.library'
-    id 'org.jetbrains.kotlin.android'
-    id 'org.jetbrains.kotlin.plugin.serialization'
-}
+/**
+ * Created & Copyright 2025 by Roman Kryvolapov
+ **/
+apply plugin: 'com.android.library'
+apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'org.jetbrains.kotlin.plugin.parcelize'
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 
 android {
 
@@ -43,6 +45,8 @@ android {
 
 dependencies {
     api fileTree(dir: 'output', include: ['*.jar', '*.aar'])
+
+    implementation project(':common')
 
     api 'com.microsoft.onnxruntime:onnxruntime-android:1.22.0'
 

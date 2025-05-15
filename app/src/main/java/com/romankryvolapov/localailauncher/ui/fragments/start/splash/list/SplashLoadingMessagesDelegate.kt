@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegate
 import com.romankryvolapov.localailauncher.databinding.ListItemLoadingElementBinding
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.extensions.inflateBinding
 import com.romankryvolapov.localailauncher.models.splash.SplashLoadingMessageAdapterMarker
 import com.romankryvolapov.localailauncher.models.splash.SplashLoadingMessageUi

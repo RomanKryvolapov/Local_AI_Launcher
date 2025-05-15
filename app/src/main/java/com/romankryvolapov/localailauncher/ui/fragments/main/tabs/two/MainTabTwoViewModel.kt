@@ -3,8 +3,7 @@
  **/
 package com.romankryvolapov.localailauncher.ui.fragments.main.tabs.two
 
-import com.romankryvolapov.localailauncher.BuildConfig
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.models.main.MainTabsEnum
 import com.romankryvolapov.localailauncher.ui.fragments.main.base.BaseMainTabViewModel
 

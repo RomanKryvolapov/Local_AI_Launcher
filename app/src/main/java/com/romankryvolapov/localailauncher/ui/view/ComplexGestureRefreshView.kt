@@ -9,7 +9,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.romankryvolapov.localailauncher.R
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logDebug
 
 class ComplexGestureRefreshView @JvmOverloads constructor(
     context: Context,

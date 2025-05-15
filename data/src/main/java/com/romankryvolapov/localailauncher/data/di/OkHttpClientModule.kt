@@ -8,7 +8,7 @@ import com.romankryvolapov.localailauncher.domain.DEBUG_MOCK_INTERCEPTOR_ENABLED
 import com.romankryvolapov.localailauncher.data.network.utils.ContentTypeInterceptor
 import com.romankryvolapov.localailauncher.data.network.utils.HeaderInterceptor
 import com.romankryvolapov.localailauncher.data.network.utils.MockInterceptor
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logDebug
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.qualifier.named

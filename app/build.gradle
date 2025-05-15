@@ -1,7 +1,6 @@
 /**
  * Created & Copyright 2025 by Roman Kryvolapov
  **/
-
 apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'org.jetbrains.kotlin.kapt'
@@ -10,7 +9,9 @@ apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 
 android {
+
     namespace 'com.romankryvolapov.localailauncher'
+
     compileSdk 35
 
     defaultConfig {
@@ -20,6 +21,10 @@ android {
         versionName "1.0"
         applicationId "com.romankryvolapov.localailauncher"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    aaptOptions {
+        noCompress "onnx", "tflite", "bin", "json", "gguf", "ggml", "model", "pt", "safetensors"
     }
 
     buildTypes {
@@ -54,9 +59,23 @@ android {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
+    sourceSets {
+        main {
+//            assets {
+//                exclude 'gemma-3-1B-it-QAT-Q4_0.gguf'
+//            }
+        }
+    }
+
 }
 
+// turn on if there is not enough memory, turn off and turn on after adding new files
+//afterEvaluate {
+//    compressDebugAssets.enabled = false
+//}
+
 dependencies {
+
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
 
     implementation project(':domain')

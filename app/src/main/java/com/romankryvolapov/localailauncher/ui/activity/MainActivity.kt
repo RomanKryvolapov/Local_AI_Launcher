@@ -25,10 +25,9 @@ import androidx.navigation.fragment.NavHostFragment
 import com.romankryvolapov.localailauncher.BuildConfig
 import com.romankryvolapov.localailauncher.R
 import com.romankryvolapov.localailauncher.databinding.ActivityMainBinding
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logDebug
-import com.romankryvolapov.localailauncher.domain.utils.LogUtil.logError
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logError
 import com.romankryvolapov.localailauncher.extensions.hideKeyboard
-import com.romankryvolapov.localailauncher.extensions.makeStatusBarTransparent
 import com.romankryvolapov.localailauncher.models.common.AlertDialogResult
 import com.romankryvolapov.localailauncher.models.common.BannerMessage
 import com.romankryvolapov.localailauncher.models.common.CardScanBottomSheetContent
