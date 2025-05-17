@@ -10,8 +10,11 @@ import android.content.Intent
 import android.content.IntentFilter
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import com.romankryvolapov.localailauncher.data.repository.network.base.BaseRepository
+import com.romankryvolapov.localailauncher.common.models.common.ErrorType
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logError
 import com.romankryvolapov.localailauncher.common.models.common.ResultEmittedData
+import com.romankryvolapov.localailauncher.data.repository.network.base.BaseRepository
 import com.romankryvolapov.localailauncher.domain.repository.network.DownloadFileNetworkRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
@@ -33,73 +36,52 @@ class DownloadFileNetworkRepositoryImpl :
 
 
     override fun downloadToExternalFilesDirectory(
+        file: File,
         fileUrl: String,
         context: Context,
-        subfolder: String,
-        huggingFaceToken: String?
+        huggingFaceToken: String?,
     ): Flow<ResultEmittedData<File>> = callbackFlow {
-
-        trySend(ResultEmittedData.loading())
-
-        val fileName = fileUrl.toUri().lastPathSegment
-
-        if (fileName == null) {
-            trySend(
-                ResultEmittedData.error(
-                    model = null,
-                    error = null,
-                    title = "Download Error",
-                    message = "Unknown file name in url: $fileUrl",
-                    errorType = null,
-                    responseCode = null
-                )
-            )
-            close()
-            return@callbackFlow
-        }
-
-        val targetDir = File(context.getExternalFilesDir(null), subfolder).apply {
-            if (!exists()) mkdirs()
-        }
-        val targetFile = File(targetDir, fileName)
-        if (targetFile.exists()) {
-            trySend(
-                ResultEmittedData.success(
-                    model = targetFile,
-                    responseCode = null,
-                    message = "File already exist: ${targetFile.absolutePath}"
-                )
-            )
-            close()
-            return@callbackFlow
-        }
-
-        val destinationUri = File(targetDir, fileName).toUri()
-
-        val request = DownloadManager.Request(fileUrl.toUri()).apply {
-            setTitle("File Download")
-            setDescription("File downloading in progress")
-            setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-            setDestinationUri(destinationUri)
-            huggingFaceToken?.let { token ->
-                addRequestHeader("Authorization", "Bearer $token")
+        logDebug("downloadToExternalFilesDirectory", TAG)
+        var receiver: BroadcastReceiver? = null
+        try {
+            val destinationUri = file.toUri()
+            val request = DownloadManager.Request(fileUrl.toUri()).apply {
+                setTitle("File Download")
+                setDescription("File downloading in progress")
+                setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                setDestinationUri(destinationUri)
+                huggingFaceToken?.let { token ->
+                    addRequestHeader("Authorization", "Bearer $token")
+                }
             }
-        }
-
-        val downloadId = downloadManager.enqueue(request)
-
-        val receiver = object : BroadcastReceiver() {
-            override fun onReceive(ctx: Context?, intent: Intent?) {
-                val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1L)
-                if (id == downloadId) {
-                    val query = DownloadManager.Query().setFilterById(downloadId)
-                    downloadManager.query(query)?.use { cursor ->
+            val downloadId = downloadManager.enqueue(request)
+            receiver = object : BroadcastReceiver() {
+                override fun onReceive(ctx: Context?, intent: Intent?) {
+                    val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1L)
+                    if (id == downloadId) {
+                        val query = DownloadManager.Query().setFilterById(downloadId)
+                        val cursor = downloadManager.query(query)
+                        if (cursor == null) {
+                            logError("cursor == null", TAG)
+                            trySend(
+                                ResultEmittedData.error(
+                                    model = null,
+                                    error = null,
+                                    title = "Download Error",
+                                    message = "Download manager cursor is null",
+                                    errorType = null,
+                                    responseCode = null
+                                )
+                            )
+                            return
+                        }
                         if (cursor.moveToFirst()) {
                             val status = cursor.getInt(
                                 cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS)
                             )
                             when (status) {
                                 DownloadManager.STATUS_RUNNING -> {
+                                    logDebug("status == STATUS_RUNNING", TAG)
                                     val bytesDownloaded = cursor.getLong(
                                         cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR)
                                     )
@@ -116,13 +98,14 @@ class DownloadFileNetworkRepositoryImpl :
                                 }
 
                                 DownloadManager.STATUS_SUCCESSFUL -> {
+                                    logDebug("status == STATUS_SUCCESSFUL", TAG)
                                     val uriString = cursor.getString(
                                         cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI)
                                     )
-                                    val file = File(uriString.toUri().path!!)
+                                    val downloadedFile = File(uriString.toUri().path!!)
                                     trySend(
                                         ResultEmittedData.success(
-                                            model = file,
+                                            model = downloadedFile,
                                             responseCode = null,
                                             message = "Download completed successfully",
                                         )
@@ -130,6 +113,7 @@ class DownloadFileNetworkRepositoryImpl :
                                 }
 
                                 DownloadManager.STATUS_PENDING -> {
+                                    logError("status == STATUS_PENDING", TAG)
                                     trySend(
                                         ResultEmittedData.error(
                                             model = null,
@@ -143,6 +127,7 @@ class DownloadFileNetworkRepositoryImpl :
                                 }
 
                                 DownloadManager.STATUS_PAUSED -> {
+                                    logError("status == STATUS_PAUSED", TAG)
                                     trySend(
                                         ResultEmittedData.loading(
                                             model = null,
@@ -152,6 +137,7 @@ class DownloadFileNetworkRepositoryImpl :
                                 }
 
                                 DownloadManager.STATUS_FAILED -> {
+                                    logError("status == STATUS_FAILED", TAG)
                                     val reason = cursor.getInt(
                                         cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_REASON)
                                     )
@@ -167,34 +153,37 @@ class DownloadFileNetworkRepositoryImpl :
                                     )
                                 }
 
-
+                                else -> {
+                                    logError("status unknown", TAG)
+                                }
                             }
+                        } else {
+                            logError("cursor not moveToFirst", TAG)
                         }
                         close()
                     }
-                } else {
-                    trySend(
-                        ResultEmittedData.error(
-                            model = null,
-                            error = null,
-                            title = "Download Error",
-                            message = "Unknown download id: $id",
-                            errorType = null,
-                            responseCode = null
-                        )
-                    )
                 }
             }
+            val flags = ContextCompat.RECEIVER_NOT_EXPORTED
+            ContextCompat.registerReceiver(
+                context,
+                receiver,
+                IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
+                flags
+            )
+        } catch (e: Exception) {
+            logError("Error copying assets", e, TAG)
+            trySend(
+                ResultEmittedData.error(
+                    model = null,
+                    error = null,
+                    responseCode = null,
+                    message = e.message,
+                    title = "Engine error",
+                    errorType = ErrorType.EXCEPTION,
+                )
+            )
         }
-
-        val flags = ContextCompat.RECEIVER_NOT_EXPORTED
-        ContextCompat.registerReceiver(
-            context,
-            receiver,
-            IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
-            flags
-        )
-
         awaitClose {
             context.unregisterReceiver(receiver)
         }

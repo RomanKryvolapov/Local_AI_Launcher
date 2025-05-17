@@ -11,9 +11,9 @@ import java.io.File
 interface DownloadFileNetworkRepository {
 
     fun downloadToExternalFilesDirectory(
+        file: File,
         fileUrl: String,
         context: Context,
-        subfolder: String,
         huggingFaceToken: String?,
     ): Flow<ResultEmittedData<File>>
 

@@ -305,7 +305,7 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
 
     private fun startMLCEngine(modelEngine: MLCEngineModel) {
         logDebug("Start MLC engine", TAG)
-        val modelFile = File(modelEngine.filePath)
+        val modelFile = File(modelEngine.fileFolder + modelEngine.filePath)
         if (!modelFile.exists()) {
             showErrorState(
                 title = StringSource(R.string.error_internal_error_short),
@@ -340,7 +340,7 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
 
     private fun startMediaPipeEngine(modelEngine: MediaPipeModel) {
         logDebug("Start MediaPipe engine", TAG)
-        val modelFile = File(modelEngine.filePath)
+        val modelFile = File(modelEngine.fileFolder + modelEngine.filePath)
         if (!modelFile.exists()) {
             showErrorState(
                 title = StringSource(R.string.error_internal_error_short),
@@ -375,7 +375,7 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
 
     private fun startOnnxEngine(modelEngine: OnnxModel) {
         logDebug("Start ONNX engine", TAG)
-        val modelFile = File(modelEngine.filePath)
+        val modelFile = File(modelEngine.fileFolder + modelEngine.filePath)
         if (!modelFile.exists()) {
             showErrorState(
                 title = StringSource(R.string.error_internal_error_short),
@@ -409,7 +409,7 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
 
     private fun startLlamaEngine(modelEngine: LlamaCppModel) {
         logDebug("Start LLama.cpp engine", TAG)
-        val modelFile = File(modelEngine.filePath)
+        val modelFile = File(modelEngine.fileFolder + modelEngine.filePath)
         if (!modelFile.exists()) {
             showErrorState(
                 title = StringSource(R.string.error_internal_error_short),

@@ -4,11 +4,11 @@
 package com.romankryvolapov.localailauncher.domain.usecase
 
 import android.content.res.AssetManager
+import com.romankryvolapov.localailauncher.common.models.common.BaseUseCase
 import com.romankryvolapov.localailauncher.common.models.common.ErrorType
-import com.romankryvolapov.localailauncher.common.models.common.ResultEmittedData
-import  com.romankryvolapov.localailauncher.common.models.common.BaseUseCase
 import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logDebug
 import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logError
+import com.romankryvolapov.localailauncher.common.models.common.ResultEmittedData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -30,7 +30,6 @@ class CopyAllAssetFilesToUserFilesUseCase : BaseUseCase {
         try {
             val totalFiles = countAssetFiles(assetManager, "")
             var copiedCount = 0
-            clearFilesDir(filesDir)
             trySend(
                 ResultEmittedData.loading(
                     model = "0 from $totalFiles"
@@ -93,13 +92,15 @@ class CopyAllAssetFilesToUserFilesUseCase : BaseUseCase {
         val entries = assetManager.list(path) ?: return
         if (entries.isEmpty()) {
             val outFile = File(destDir, path)
-            outFile.parentFile?.mkdirs()
-            assetManager.open(path).use { inStream ->
-                outFile.outputStream().use { outStream ->
-                    inStream.copyTo(outStream)
+            if (!outFile.exists()) {
+                outFile.parentFile?.mkdirs()
+                assetManager.open(path).use { inStream ->
+                    outFile.outputStream().use { outStream ->
+                        inStream.copyTo(outStream)
+                    }
                 }
+                onFileCopied(path)
             }
-            onFileCopied(path)
         } else {
             for (entry in entries) {
                 val subPath = if (path.isEmpty()) entry else "$path/$entry"
@@ -108,10 +109,4 @@ class CopyAllAssetFilesToUserFilesUseCase : BaseUseCase {
         }
     }
 
-    private fun clearFilesDir(filesDir: File) {
-        filesDir.listFiles()?.forEach { file ->
-            if (file.isDirectory) file.deleteRecursively()
-            else file.delete()
-        }
-    }
 }

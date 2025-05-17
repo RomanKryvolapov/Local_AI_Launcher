@@ -36,5 +36,8 @@ val mockResponses = mutableMapOf<String, MockResponse>().apply {
     )
 }
 
+// filesDir, cacheDir, codeCacheDir, noBackupFilesDir   -> Internal Storage
+// getExternalFilesDir, getExternalCacheDir, getExternalMediaDirs -> External Storage
+
 lateinit var externalFilesDirectory: File
 lateinit var internalFilesDirectory: File
