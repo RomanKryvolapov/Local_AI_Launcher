@@ -1,6 +1,3 @@
-/**
- * Created & Copyright 2025 by Roman Kryvolapov
- **/
 package com.romankryvolapov.localailauncher.domain.usecase
 
 import android.content.Context
@@ -12,20 +9,21 @@ import kotlinx.coroutines.flow.Flow
 import org.koin.core.component.inject
 import java.io.File
 
-class DownloadToExternalFilesDirectoryUseCase : BaseUseCase {
+class DownloadMultipleToExternalFilesDirectoryUseCase : BaseUseCase {
 
     companion object {
-        private const val TAG = "DownloadToExternalFilesDirectoryUseCaseTag"
+        private const val TAG = "DownloadMultipleToExternalFilesDirectoryUseCaseTag"
     }
 
     private val downloadRepository: DownloadFileNetworkRepository by inject()
 
     fun invoke(
-        model: Model,
+        models: List<Model>,
         context: Context,
-    ): Flow<ResultEmittedData<File>> = downloadRepository.downloadWithManager(
-        model = model,
-        context = context,
-    )
+    ): Flow<ResultEmittedData<List<File>>> =
+        downloadRepository.downloadDirectly(
+            models = models,
+            context = context,
+        )
 
 }

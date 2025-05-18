@@ -12,9 +12,12 @@
 package com.romankryvolapov.localailauncher.data.di
 
 import com.google.gson.Gson
-import com.romankryvolapov.localailauncher.data.network.utils.ArrayConverterFactory
-import com.romankryvolapov.localailauncher.data.network.utils.NullOrEmptyConverterFactory
 import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logNetwork
+import com.romankryvolapov.localailauncher.data.network.utils.ArrayConverterFactory
+import com.romankryvolapov.localailauncher.data.network.utils.ContentTypeInterceptor
+import com.romankryvolapov.localailauncher.data.network.utils.HeaderInterceptor
+import com.romankryvolapov.localailauncher.data.network.utils.MockInterceptor
+import com.romankryvolapov.localailauncher.data.network.utils.NullOrEmptyConverterFactory
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -24,8 +27,6 @@ import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 private const val TAG = "NetworkModuleTag"
 
 const val RETROFIT_BASE = "RETROFIT_BASE"
-
-const val OKHTTP = "OKHTTP"
 
 const val LOGGING_INTERCEPTOR = "LOGGING_INTERCEPTOR"
 const val LOG_TO_FILE_INTERCEPTOR = "LOG_TO_FILE_INTERCEPTOR"
@@ -52,6 +53,34 @@ val networkModule = module {
 
     single<ArrayConverterFactory> {
         ArrayConverterFactory()
+    }
+
+    single<HttpLoggingInterceptor>(named(LOGGING_INTERCEPTOR)) {
+        HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+    }
+
+    single<HttpLoggingInterceptor>(named(LOG_TO_FILE_INTERCEPTOR)) {
+        val logging = HttpLoggingInterceptor {
+            logNetwork(it)
+        }
+        logging.level = HttpLoggingInterceptor.Level.BODY
+        logging
+    }
+
+    single<ContentTypeInterceptor> {
+        ContentTypeInterceptor()
+    }
+
+    single<HeaderInterceptor> {
+        HeaderInterceptor()
+    }
+
+    single<HttpLoggingInterceptor> {
+        HttpLoggingInterceptor()
+    }
+
+    single<MockInterceptor> {
+        MockInterceptor()
     }
 
     single<HttpLoggingInterceptor>(named(LOGGING_INTERCEPTOR)) {

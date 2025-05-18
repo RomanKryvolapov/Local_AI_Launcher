@@ -10,7 +10,7 @@
       "session_options": {
         "log_id": "onnxruntime-genai"
       },
-      "filename": "model.onnx",
+      "filename": "model_q4.onnx",
       "head_size": 256,
       "hidden_size": 1152,
       "inputs": {

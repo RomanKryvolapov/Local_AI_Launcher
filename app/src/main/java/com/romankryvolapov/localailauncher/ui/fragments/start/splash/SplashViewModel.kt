@@ -14,13 +14,12 @@ import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logError
 import com.romankryvolapov.localailauncher.common.models.common.onFailure
 import com.romankryvolapov.localailauncher.common.models.common.onLoading
 import com.romankryvolapov.localailauncher.common.models.common.onSuccess
-import com.romankryvolapov.localailauncher.domain.DEBUG_FORCE_REPLACE_ASSETS
 import com.romankryvolapov.localailauncher.domain.DEBUG_LOGOUT_FROM_PREFERENCES
 import com.romankryvolapov.localailauncher.domain.Model
-import com.romankryvolapov.localailauncher.domain.internalFilesDirectory
 import com.romankryvolapov.localailauncher.domain.models
 import com.romankryvolapov.localailauncher.domain.usecase.ClearFilesDirectoryUseCase
 import com.romankryvolapov.localailauncher.domain.usecase.CopyAllAssetFilesToUserFilesUseCase
+import com.romankryvolapov.localailauncher.domain.usecase.DownloadMultipleToExternalFilesDirectoryUseCase
 import com.romankryvolapov.localailauncher.domain.usecase.DownloadToExternalFilesDirectoryUseCase
 import com.romankryvolapov.localailauncher.extensions.launchInScope
 import com.romankryvolapov.localailauncher.extensions.readOnly
@@ -44,6 +43,7 @@ class SplashViewModel : BaseViewModel() {
     private val getGGUFModelParametersUseCase: GetGGUFModelParametersUseCase by inject()
     private val clearFilesDirectoryUseCase: ClearFilesDirectoryUseCase by inject()
     private val downloadToExternalFilesDirectoryUseCase: DownloadToExternalFilesDirectoryUseCase by inject()
+    private val downloadMultipleToExternalFilesDirectoryUseCase: DownloadMultipleToExternalFilesDirectoryUseCase by inject()
 
     private val messages = mutableMapOf<UUID, SplashLoadingMessageUi>()
 
@@ -52,106 +52,116 @@ class SplashViewModel : BaseViewModel() {
 
     override fun onFirstAttach() {
         logDebug("onFirstAttach", TAG)
-
         if (BuildConfig.DEBUG && DEBUG_LOGOUT_FROM_PREFERENCES) {
             preferences.logoutFromPreferences()
             logDebug("logoutFromPreferences", TAG)
         }
-
         addMessage(
             model = SplashLoadingMessageUi(
                 message = "OpenCL available on device: ${hasOpenCLLibrary()}"
             )
         )
-
-        val applicationInfo = preferences.readApplicationInfo()
-
-        addMessage(
-            model = SplashLoadingMessageUi(
-                message = "Is first application run: ${applicationInfo.isFirstFun}"
-            )
-        )
-
         copyAllAssetFilesToUserFiles()
-
     }
 
 
     private fun copyAllAssetFilesToUserFiles() {
-
-        val applicationInfo = preferences.readApplicationInfo()
-
-        val copyAllAssetFilesToUserFilesMessageID = UUID.randomUUID()
-
-        if (applicationInfo.isFirstFun || DEBUG_FORCE_REPLACE_ASSETS) {
-            logDebug("Copy models files do device", TAG)
-            addMessage(
-                model = SplashLoadingMessageUi(
-                    message = "Copy models files do device"
-                )
+        logDebug("copyAllAssetFilesToUserFiles", TAG)
+        addMessage(
+            model = SplashLoadingMessageUi(
+                message = "Copy models files do device"
             )
-            val subfolder = "models"
-            val filesDir = File(
-                currentContext.get().getExternalFilesDir(null),
-                subfolder
-            ).apply {
-                if (!exists()) {
-                    mkdirs()
-                }
+        )
+        val subfolder = "models"
+        val filesDir = File(
+            currentContext.get().getExternalFilesDir(null),
+            subfolder
+        ).apply {
+            if (!exists()) {
+                mkdirs()
             }
-            copyAllAssetFilesToUserFilesUseCase.invoke(
-                filesDir = filesDir,
-                assetManager = currentContext.get().assets,
-            ).onEach { result ->
-                result.onLoading { model, _ ->
-                    logDebug("onLoading: $model", TAG)
-                    addMessage(
-                        id = copyAllAssetFilesToUserFilesMessageID,
-                        model = SplashLoadingMessageUi(
-                            id = copyAllAssetFilesToUserFilesMessageID,
-                            message = model.toString(),
-                        )
-                    )
-                }.onSuccess { model, _, _ ->
-                    logDebug("onSuccess: $model", TAG)
-                    addMessage(
-                        model = SplashLoadingMessageUi(
-                            message = "Coped all files to device",
-                        )
-                    )
-                    preferences.saveApplicationInfo(
-                        applicationInfo.copy(
-                            isFirstFun = false
-                        )
-                    )
-                    downloadFromHuggingFace()
-                }.onFailure { error, _, message, _, _ ->
-                    logError("onFailure", message, TAG)
-                    addMessage(
-                        model = SplashLoadingMessageUi(
-                            message = "Models files not copied, error: $error",
-                        )
-                    )
-                    preferences.saveApplicationInfo(
-                        applicationInfo.copy(
-                            isFirstFun = true
-                        )
-                    )
-                }
-            }.launchInScope(viewModelScope)
-        } else {
-            checkEnginesFiles()
         }
+        val messageID = UUID.randomUUID()
+        copyAllAssetFilesToUserFilesUseCase.invoke(
+            filesDir = filesDir,
+            assetManager = currentContext.get().assets,
+        ).onEach { result ->
+            result.onLoading { model, _ ->
+                logDebug("onLoading: $model", TAG)
+                addMessage(
+                    id = messageID,
+                    model = SplashLoadingMessageUi(
+                        id = messageID,
+                        message = model.toString(),
+                    )
+                )
+            }.onSuccess { model, _, _ ->
+                logDebug("onSuccess: $model", TAG)
+                addMessage(
+                    model = SplashLoadingMessageUi(
+                        message = "Coped all files to device",
+                    )
+                )
+                downloadMultipleFromHuggingFace()
+            }.onFailure { error, _, message, _, _ ->
+                logError("onFailure", message, TAG)
+                addMessage(
+                    model = SplashLoadingMessageUi(
+                        message = "Models files not copied, error: $error",
+                    )
+                )
+            }
+        }.launchInScope(viewModelScope)
+    }
+
+
+    private fun downloadMultipleFromHuggingFace() {
+        logDebug("downloadMultipleFromHuggingFace", TAG)
+        // /storage/emulated/0/Android/data/com.romankryvolapov.localailauncher/files/models/...
+        // https://huggingface.co/litert-community/Gemma3-1B-IT/resolve/main/Gemma3-1B-IT_multi-prefill-seq_q4_ekv2048.task
+        // https://huggingface.co/lmstudio-community/gemma-3-4B-it-qat-GGUF/resolve/main/gemma-3-4B-it-QAT-Q4_0.gguf
+        val models = models.filter {
+            it.fileUrl != null
+        }
+        val messageID = UUID.randomUUID()
+        downloadMultipleToExternalFilesDirectoryUseCase.invoke(
+            models = models,
+            context = currentContext.get(),
+        ).onEach { result ->
+            result.onLoading { model, message ->
+                logDebug("onLoading: $model", TAG)
+                addMessage(
+                    id = messageID,
+                    model = SplashLoadingMessageUi(
+                        id = messageID,
+                        message = message.toString(),
+                    )
+                )
+            }.onSuccess { model, message, _ ->
+                logDebug("onSuccess: $model", TAG)
+                addMessage(
+                    model = SplashLoadingMessageUi(
+                        message = message.toString(),
+                    )
+                )
+                checkEnginesFiles()
+            }.onFailure { _, _, message, _, _ ->
+                logError("onFailure", message, TAG)
+                addMessage(
+                    model = SplashLoadingMessageUi(
+                        message = message.toString(),
+                    )
+                )
+            }
+        }.launchInScope(viewModelScope)
     }
 
 
     private fun downloadFromHuggingFace() {
         logDebug("downloadFromHuggingFace", TAG)
         // /storage/emulated/0/Android/data/com.romankryvolapov.localailauncher/files/models/...
-        // https://huggingface.co/litert-community/Gemma3-1B-IT/resolve/main/Gemma3-1B-IT_multi-prefill-seq_q4_ekv2048.task
-        // https://huggingface.co/lmstudio-community/gemma-3-4B-it-qat-GGUF/resolve/main/gemma-3-4B-it-QAT-Q4_0.gguf
-
-        val fileUrl = models.filterIsInstance<Model.LlamaCppModel>().first().fileUrl
+        val model = models.filterIsInstance<Model.LlamaCppModel>().first()
+        val fileUrl = model.fileUrl
         if (fileUrl == null) {
             addMessage(
                 model = SplashLoadingMessageUi(
@@ -162,7 +172,6 @@ class SplashViewModel : BaseViewModel() {
         }
         val fileName = fileUrl.toUri().lastPathSegment
         val subfolder = "models/gguf"
-
         if (fileName == null) {
             addMessage(
                 model = SplashLoadingMessageUi(
@@ -194,16 +203,17 @@ class SplashViewModel : BaseViewModel() {
                 message = "Download model file $fileName to device",
             )
         )
+        val messageID = UUID.randomUUID()
         downloadToExternalFilesDirectoryUseCase.invoke(
-            file = file,
-            fileUrl = fileUrl,
+            model = model,
             context = currentContext.get(),
-            huggingFaceToken = null,
         ).onEach { result ->
             result.onLoading { model, message ->
                 logDebug("onLoading: $model", TAG)
                 addMessage(
+                    id = messageID,
                     model = SplashLoadingMessageUi(
+                        id = messageID,
                         message = message.toString(),
                     )
                 )
@@ -228,8 +238,7 @@ class SplashViewModel : BaseViewModel() {
 
     private fun checkEnginesFiles() {
         models.forEach { model ->
-            val modelFile = File(model.fileFolder + model.filePath)
-            if (modelFile.exists()) {
+            if (model.file.exists()) {
                 addMessage(
                     model = SplashLoadingMessageUi(
                         message = "File ${model.engineName} ${model.modelName} found"
@@ -248,21 +257,21 @@ class SplashViewModel : BaseViewModel() {
 //        getModelData()
     }
 
-    private fun getModelData() {
-        val modelFile = File(
-            internalFilesDirectory,
-            models[0].filePath
-        )
-        getGGUFModelParametersUseCase.invoke(
-            modelFile = modelFile
-        ).onEach { result ->
-            result.onSuccess { _, _, _ ->
-                openMainTabs()
-            }.onFailure { _, _, message, _, _ ->
-                logError("$message", message, TAG)
-            }
-        }.launchInScope(viewModelScope)
-    }
+//    private fun getModelData() {
+//        val modelFile = File(
+//            internalFilesDirectory,
+//            models[0].filePath
+//        )
+//        getGGUFModelParametersUseCase.invoke(
+//            modelFile = modelFile
+//        ).onEach { result ->
+//            result.onSuccess { _, _, _ ->
+//                openMainTabs()
+//            }.onFailure { _, _, message, _, _ ->
+//                logError("$message", message, TAG)
+//            }
+//        }.launchInScope(viewModelScope)
+//    }
 
 //    private fun loadModelFile(filename: String): MappedByteBuffer {
 //        val fileDescriptor = currentContext.get().assets.openFd(filename)

@@ -188,7 +188,7 @@ object LogUtil {
     }
 
     private fun saveLogsToTxtFile() {
-        if (isSaveLogsToTxtFile) return
+        if (!isSaveLogsToTxtFile) return
         isSaveLogsToTxtFile = true
         saveLogsToTxtFileJob?.cancel()
         saveLogsToTxtFileJob = null

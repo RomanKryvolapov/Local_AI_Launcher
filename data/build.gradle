@@ -36,6 +36,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         all {
+            buildConfigField 'String', 'AUTH_TOKEN', "\"" + properties['auth_token'] + "\""
             buildConfigField 'String', 'DATABASE_NAME', "\"" + properties['database_name'] + "\""
             buildConfigField 'String', 'ENCRYPTED_SHARED_PREFERENCES_NAME', "\"" + properties['encrypted_shared_preferences_name'] + "\""
             buildConfigField 'String', 'PROPERTY_USER_PASSWORD', "\"" + properties['property_user_password'] + "\""

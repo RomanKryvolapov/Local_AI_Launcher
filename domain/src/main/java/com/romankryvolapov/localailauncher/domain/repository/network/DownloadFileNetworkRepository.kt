@@ -5,16 +5,25 @@ package com.romankryvolapov.localailauncher.domain.repository.network
 
 import android.content.Context
 import com.romankryvolapov.localailauncher.common.models.common.ResultEmittedData
+import com.romankryvolapov.localailauncher.domain.Model
 import kotlinx.coroutines.flow.Flow
 import java.io.File
 
 interface DownloadFileNetworkRepository {
 
-    fun downloadToExternalFilesDirectory(
-        file: File,
-        fileUrl: String,
+    fun downloadWithManager(
+        model: Model,
         context: Context,
-        huggingFaceToken: String?,
     ): Flow<ResultEmittedData<File>>
+
+    fun downloadWithManager(
+        context: Context,
+        models: List<Model>,
+    ): Flow<ResultEmittedData<List<File>>>
+
+    fun downloadDirectly(
+        context: Context,
+        models: List<Model>,
+    ): Flow<ResultEmittedData<List<File>>>
 
 }

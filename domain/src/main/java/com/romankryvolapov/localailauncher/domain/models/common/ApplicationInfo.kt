@@ -8,7 +8,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ApplicationInfo(
-    val isFirstFun: Boolean,
     val accessToken: String?,
     val refreshToken: String?,
     val selectedModelPosition: Int,

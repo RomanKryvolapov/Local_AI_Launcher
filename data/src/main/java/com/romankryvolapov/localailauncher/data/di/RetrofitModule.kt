@@ -18,7 +18,7 @@ val retrofitModule = module {
     single<Retrofit>(named(RETROFIT_BASE)) {
         Retrofit.Builder()
             .baseUrl(URL_BASE)
-            .client(get<OkHttpClient>(named(OKHTTP)))
+            .client(get<OkHttpClient>())
 //            .addConverterFactory(get<ArrayConverterFactory>())
             .addConverterFactory(get<NullOrEmptyConverterFactory>())
             .addConverterFactory(get<GsonConverterFactory>())

@@ -38,7 +38,6 @@ import com.romankryvolapov.localailauncher.models.main.MainTabsEnum
 import com.romankryvolapov.localailauncher.ui.fragments.main.base.BaseMainTabViewModel
 import kotlinx.coroutines.flow.onEach
 import org.koin.core.component.inject
-import java.io.File
 import java.util.UUID
 
 class MainTabOneViewModel : BaseMainTabViewModel() {
@@ -305,16 +304,15 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
 
     private fun startMLCEngine(modelEngine: MLCEngineModel) {
         logDebug("Start MLC engine", TAG)
-        val modelFile = File(modelEngine.fileFolder + modelEngine.filePath)
-        if (!modelFile.exists()) {
+        if (!modelEngine.file.exists()) {
             showErrorState(
                 title = StringSource(R.string.error_internal_error_short),
-                description = StringSource("MLC engine error: file ${modelFile.path} not exist")
+                description = StringSource("MLC engine error: file ${modelEngine.file.path} not exist")
             )
             return
         }
         startMLCEngineUseCase.invoke(
-            modelFile = modelFile,
+            modelFile = modelEngine.file,
             modelLib = modelEngine.modelLib,
         ).onEach { result ->
             result.onSuccess { model, _, responseCode ->
@@ -340,16 +338,15 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
 
     private fun startMediaPipeEngine(modelEngine: MediaPipeModel) {
         logDebug("Start MediaPipe engine", TAG)
-        val modelFile = File(modelEngine.fileFolder + modelEngine.filePath)
-        if (!modelFile.exists()) {
+        if (!modelEngine.file.exists()) {
             showErrorState(
                 title = StringSource(R.string.error_internal_error_short),
-                description = StringSource("MediaPipe engine error: file ${modelFile.path} not exist")
+                description = StringSource("MediaPipe engine error: file ${modelEngine.file.path} not exist")
             )
             return
         }
         startEngineMediaPipeUseCase.invoke(
-            modelFile = modelFile,
+            modelFile = modelEngine.file,
             context = currentContext.get(),
         ).onEach { result ->
             result.onSuccess { model, _, responseCode ->
@@ -375,16 +372,15 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
 
     private fun startOnnxEngine(modelEngine: OnnxModel) {
         logDebug("Start ONNX engine", TAG)
-        val modelFile = File(modelEngine.fileFolder + modelEngine.filePath)
-        if (!modelFile.exists()) {
+        if (!modelEngine.file.exists()) {
             showErrorState(
                 title = StringSource(R.string.error_internal_error_short),
-                description = StringSource("ONNX engine error: file ${modelFile.path} not exist")
+                description = StringSource("ONNX engine error: file ${modelEngine.file.path} not exist")
             )
             return
         }
         startOnnxEngineUseCase.invoke(
-            modelFile = modelFile,
+            modelFile = modelEngine.file,
         ).onEach { result ->
             result.onSuccess { model, _, responseCode ->
                 if (result.model == null) {
@@ -409,16 +405,15 @@ class MainTabOneViewModel : BaseMainTabViewModel() {
 
     private fun startLlamaEngine(modelEngine: LlamaCppModel) {
         logDebug("Start LLama.cpp engine", TAG)
-        val modelFile = File(modelEngine.fileFolder + modelEngine.filePath)
-        if (!modelFile.exists()) {
+        if (!modelEngine.file.exists()) {
             showErrorState(
                 title = StringSource(R.string.error_internal_error_short),
-                description = StringSource("LLama.cpp engine error: file ${modelFile.path} not exist")
+                description = StringSource("LLama.cpp engine error: file ${modelEngine.file.path} not exist")
             )
             return
         }
         startLLamaCppEngineUseCase.invoke(
-            modelFile = modelFile,
+            modelFile = modelEngine.file,
         ).onEach { result ->
             result.onSuccess { model, _, responseCode ->
                 if (result.model == null) {

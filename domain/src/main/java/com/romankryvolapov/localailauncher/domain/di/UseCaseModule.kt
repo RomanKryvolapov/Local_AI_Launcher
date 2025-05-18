@@ -16,6 +16,7 @@ import ai.onnxruntime.genai.usecase.StartOnnxEngineUseCase
 import com.romankryvolapov.localailauncher.domain.usecase.ClearFilesDirectoryUseCase
 import com.romankryvolapov.localailauncher.domain.usecase.CopyAllAssetFilesToUserFilesUseCase
 import com.romankryvolapov.localailauncher.domain.usecase.CopyAssetFileToUserFilesUseCase
+import com.romankryvolapov.localailauncher.domain.usecase.DownloadMultipleToExternalFilesDirectoryUseCase
 import com.romankryvolapov.localailauncher.domain.usecase.DownloadToExternalFilesDirectoryUseCase
 import com.romankryvolapov.localailauncher.llama.usecase.GetGGUFModelParametersUseCase
 import com.romankryvolapov.localailauncher.llama.usecase.SendMessageLLamaCppEngineUseCase
@@ -78,6 +79,10 @@ val useCaseModule = module {
 
     factory<ClearFilesDirectoryUseCase> {
         ClearFilesDirectoryUseCase()
+    }
+
+    factory<DownloadMultipleToExternalFilesDirectoryUseCase> {
+        DownloadMultipleToExternalFilesDirectoryUseCase()
     }
 
 }
