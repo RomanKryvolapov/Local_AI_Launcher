@@ -51,8 +51,28 @@ class SendMessageLLamaCppEngineUseCase {
         }
         trySend(ResultEmittedData.loading())
         val messageStringBuilder = StringBuilder()
+        val prompt = """
+You are a helpful, honest, and concise AI assistant. 
+Use clear, simple language. 
+If a question is ambiguous or lacks detail, ask for clarification. 
+If you don’t know the answer, admit it. 
+Always reply in English.
+        """.trimIndent()
         generationJob = launch(Dispatchers.IO) {
-            engine!!.send(message).onCompletion { error ->
+            val template = """
+<start_of_turn>user 
+prompt_text
+user message: message_text
+<end_of_turn>
+<start_of_turn>model
+""".trimIndent()
+            engine!!.send(
+                message = message,
+                prompt = prompt,
+                nLen = 2014,
+                template = template,
+                clearContextAfterAnswer = false,
+            ).onCompletion { error ->
                 if (error == null) {
                     trySend(
                         ResultEmittedData.success(

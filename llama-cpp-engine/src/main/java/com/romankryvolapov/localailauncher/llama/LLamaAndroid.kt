@@ -1,6 +1,22 @@
 package com.romankryvolapov.localailauncher.llama
 
 import android.util.Log
+import com.romankryvolapov.localailauncher.common.models.common.LogUtil.logDebug
+import com.romankryvolapov.localailauncher.llama.LLamaNativeBridge.backend_init
+import com.romankryvolapov.localailauncher.llama.LLamaNativeBridge.bench_model
+import com.romankryvolapov.localailauncher.llama.LLamaNativeBridge.completion_init
+import com.romankryvolapov.localailauncher.llama.LLamaNativeBridge.completion_loop
+import com.romankryvolapov.localailauncher.llama.LLamaNativeBridge.free_batch
+import com.romankryvolapov.localailauncher.llama.LLamaNativeBridge.free_context
+import com.romankryvolapov.localailauncher.llama.LLamaNativeBridge.free_model
+import com.romankryvolapov.localailauncher.llama.LLamaNativeBridge.free_sampler
+import com.romankryvolapov.localailauncher.llama.LLamaNativeBridge.kv_cache_clear
+import com.romankryvolapov.localailauncher.llama.LLamaNativeBridge.load_model
+import com.romankryvolapov.localailauncher.llama.LLamaNativeBridge.log_to_android
+import com.romankryvolapov.localailauncher.llama.LLamaNativeBridge.new_batch
+import com.romankryvolapov.localailauncher.llama.LLamaNativeBridge.new_context
+import com.romankryvolapov.localailauncher.llama.LLamaNativeBridge.new_sampler_with_params
+import com.romankryvolapov.localailauncher.llama.LLamaNativeBridge.system_info
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -11,13 +27,40 @@ import java.util.concurrent.Executors
 import kotlin.concurrent.thread
 
 class LLamaAndroid {
-    private val tag: String? = this::class.simpleName
+
+    companion object {
+
+        private const val TAG = "LLamaAndroidTag"
+
+        class IntVar(value: Int) {
+            @Volatile
+            var value: Int = value
+                private set
+
+            fun inc() {
+                synchronized(this) {
+                    value += 1
+                }
+            }
+        }
+
+        private sealed interface State {
+            data object Idle : State
+            data class Loaded(
+                val model: Long,
+                val context: Long,
+                val batch: Long,
+                val sampler: Long
+            ) : State
+        }
+
+    }
 
     private val threadLocalState: ThreadLocal<State> = ThreadLocal.withInitial { State.Idle }
 
     private val runLoop: CoroutineDispatcher = Executors.newSingleThreadExecutor {
         thread(start = false, name = "Llm-RunLoop") {
-            Log.d(tag, "Dedicated thread for native code: ${Thread.currentThread().name}")
+            Log.d(TAG, "Dedicated thread for native code: ${Thread.currentThread().name}")
 
             // No-op if called more than once.
             System.loadLibrary("llama-cpp-engine")
@@ -26,89 +69,30 @@ class LLamaAndroid {
             log_to_android()
             backend_init(false)
 
-            Log.d(tag, system_info())
+            Log.d(TAG, system_info())
 
             it.run()
         }.apply {
             uncaughtExceptionHandler = Thread.UncaughtExceptionHandler { _, exception: Throwable ->
-                Log.e(tag, "Unhandled exception", exception)
+                Log.e(TAG, "Unhandled exception", exception)
             }
         }
     }.asCoroutineDispatcher()
-
-    private val nlen: Int = 2014
-
-    private external fun log_to_android()
-    private external fun load_model(filename: String): Long
-    private external fun free_model(model: Long)
-    private external fun new_context(model: Long): Long
-    private external fun free_context(context: Long)
-    private external fun backend_init(numa: Boolean)
-    private external fun backend_free()
-    private external fun new_batch(nTokens: Int, embd: Int, nSeqMax: Int): Long
-    private external fun free_batch(batch: Long)
-    private external fun new_sampler(): Long
-    private external fun free_sampler(sampler: Long)
-    private external fun bench_model(
-        context: Long,
-        model: Long,
-        batch: Long,
-        pp: Int,
-        tg: Int,
-        pl: Int,
-        nr: Int
-    ): String
-
-    private external fun system_info(): String
-
-    private external fun completion_init(
-        context: Long,
-        batch: Long,
-        text: String,
-        formatChat: Boolean,
-        nLen: Int
-    ): Int
-
-    private external fun completion_loop(
-        context: Long,
-        batch: Long,
-        sampler: Long,
-        nLen: Int,
-        ncur: IntVar
-    ): String?
-
-    private external fun kv_cache_clear(context: Long)
-
-    // uint32_t n_ctx;             // text context, 0 = from model
-    //        uint32_t n_batch;           // logical maximum batch size that can be submitted to llama_decode
-    //        uint32_t n_ubatch;          // physical maximum batch size
-    //        uint32_t n_seq_max;         // max number of sequences (i.e. distinct states for recurrent models)
-    //        int32_t  n_threads;         // number of threads to use for generation
-    //        int32_t  n_threads_batch;   // number of threads to use for batch processing
-
-    private external fun new_context_with_params(
-        model: Long,
-        contextSize: Int,
-        nBatch: Int,
-        nUbatch: Int,
-        nSeqMax: Int,
-        nThreads: Int,
-        nThreadsBatch: Int,
-        ropeFreqBase: Float,
-        ropeFreqScale: Float,
-        embeddings: Boolean,
-        offloadKqv: Boolean,
-        flashAttn: Boolean,
-        noPerf: Boolean,
-        opOffload: Boolean
-    ): Long
 
     suspend fun bench(pp: Int, tg: Int, pl: Int, nr: Int = 1): String {
         return withContext(runLoop) {
             when (val state = threadLocalState.get()) {
                 is State.Loaded -> {
-                    Log.d(tag, "bench(): $state")
-                    bench_model(state.context, state.model, state.batch, pp, tg, pl, nr)
+                    Log.d(TAG, "bench(): $state")
+                    bench_model(
+                        state.context,
+                        state.model,
+                        state.batch,
+                        pp,
+                        tg,
+                        pl,
+                        nr
+                    )
                 }
 
                 else -> throw IllegalStateException("No model loaded")
@@ -116,39 +100,46 @@ class LLamaAndroid {
         }
     }
 
-    suspend fun load(pathToModel: String) {
+    suspend fun load(
+        pathToModel: String,
+        temperature: Float,
+        topK: Int,
+        topP: Float,
+        nTokens: Int,
+        embd: Int,
+        nSeqMax: Int,
+        contextSize: Int,
+    ) {
         withContext(runLoop) {
             when (threadLocalState.get()) {
                 is State.Idle -> {
+
                     val model = load_model(pathToModel)
+
                     if (model == 0L) throw IllegalStateException("load_model() failed")
 
-//                    val context = new_context(model)
-                    val context = new_context_with_params(
+                    val context = new_context(
                         model = model,
-                        contextSize = 32768,
-                        nBatch = 2048,
-                        nUbatch = 512,
-                        nSeqMax = 1,
-                        nThreads = 4,
-                        nThreadsBatch = 2,
-                        ropeFreqBase = 1000000.0f,
-                        ropeFreqScale = 1.0f,
-                        embeddings = false,
-                        offloadKqv = true,
-                        flashAttn = false,
-                        noPerf = false,
-                        opOffload = true
+                        contextSize = contextSize,
                     )
                     if (context == 0L) throw IllegalStateException("new_context() failed")
 
-                    val batch = new_batch(512, 0, 1)
+                    val batch = new_batch(
+                        nTokens = nTokens,
+                        embd = embd,
+                        nSeqMax = nSeqMax
+                    )
+
                     if (batch == 0L) throw IllegalStateException("new_batch() failed")
 
-                    val sampler = new_sampler()
+                    val sampler = new_sampler_with_params(
+                        temperature = temperature,
+                        topK = topK,
+                        topP = topP,
+                    )
                     if (sampler == 0L) throw IllegalStateException("new_sampler() failed")
 
-                    Log.i(tag, "Loaded model $pathToModel")
+                    Log.i(TAG, "Loaded model $pathToModel")
                     threadLocalState.set(State.Loaded(model, context, batch, sampler))
                 }
 
@@ -157,19 +148,47 @@ class LLamaAndroid {
         }
     }
 
-    fun send(message: String, formatChat: Boolean = false): Flow<String> = flow {
+    fun send(
+        message: String,
+        prompt: String,
+        template: String,
+        nLen: Int,
+        clearContextAfterAnswer: Boolean,
+    ): Flow<String> = flow {
+//        val messageWithPrompt = """
+//        <|system|>$prompt<|user|>$message<|assistant|>
+//        """.trimIndent()
+        val messageWithPrompt = template
+            .replace("prompt_text", prompt)
+            .replace("message_text", message)
+        logDebug("send messageWithPrompt: $messageWithPrompt", TAG)
         when (val state = threadLocalState.get()) {
             is State.Loaded -> {
-                val ncur =
-                    IntVar(completion_init(state.context, state.batch, message, formatChat, nlen))
-                while (ncur.value <= nlen) {
-                    val str = completion_loop(state.context, state.batch, state.sampler, nlen, ncur)
+                val ncur = IntVar(
+                    completion_init(
+                        context = state.context,
+                        batch = state.batch,
+                        text = messageWithPrompt,
+                        formatChat = true,
+                        nLen = nLen
+                    )
+                )
+                while (ncur.value <= nLen) {
+                    val str = completion_loop(
+                        context = state.context,
+                        batch = state.batch,
+                        sampler = state.sampler,
+                        nLen = nLen,
+                        ncur = ncur
+                    )
                     if (str == null) {
                         break
                     }
                     emit(str)
                 }
-                kv_cache_clear(state.context)
+                if (clearContextAfterAnswer) {
+                    kv_cache_clear(state.context)
+                }
             }
 
             else -> {}
@@ -198,28 +217,5 @@ class LLamaAndroid {
         }
     }
 
-    companion object {
-        private class IntVar(value: Int) {
-            @Volatile
-            var value: Int = value
-                private set
 
-            fun inc() {
-                synchronized(this) {
-                    value += 1
-                }
-            }
-        }
-
-        private sealed interface State {
-            data object Idle : State
-            data class Loaded(
-                val model: Long,
-                val context: Long,
-                val batch: Long,
-                val sampler: Long
-            ) : State
-        }
-
-    }
 }

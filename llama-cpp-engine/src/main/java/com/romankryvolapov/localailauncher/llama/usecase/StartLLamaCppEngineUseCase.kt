@@ -28,7 +28,16 @@ class StartLLamaCppEngineUseCase {
         emit(ResultEmittedData.loading())
         try {
             engine = LLamaAndroid()
-            engine!!.load(modelFile.absolutePath)
+            engine!!.load(
+                pathToModel = modelFile.absolutePath,
+                nTokens = 512,
+                embd = 0,
+                nSeqMax = 4,
+                temperature = 0.8f,
+                topK = 50,
+                topP = 0.9f,
+                contextSize = 4096,
+            )
             emit(
                 ResultEmittedData.success(
                     model = Unit,

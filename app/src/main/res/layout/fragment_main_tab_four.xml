@@ -17,7 +17,194 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"/>
+            android:orientation="vertical">
+
+            <com.romankryvolapov.localailauncher.ui.view.CustomTextInputLayout
+                android:id="@+id/ilTemplate"
+                style="@style/DefaultTextInputLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_16"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:drawablePadding="@dimen/margin_8"
+                android:hint="Template"
+                app:endIconMode="clear_text"
+                app:hintAnimationEnabled="false"
+                app:hintEnabled="true">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etTemplate"
+                    style="@style/DefaultEditTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top|start"
+                    android:imeOptions="flagNoEnterAction"
+                    android:inputType="textMultiLine|text"
+                    android:maxLines="10"
+                    android:minLines="4"
+                    android:overScrollMode="always"
+                    android:scrollbars="vertical"
+                    android:singleLine="false"
+                    android:text="@string/engine_template" />
+
+            </com.romankryvolapov.localailauncher.ui.view.CustomTextInputLayout>
+
+            <com.romankryvolapov.localailauncher.ui.view.CustomTextInputLayout
+                android:id="@+id/ilPrompt"
+                style="@style/DefaultTextInputLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_16"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:drawablePadding="@dimen/margin_8"
+                android:hint="Prompt"
+                app:endIconMode="clear_text"
+                app:hintAnimationEnabled="false"
+                app:hintEnabled="true">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etPrompt"
+                    style="@style/DefaultEditTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top|start"
+                    android:imeOptions="flagNoEnterAction"
+                    android:inputType="textMultiLine|text"
+                    android:maxLines="10"
+                    android:minLines="4"
+                    android:overScrollMode="always"
+                    android:scrollbars="vertical"
+                    android:singleLine="false"
+                    android:text="@string/engine_template" />
+
+            </com.romankryvolapov.localailauncher.ui.view.CustomTextInputLayout>
+
+            <com.romankryvolapov.localailauncher.ui.view.CustomTextInputLayout
+                android:id="@+id/ilContextSize"
+                style="@style/DefaultTextInputLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_16"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:drawablePadding="@dimen/margin_8"
+                android:hint="Context size"
+                app:endIconMode="clear_text"
+                app:hintAnimationEnabled="false"
+                app:hintEnabled="true">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etContextSize"
+                    style="@style/DefaultEditTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:maxLength="12"
+                    android:singleLine="true"
+                    android:text="4096" />
+
+            </com.romankryvolapov.localailauncher.ui.view.CustomTextInputLayout>
+
+            <com.romankryvolapov.localailauncher.ui.view.CustomTextInputLayout
+                android:id="@+id/ilTemperature"
+                style="@style/DefaultTextInputLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_16"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:drawablePadding="@dimen/margin_8"
+                android:hint="Model temperature (default = 0.7)"
+                app:endIconMode="clear_text"
+                app:hintAnimationEnabled="false"
+                app:hintEnabled="true">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etTemperature"
+                    style="@style/DefaultEditTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:maxLength="8"
+                    android:singleLine="true"
+                    android:text="0.7" />
+
+            </com.romankryvolapov.localailauncher.ui.view.CustomTextInputLayout>
+
+            <com.romankryvolapov.localailauncher.ui.view.CustomTextInputLayout
+                android:id="@+id/ilTopK"
+                style="@style/DefaultTextInputLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_16"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:drawablePadding="@dimen/margin_8"
+                android:hint="Top K (default = 40)"
+                app:endIconMode="clear_text"
+                app:hintAnimationEnabled="false"
+                app:hintEnabled="true">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etTopK"
+                    style="@style/DefaultEditTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:maxLength="8"
+                    android:singleLine="true"
+                    android:text="50" />
+
+            </com.romankryvolapov.localailauncher.ui.view.CustomTextInputLayout>
+
+            <com.romankryvolapov.localailauncher.ui.view.CustomTextInputLayout
+                android:id="@+id/ilTopP"
+                style="@style/DefaultTextInputLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_16"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:drawablePadding="@dimen/margin_8"
+                android:hint="Top P (default = 0.9)"
+                app:endIconMode="clear_text"
+                app:hintAnimationEnabled="false"
+                app:hintEnabled="true">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etTopP"
+                    style="@style/DefaultEditTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:maxLength="8"
+                    android:singleLine="true"
+                    android:text="0.95" />
+
+            </com.romankryvolapov.localailauncher.ui.view.CustomTextInputLayout>
+
+            <com.romankryvolapov.localailauncher.ui.view.CustomTextInputLayout
+                android:id="@+id/ilMinP"
+                style="@style/DefaultTextInputLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_16"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:drawablePadding="@dimen/margin_8"
+                android:hint="Min P (default = 0.05)"
+                app:endIconMode="clear_text"
+                app:hintAnimationEnabled="false"
+                app:hintEnabled="true">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etMinP"
+                    style="@style/DefaultEditTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:maxLength="8"
+                    android:singleLine="true"
+                    android:text="0.05" />
+
+            </com.romankryvolapov.localailauncher.ui.view.CustomTextInputLayout>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.core.widget.NestedScrollView>
 

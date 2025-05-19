@@ -127,4 +127,12 @@
     <string name="enable_biometric_btn_later">Set it up later</string>
     <string name="enable_biometric_btn_enable">Enable</string>
 
+    <!-- Engine settings -->
+    <string name="engine_template">&lt;start_of_turn&gt;user&#10;prompt_text&#10;user message: message_text&#10;&lt;end_of_turn&gt;&#10;&lt;start_of_turn&gt;model</string>
+    <string name="engine_prompt">You are a helpful, honest, and concise AI assistant.
+Use clear, simple language.
+If a question is ambiguous or lacks detail, ask for clarification.
+If you don’t know the answer, admit it.
+Always reply in English.</string>
+
 </resources>

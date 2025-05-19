@@ -35,12 +35,12 @@ jmethodID la_int_var_inc;
 
 std::string cached_token_chars;
 
-bool is_valid_utf8(const char * string) {
+bool is_valid_utf8(const char *string) {
     if (!string) {
         return true;
     }
 
-    const unsigned char * bytes = (const unsigned char *)string;
+    const unsigned char *bytes = (const unsigned char *) string;
     int num;
 
     while (*bytes != 0x00) {
@@ -72,8 +72,8 @@ bool is_valid_utf8(const char * string) {
     return true;
 }
 
-static void log_callback(ggml_log_level level, const char * fmt, void * data) {
-    if (level == GGML_LOG_LEVEL_ERROR)     __android_log_print(ANDROID_LOG_ERROR, TAG, fmt, data);
+static void log_callback(ggml_log_level level, const char *fmt, void *data) {
+    if (level == GGML_LOG_LEVEL_ERROR) __android_log_print(ANDROID_LOG_ERROR, TAG, fmt, data);
     else if (level == GGML_LOG_LEVEL_INFO) __android_log_print(ANDROID_LOG_INFO, TAG, fmt, data);
     else if (level == GGML_LOG_LEVEL_WARN) __android_log_print(ANDROID_LOG_WARN, TAG, fmt, data);
     else __android_log_print(ANDROID_LOG_DEFAULT, TAG, fmt, data);
@@ -81,7 +81,8 @@ static void log_callback(ggml_log_level level, const char * fmt, void * data) {
 
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_load_1model(JNIEnv *env, jobject, jstring filename) {
+Java_com_romankryvolapov_localailauncher_llama_LLamaNativeBridge_load_1model(JNIEnv *env, jobject,
+                                                                        jstring filename) {
     llama_model_params model_params = llama_model_default_params();
 
     auto path_to_model = env->GetStringUTFChars(filename, 0);
@@ -101,13 +102,19 @@ Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_load_1model(JNIEnv *
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_free_1model(JNIEnv *, jobject, jlong model) {
+Java_com_romankryvolapov_localailauncher_llama_LLamaNativeBridge_free_1model(JNIEnv *, jobject,
+                                                                        jlong model) {
     llama_model_free(reinterpret_cast<llama_model *>(model));
 }
 
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_new_1context(JNIEnv *env, jobject, jlong jmodel) {
+Java_com_romankryvolapov_localailauncher_llama_LLamaNativeBridge_new_1context(
+        JNIEnv *env,
+        jobject,
+        jlong jmodel,
+        jint jctx_size
+) {
     auto model = reinterpret_cast<llama_model *>(jmodel);
 
     if (!model) {
@@ -121,11 +128,11 @@ Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_new_1context(JNIEnv 
 
     llama_context_params ctx_params = llama_context_default_params();
 
-    ctx_params.n_ctx           = 2048;
-    ctx_params.n_threads       = n_threads;
+    ctx_params.n_ctx = (uint32_t) jctx_size;
+    ctx_params.n_threads = n_threads;
     ctx_params.n_threads_batch = n_threads;
 
-    llama_context * context = llama_new_context_with_model(model, ctx_params);
+    llama_context *context = llama_new_context_with_model(model, ctx_params);
 
     if (!context) {
         LOGe("llama_new_context_with_model() returned null)");
@@ -139,25 +146,26 @@ Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_new_1context(JNIEnv 
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_free_1context(JNIEnv *, jobject, jlong context) {
+Java_com_romankryvolapov_localailauncher_llama_LLamaNativeBridge_free_1context(JNIEnv *, jobject,
+                                                                          jlong context) {
     llama_free(reinterpret_cast<llama_context *>(context));
 }
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_backend_1free(JNIEnv *, jobject) {
+Java_com_romankryvolapov_localailauncher_llama_LLamaNativeBridge_backend_1free(JNIEnv *, jobject) {
     llama_backend_free();
 }
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_log_1to_1android(JNIEnv *, jobject) {
+Java_com_romankryvolapov_localailauncher_llama_LLamaNativeBridge_log_1to_1android(JNIEnv *, jobject) {
     llama_log_set(log_callback, NULL);
 }
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_bench_1model(
+Java_com_romankryvolapov_localailauncher_llama_LLamaNativeBridge_bench_1model(
         JNIEnv *env,
         jobject,
         jlong context_pointer,
@@ -167,7 +175,7 @@ Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_bench_1model(
         jint tg,
         jint pl,
         jint nr
-        ) {
+) {
     auto pp_avg = 0.0;
     auto tg_avg = 0.0;
     auto pp_std = 0.0;
@@ -190,7 +198,7 @@ Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_bench_1model(
 
         const int n_tokens = pp;
         for (i = 0; i < n_tokens; i++) {
-            common_batch_add(*batch, 0, i, { 0 }, false);
+            common_batch_add(*batch, 0, i, {0}, false);
         }
 
         batch->logits[batch->n_tokens - 1] = true;
@@ -212,7 +220,7 @@ Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_bench_1model(
 
             common_batch_clear(*batch);
             for (j = 0; j < pl; j++) {
-                common_batch_add(*batch, 0, i, { j }, true);
+                common_batch_add(*batch, 0, i, {j}, true);
             }
 
             LOGi("llama_decode() text generation: %d", i);
@@ -254,35 +262,39 @@ Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_bench_1model(
     char model_desc[128];
     llama_model_desc(model, model_desc, sizeof(model_desc));
 
-    const auto model_size     = double(llama_model_size(model)) / 1024.0 / 1024.0 / 1024.0;
+    const auto model_size = double(llama_model_size(model)) / 1024.0 / 1024.0 / 1024.0;
     const auto model_n_params = double(llama_model_n_params(model)) / 1e9;
 
-    const auto backend    = "(Android)"; // TODO: What should this be?
+    const auto backend = "(Android)"; // TODO: What should this be?
 
     std::stringstream result;
     result << std::setprecision(2);
     result << "| model | size | params | backend | test | t/s |\n";
     result << "| --- | --- | --- | --- | --- | --- |\n";
-    result << "| " << model_desc << " | " << model_size << "GiB | " << model_n_params << "B | " << backend << " | pp " << pp << " | " << pp_avg << " ± " << pp_std << " |\n";
-    result << "| " << model_desc << " | " << model_size << "GiB | " << model_n_params << "B | " << backend << " | tg " << tg << " | " << tg_avg << " ± " << tg_std << " |\n";
+    result << "| " << model_desc << " | " << model_size << "GiB | " << model_n_params << "B | "
+           << backend << " | pp " << pp << " | " << pp_avg << " ± " << pp_std << " |\n";
+    result << "| " << model_desc << " | " << model_size << "GiB | " << model_n_params << "B | "
+           << backend << " | tg " << tg << " | " << tg_avg << " ± " << tg_std << " |\n";
 
     return env->NewStringUTF(result.str().c_str());
 }
 
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_new_1batch(JNIEnv *, jobject, jint n_tokens, jint embd, jint n_seq_max) {
+Java_com_romankryvolapov_localailauncher_llama_LLamaNativeBridge_new_1batch(JNIEnv *, jobject,
+                                                                       jint n_tokens, jint embd,
+                                                                       jint n_seq_max) {
 
     // Source: Copy of llama.cpp:llama_batch_init but heap-allocated.
 
-    llama_batch *batch = new llama_batch {
-        0,
-        nullptr,
-        nullptr,
-        nullptr,
-        nullptr,
-        nullptr,
-        nullptr,
+    llama_batch *batch = new llama_batch{
+            0,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr,
     };
 
     if (embd) {
@@ -291,20 +303,21 @@ Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_new_1batch(JNIEnv *,
         batch->token = (llama_token *) malloc(sizeof(llama_token) * n_tokens);
     }
 
-    batch->pos      = (llama_pos *)     malloc(sizeof(llama_pos)      * n_tokens);
-    batch->n_seq_id = (int32_t *)       malloc(sizeof(int32_t)        * n_tokens);
-    batch->seq_id   = (llama_seq_id **) malloc(sizeof(llama_seq_id *) * n_tokens);
+    batch->pos = (llama_pos *) malloc(sizeof(llama_pos) * n_tokens);
+    batch->n_seq_id = (int32_t *) malloc(sizeof(int32_t) * n_tokens);
+    batch->seq_id = (llama_seq_id **) malloc(sizeof(llama_seq_id *) * n_tokens);
     for (int i = 0; i < n_tokens; ++i) {
         batch->seq_id[i] = (llama_seq_id *) malloc(sizeof(llama_seq_id) * n_seq_max);
     }
-    batch->logits   = (int8_t *)        malloc(sizeof(int8_t)         * n_tokens);
+    batch->logits = (int8_t *) malloc(sizeof(int8_t) * n_tokens);
 
     return reinterpret_cast<jlong>(batch);
 }
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_free_1batch(JNIEnv *, jobject, jlong batch_pointer) {
+Java_com_romankryvolapov_localailauncher_llama_LLamaNativeBridge_free_1batch(JNIEnv *, jobject,
+                                                                        jlong batch_pointer) {
     //llama_batch_free(*reinterpret_cast<llama_batch *>(batch_pointer));
     const auto batch = reinterpret_cast<llama_batch *>(batch_pointer);
     delete batch;
@@ -312,10 +325,10 @@ Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_free_1batch(JNIEnv *
 
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_new_1sampler(JNIEnv *, jobject) {
+Java_com_romankryvolapov_localailauncher_llama_LLamaNativeBridge_new_1sampler(JNIEnv *, jobject) {
     auto sparams = llama_sampler_chain_default_params();
     sparams.no_perf = true;
-    llama_sampler * smpl = llama_sampler_chain_init(sparams);
+    llama_sampler *smpl = llama_sampler_chain_init(sparams);
     llama_sampler_chain_add(smpl, llama_sampler_init_greedy());
 
     return reinterpret_cast<jlong>(smpl);
@@ -323,25 +336,26 @@ Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_new_1sampler(JNIEnv 
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_free_1sampler(JNIEnv *, jobject, jlong sampler_pointer) {
+Java_com_romankryvolapov_localailauncher_llama_LLamaNativeBridge_free_1sampler(JNIEnv *, jobject,
+                                                                          jlong sampler_pointer) {
     llama_sampler_free(reinterpret_cast<llama_sampler *>(sampler_pointer));
 }
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_backend_1init(JNIEnv *, jobject) {
+Java_com_romankryvolapov_localailauncher_llama_LLamaNativeBridge_backend_1init(JNIEnv *, jobject) {
     llama_backend_init();
 }
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_system_1info(JNIEnv *env, jobject) {
+Java_com_romankryvolapov_localailauncher_llama_LLamaNativeBridge_system_1info(JNIEnv *env, jobject) {
     return env->NewStringUTF(llama_print_system_info());
 }
 
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_completion_1init(
+Java_com_romankryvolapov_localailauncher_llama_LLamaNativeBridge_completion_1init(
         JNIEnv *env,
         jobject,
         jlong context_pointer,
@@ -349,7 +363,7 @@ Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_completion_1init(
         jstring jtext,
         jboolean format_chat,
         jint n_len
-    ) {
+) {
 
     cached_token_chars.clear();
 
@@ -369,7 +383,7 @@ Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_completion_1init(
         LOGe("error: n_kv_req > n_ctx, the required KV cache size is not big enough");
     }
 
-    for (auto id : tokens_list) {
+    for (auto id: tokens_list) {
         LOGi("token: `%s`-> %d ", common_token_to_piece(context, id).c_str(), id);
     }
 
@@ -377,7 +391,7 @@ Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_completion_1init(
 
     // evaluate the initial prompt
     for (auto i = 0; i < tokens_list.size(); i++) {
-        common_batch_add(*batch, tokens_list[i], i, { 0 }, false);
+        common_batch_add(*batch, tokens_list[i], i, {0}, false);
     }
 
     // llama_decode will output logits only for the last token of the prompt
@@ -394,8 +408,8 @@ Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_completion_1init(
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_completion_1loop(
-        JNIEnv * env,
+Java_com_romankryvolapov_localailauncher_llama_LLamaNativeBridge_completion_1loop(
+        JNIEnv *env,
         jobject,
         jlong context_pointer,
         jlong batch_pointer,
@@ -404,7 +418,7 @@ Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_completion_1loop(
         jobject intvar_ncur
 ) {
     const auto context = reinterpret_cast<llama_context *>(context_pointer);
-    const auto batch   = reinterpret_cast<llama_batch   *>(batch_pointer);
+    const auto batch = reinterpret_cast<llama_batch *>(batch_pointer);
     const auto sampler = reinterpret_cast<llama_sampler *>(sampler_pointer);
     const auto model = llama_get_model(context);
     const auto vocab = llama_model_get_vocab(model);
@@ -427,14 +441,15 @@ Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_completion_1loop(
     jstring new_token = nullptr;
     if (is_valid_utf8(cached_token_chars.c_str())) {
         new_token = env->NewStringUTF(cached_token_chars.c_str());
-        LOGi("cached: %s, new_token_chars: `%s`, id: %d", cached_token_chars.c_str(), new_token_chars.c_str(), new_token_id);
+        LOGi("cached: %s, new_token_chars: `%s`, id: %d", cached_token_chars.c_str(),
+             new_token_chars.c_str(), new_token_id);
         cached_token_chars.clear();
     } else {
         new_token = env->NewStringUTF("");
     }
 
     common_batch_clear(*batch);
-    common_batch_add(*batch, new_token_id, n_cur, { 0 }, true);
+    common_batch_add(*batch, new_token_id, n_cur, {0}, true);
 
     env->CallVoidMethod(intvar_ncur, la_int_var_inc);
 
@@ -447,22 +462,23 @@ Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_completion_1loop(
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_kv_1cache_1clear(JNIEnv *, jobject, jlong context) {
+Java_com_romankryvolapov_localailauncher_llama_LLamaNativeBridge_kv_1cache_1clear(JNIEnv *, jobject,
+                                                                             jlong context) {
     llama_kv_self_clear(reinterpret_cast<llama_context *>(context));
 }
 
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_new_1context_1with_1params(
+Java_com_romankryvolapov_localailauncher_llama_LLamaNativeBridge_new_1context_1with_1params(
         JNIEnv *env,
         jobject /* this */,
-        jlong  jmodel,
-        jint   jctx_size,
-        jint   jn_batch,
-        jint   jn_ubatch,
-        jint   jn_seq_max,
-        jint   jn_threads,
-        jint   jn_threads_batch,
+        jlong jmodel,
+        jint jctx_size,
+        jint jn_batch,
+        jint jn_ubatch,
+        jint jn_seq_max,
+        jint jn_threads,
+        jint jn_threads_batch,
         jfloat jrope_freq_base,
         jfloat jrope_freq_scale,
         jboolean jembeddings,
@@ -482,21 +498,21 @@ Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_new_1context_1with_1
 
     llama_context_params ctx_params = llama_context_default_params();
 
-    ctx_params.n_ctx            = (uint32_t) jctx_size;
-    ctx_params.n_batch          = (uint32_t) jn_batch;
-    ctx_params.n_ubatch         = (uint32_t) jn_ubatch;
-    ctx_params.n_seq_max        = (uint32_t) jn_seq_max;
-    ctx_params.n_threads        = (int32_t) jn_threads;
-    ctx_params.n_threads_batch  = (int32_t) jn_threads_batch;
+    ctx_params.n_ctx = (uint32_t) jctx_size;
+    ctx_params.n_batch = (uint32_t) jn_batch;
+    ctx_params.n_ubatch = (uint32_t) jn_ubatch;
+    ctx_params.n_seq_max = (uint32_t) jn_seq_max;
+    ctx_params.n_threads = (int32_t) jn_threads;
+    ctx_params.n_threads_batch = (int32_t) jn_threads_batch;
 
-    ctx_params.rope_freq_base   = (float) jrope_freq_base;
-    ctx_params.rope_freq_scale  = (float) jrope_freq_scale;
+    ctx_params.rope_freq_base = (float) jrope_freq_base;
+    ctx_params.rope_freq_scale = (float) jrope_freq_scale;
 
-    ctx_params.embeddings       = (bool) jembeddings;
-    ctx_params.offload_kqv      = (bool) joffload_kqv;
-    ctx_params.flash_attn       = (bool) jflash_attn;
-    ctx_params.no_perf          = (bool) jno_perf;
-    ctx_params.op_offload       = (bool) jop_offload;
+    ctx_params.embeddings = (bool) jembeddings;
+    ctx_params.offload_kqv = (bool) joffload_kqv;
+    ctx_params.flash_attn = (bool) jflash_attn;
+    ctx_params.no_perf = (bool) jno_perf;
+    ctx_params.op_offload = (bool) jop_offload;
 
     llama_context *context = llama_new_context_with_model(model, ctx_params);
 
@@ -508,4 +524,28 @@ Java_com_romankryvolapov_localailauncher_llama_LLamaAndroid_new_1context_1with_1
     }
 
     return reinterpret_cast<jlong>(context);
+}
+
+extern "C"
+JNIEXPORT jlong JNICALL
+Java_com_romankryvolapov_localailauncher_llama_LLamaNativeBridge_new_1sampler_1with_1params(
+        JNIEnv *env,
+        jobject,
+        jfloat temperature,
+        jint top_k,
+        jfloat top_p
+) {
+    auto sparams = llama_sampler_chain_default_params();
+    sparams.no_perf = true;
+
+    llama_sampler *smpl = llama_sampler_chain_init(sparams);
+
+    llama_sampler_chain_add(smpl, llama_sampler_init_top_k(top_k));
+    llama_sampler_chain_add(smpl, llama_sampler_init_top_p(top_p, 1));
+    llama_sampler_chain_add(smpl, llama_sampler_init_temp(temperature));
+
+//    llama_sampler_chain_add(smpl, llama_sampler_init_dist(LLAMA_DEFAULT_SEED));
+    llama_sampler_chain_add(smpl, llama_sampler_init_mirostat_v2(LLAMA_DEFAULT_SEED, 5.0f, 0.1f));
+
+    return reinterpret_cast<jlong>(smpl);
 }
